@@ -1,0 +1,5 @@
+/target
+proptest-regressions/
+*.log
+COMMANDS_REFERENCE.md
+SECURITY_AUDIT.md

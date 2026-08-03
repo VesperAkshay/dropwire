@@ -1,0 +1,7 @@
+.agents/
+re
+target
+tests
+PROTOCOL.md
+test
+proptest-regressions

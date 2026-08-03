@@ -1,0 +1,55 @@
+[package]
+name = "dropwire"
+version = "0.1.0"
+edition = "2021"
+default-run = "dropwire"
+
+[dependencies]
+# Core
+tokio = { version = "1", features = ["full"] }
+thiserror = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# CLI
+clap = { version = "4", features = ["derive"] }
+indicatif = "0.17"
+
+# Crypto
+blake3 = "1.5"
+chacha20poly1305 = "0.10"
+spake2 = "0.4"
+zeroize = { version = "1", features = ["derive"] }
+rand = "0.8"
+base64 = "0.22"
+hex = "0.4"
+
+# Networking
+tokio-tungstenite = "0.23"
+futures = "0.3"
+
+# Compression
+zstd = "0.13"
+
+# Data structures
+bitvec = "1"
+dashmap = "6"
+
+# Serialization (for signaling)
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+dirs = "6.0.0"
+walkdir = "2.5.0"
+
+[dev-dependencies]
+tokio-test = "0.4"
+proptest = "1"
+tempfile = "3"
+
+[[bin]]
+name = "dropwire"
+path = "src/main.rs"
+
+[[bin]]
+name = "dropwire-relay"
+path = "src/relay_server.rs"
