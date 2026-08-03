@@ -1,12 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
-const COLORS = ['#0052FF', '#FFB800', '#FF3D00', '#00B060', '#9D00FF'];
-// Adjusted for the white card background in the Hero section
+const COLORS = ['#0052FF', '#FFB800', '#FF3D00', '#00B060', '#AB54F7'];
 const BG_COLOR = '#FFFFFF';
-
-function easeInOutExpo(x: number): number {
-  return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2;
-}
 
 export default function HeroBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -14,20 +9,18 @@ export default function HeroBackground() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: false });
+    const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
     if (!ctx) return;
 
     let width = 0;
     let height = 0;
     let nodes: any[] = [];
-    let pulses: any[] = [];
     let packets: any[] = [];
     let animationFrameId: number;
 
     const mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000 };
 
     const handleMouseMove = (e: MouseEvent) => {
-      // Offset by the canvas bounding rect to get correct coordinates within the hero card
       const rect = canvas.getBoundingClientRect();
       mouse.targetX = e.clientX - rect.left;
       mouse.targetY = e.clientY - rect.top;
@@ -47,50 +40,45 @@ export default function HeroBackground() {
       z: number;
       x: number;
       y: number;
-      phaseX: number;
-      phaseY: number;
-      speedX: number;
-      speedY: number;
+      phase: number;
+      speed: number;
       radius: number;
-      isHub: boolean;
       connections: Node[];
+      color: string;
 
       constructor(id: number, w: number, h: number) {
         this.id = id;
         this.baseX = Math.random() * w;
         this.baseY = Math.random() * h;
-        this.z = Math.random() * 1.4 + 0.1;
+        this.z = Math.random() * 1.5 + 0.5;
         this.x = this.baseX;
         this.y = this.baseY;
-        this.phaseX = Math.random() * Math.PI * 2;
-        this.phaseY = Math.random() * Math.PI * 2;
-        this.speedX = (Math.random() * 0.0005) + 0.0002;
-        this.speedY = (Math.random() * 0.0005) + 0.0002;
+        this.phase = Math.random() * Math.PI * 2;
+        this.speed = (Math.random() * 0.0002) + 0.0001;
         this.radius = (Math.random() * 1.5 + 0.5) * this.z;
-        this.isHub = Math.random() > 0.95;
-        if (this.isHub) this.radius *= 3;
         this.connections = [];
+        this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
       }
 
-      update(time: number) {
-        const driftX = Math.sin(time * this.speedX + this.phaseX) * (40 * this.z);
-        const driftY = Math.cos(time * this.speedY + this.phaseY) * (40 * this.z);
-        const centerX = width / 2;
-        const centerY = height / 2;
-        const parallaxX = ((mouse.x - centerX) * 0.05) * this.z;
-        const parallaxY = ((mouse.y - centerY) * 0.05) * this.z;
+      update(time: number, centerX: number, centerY: number) {
+        const driftX = Math.sin(time * this.speed + this.phase) * (40 * this.z);
+        const driftY = Math.sin(time * this.speed * 2 + this.phase) * (30 * this.z);
+        
+        const parallaxX = ((mouse.x - centerX) * 0.03) * this.z;
+        const parallaxY = ((mouse.y - centerY) * 0.03) * this.z;
 
         let magneticX = 0;
         let magneticY = 0;
         const dx = mouse.x - (this.baseX + driftX + parallaxX);
         const dy = mouse.y - (this.baseY + driftY + parallaxY);
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const dist = dx * dx + dy * dy; // Use squared distance for performance
         
-        const lensRadius = 300;
-        if (dist < lensRadius) {
-          const force = Math.pow((lensRadius - dist) / lensRadius, 2);
-          magneticX = -(dx / dist) * force * 50 * this.z;
-          magneticY = -(dy / dist) * force * 50 * this.z;
+        const lensRadiusSq = 90000; // 300 * 300
+        if (dist < lensRadiusSq) {
+          const actualDist = Math.sqrt(dist);
+          const force = Math.pow((300 - actualDist) / 300, 2);
+          magneticX = -(dx / actualDist) * force * 50 * this.z;
+          magneticY = -(dy / actualDist) * force * 50 * this.z;
         }
 
         this.x = this.baseX + driftX + parallaxX + magneticX;
@@ -100,47 +88,18 @@ export default function HeroBackground() {
       draw(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        const alpha = Math.min(1, this.z * 0.8 + 0.2);
-        ctx.fillStyle = `rgba(11, 16, 22, ${alpha})`;
+        ctx.fillStyle = `rgba(11, 16, 22, ${Math.min(0.6, this.z * 0.3)})`;
+        ctx.fill();
+        
+        // Fast fake aura (no gradients, just transparent circles)
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `${this.color}15`; // ~8% opacity hex
         ctx.fill();
       }
     }
 
-    class Pulse {
-      x: number;
-      y: number;
-      color: string;
-      radius: number;
-      maxRadius: number;
-      life: number;
-      decay: number;
-
-      constructor(x: number, y: number, color: string) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.radius = 0;
-        this.maxRadius = Math.random() * 20 + 15;
-        this.life = 1;
-        this.decay = Math.random() * 0.02 + 0.015;
-      }
-      update() {
-        this.radius += (this.maxRadius - this.radius) * 0.1;
-        this.life -= this.decay;
-      }
-      draw(ctx: CanvasRenderingContext2D) {
-        if (this.life <= 0) return;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = this.life * 2;
-        ctx.globalAlpha = this.life;
-        ctx.stroke();
-        ctx.globalAlpha = 1;
-      }
-    }
-
-    class PacketStreak {
+    class DataStream {
       startNode: Node;
       endNode: Node;
       progress: number;
@@ -152,9 +111,9 @@ export default function HeroBackground() {
         this.startNode = startNode;
         this.endNode = this.pickNextNode(startNode);
         this.progress = 0;
-        this.speed = Math.random() * 0.005 + 0.002;
-        this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
-        this.length = Math.random() * 0.15 + 0.05;
+        this.speed = Math.random() * 0.003 + 0.002;
+        this.color = startNode.color;
+        this.length = Math.random() * 0.2 + 0.1;
       }
 
       pickNextNode(node: Node) {
@@ -162,39 +121,76 @@ export default function HeroBackground() {
         return node.connections[Math.floor(Math.random() * node.connections.length)];
       }
 
-      update(pulsesArray: Pulse[]) {
+      update() {
         this.progress += this.speed;
         if (this.progress >= 1) {
-          pulsesArray.push(new Pulse(this.endNode.x, this.endNode.y, this.color));
           this.startNode = this.endNode;
           this.endNode = this.pickNextNode(this.startNode);
           this.progress = 0;
+          this.color = this.startNode.color;
         }
       }
 
-      draw(ctx: CanvasRenderingContext2D) {
+      getPointOnCurve(p0: {x: number, y: number}, p1: {x: number, y: number}, p2: {x: number, y: number}, t: number) {
+        const u = 1 - t;
+        const tt = t * t;
+        const uu = u * u;
+        return {
+          x: uu * p0.x + 2 * u * t * p1.x + tt * p2.x,
+          y: uu * p0.y + 2 * u * t * p1.y + tt * p2.y
+        };
+      }
+
+      draw(ctx: CanvasRenderingContext2D, time: number) {
         if (this.startNode === this.endNode) return;
-        const easeHead = easeInOutExpo(Math.min(1, this.progress + this.length));
-        const easeTail = easeInOutExpo(Math.max(0, this.progress));
 
-        const hx = this.startNode.x + (this.endNode.x - this.startNode.x) * easeHead;
-        const hy = this.startNode.y + (this.endNode.y - this.startNode.y) * easeHead;
+        const mx = (this.startNode.x + this.endNode.x) / 2;
+        const my = (this.startNode.y + this.endNode.y) / 2;
+        const angle = Math.atan2(this.endNode.y - this.startNode.y, this.endNode.x - this.startNode.x);
         
-        const tx = this.startNode.x + (this.endNode.x - this.startNode.x) * easeTail;
-        const ty = this.startNode.y + (this.endNode.y - this.startNode.y) * easeTail;
+        // Distance approximation is faster than Math.hypot
+        const dx = this.endNode.x - this.startNode.x;
+        const dy = this.endNode.y - this.startNode.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        const offset = Math.sin(time * 0.001 + this.startNode.id) * dist * 0.3;
+        const cx = mx + Math.cos(angle + Math.PI/2) * offset;
+        const cy = my + Math.sin(angle + Math.PI/2) * offset;
 
-        const gradient = ctx.createLinearGradient(tx, ty, hx, hy);
-        gradient.addColorStop(0, 'rgba(255,255,255,0)');
-        gradient.addColorStop(0.8, this.color);
-        gradient.addColorStop(1, '#ffffff');
+        const p0 = {x: this.startNode.x, y: this.startNode.y};
+        const p1 = {x: cx, y: cy};
+        const p2 = {x: this.endNode.x, y: this.endNode.y};
 
+        const headT = Math.min(1, this.progress + this.length);
+        const tailT = Math.max(0, this.progress);
+        
+        const head = this.getPointOnCurve(p0, p1, p2, headT);
+        const tail = this.getPointOnCurve(p0, p1, p2, tailT);
+
+        // Solid streak (faster than gradient)
         ctx.beginPath();
-        ctx.moveTo(tx, ty);
-        ctx.lineTo(hx, hy);
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = (this.startNode.z + this.endNode.z) * 1.0;
+        ctx.moveTo(tail.x, tail.y);
+        ctx.quadraticCurveTo(
+          this.getPointOnCurve(p0, p1, p2, (headT + tailT)/2).x, 
+          this.getPointOnCurve(p0, p1, p2, (headT + tailT)/2).y, 
+          head.x, head.y
+        );
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = (this.startNode.z + this.endNode.z) * 1.5;
+        ctx.globalAlpha = 0.6; // Fake gradient fade out
         ctx.lineCap = 'round';
         ctx.stroke();
+        ctx.globalAlpha = 1.0;
+        
+        // Fast dot (no shadowBlur!)
+        ctx.beginPath();
+        ctx.arc(head.x, head.y, this.startNode.z * 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#0B1016';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(head.x, head.y, this.startNode.z * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `${this.color}66`;
+        ctx.fill();
       }
     }
 
@@ -202,17 +198,17 @@ export default function HeroBackground() {
       const rect = canvas.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
-      const dpr = window.devicePixelRatio || 1;
+      // Cap devicePixelRatio to 1.5 maximum for performance
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.scale(dpr, dpr);
 
       nodes = [];
       packets = [];
-      pulses = [];
 
-      // Highly dense network fit for hero
-      const numNodes = Math.floor((width * height) / 8000);
+      // Reduced node density for 60fps performance
+      const numNodes = Math.floor((width * height) / 25000);
 
       for (let i = 0; i < numNodes; i++) {
         nodes.push(new Node(i, width, height));
@@ -223,15 +219,16 @@ export default function HeroBackground() {
           .filter(n => n.id !== node.id)
           .map(n => ({
             node: n,
-            dist: Math.hypot(node.baseX - n.baseX, node.baseY - n.baseY)
+            dist: (node.baseX - n.baseX) ** 2 + (node.baseY - n.baseY) ** 2 // Squared distance is faster
           }))
           .sort((a, b) => a.dist - b.dist);
         
-        node.connections = distances.slice(0, Math.floor(Math.random() * 3) + 3).map(d => d.node);
+        node.connections = distances.slice(0, Math.floor(Math.random() * 2) + 1).map(d => d.node);
       });
 
+      // Fewer packets for performance
       for (let i = 0; i < numNodes * 0.8; i++) {
-        packets.push(new PacketStreak(nodes[Math.floor(Math.random() * nodes.length)]));
+        packets.push(new DataStream(nodes[Math.floor(Math.random() * nodes.length)]));
       }
       
       mouse.x = width / 2;
@@ -245,28 +242,39 @@ export default function HeroBackground() {
       mouse.x += (mouse.targetX - mouse.x) * 0.1;
       mouse.y += (mouse.targetY - mouse.y) * 0.1;
       time += 16;
+      const centerX = width / 2;
+      const centerY = height / 2;
 
       ctx.fillStyle = BG_COLOR;
       ctx.fillRect(0, 0, width, height);
 
-      nodes.forEach(node => node.update(time));
+      nodes.forEach(node => node.update(time, centerX, centerY));
 
-      ctx.lineWidth = 0.6;
+      // Draw Base Organic Web (Swaying Curves)
+      ctx.lineWidth = 1;
       nodes.forEach(node => {
         node.connections.forEach(target => {
           if (node.id > target.id) return;
           
-          const dx = node.x - target.x;
-          const dy = node.y - target.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+          const dx = target.x - node.x;
+          const dy = target.y - node.y;
+          const distSq = dx * dx + dy * dy;
           
-          if (dist < 200) {
-            const avgZ = (node.z + target.z) / 2;
-            const alpha = (1 - (dist / 200)) * (avgZ * 0.3);
+          if (distSq < 90000) { // 300 * 300
+            const dist = Math.sqrt(distSq);
+            const mx = (node.x + target.x) / 2;
+            const my = (node.y + target.y) / 2;
+            const angle = Math.atan2(dy, dx);
+            
+            const offset = Math.sin(time * 0.001 + node.id) * dist * 0.3;
+            const cx = mx + Math.cos(angle + Math.PI/2) * offset;
+            const cy = my + Math.sin(angle + Math.PI/2) * offset;
+
+            const alpha = (1 - (dist / 300)) * 0.15;
             
             ctx.beginPath();
             ctx.moveTo(node.x, node.y);
-            ctx.lineTo(target.x, target.y);
+            ctx.quadraticCurveTo(cx, cy, target.x, target.y);
             ctx.strokeStyle = `rgba(11, 16, 22, ${alpha})`;
             ctx.stroke();
           }
@@ -275,25 +283,14 @@ export default function HeroBackground() {
 
       nodes.forEach(node => node.draw(ctx));
 
-      ctx.globalCompositeOperation = 'source-over'; 
       packets.forEach(packet => {
-        packet.update(pulses);
-        packet.draw(ctx);
+        packet.update();
+        packet.draw(ctx, time);
       });
-
-      for (let i = pulses.length - 1; i >= 0; i--) {
-        pulses[i].update();
-        if (pulses[i].life <= 0) {
-          pulses.splice(i, 1);
-        } else {
-          pulses[i].draw(ctx);
-        }
-      }
 
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    // Delay initialization to ensure DOM layout is complete
     const timeout = setTimeout(() => {
       initNetwork();
       animate();
