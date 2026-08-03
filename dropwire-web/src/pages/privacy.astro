@@ -3,33 +3,71 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Privacy Policy — DropWire">
-  <section class="p-6 sm:p-12 space-y-12">
-    <div class="max-w-4xl space-y-4">
-      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">ZERO-DATA POLICY</span>
-      <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none">
+  <section class="p-6 sm:p-12 space-y-12 max-w-4xl mx-auto">
+    <div class="space-y-4">
+      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">LEGAL / COMPLIANCE</span>
+      <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none break-words">
         Privacy Policy
       </h1>
       <p class="text-lg text-[#0B1016]/80 font-sans font-medium">
-        DropWire does not collect, store, track, or monetise any personal data or file transfers.
+        Effective Date: August 2026. Your privacy is a fundamental human right.
       </p>
     </div>
 
-    <div class="bg-[#FFFFFF] p-8 sm:p-12 rounded-[2.5rem] card-shadow border border-[#D9D2C9] space-y-6 text-[#0B1016] font-sans font-medium leading-relaxed">
-      <h2 class="text-3xl font-black font-display uppercase">1. Zero Telemetry & Analytics</h2>
-      <p>
-        DropWire CLI contains zero telemetry, zero analytics tracking SDKs, and zero crash pingback servers.
-      </p>
+    <div class="bg-[#FFFFFF] p-8 sm:p-12 rounded-[2.5rem] card-shadow border border-[#D9D2C9] space-y-8 text-[#0B1016] font-sans font-medium leading-relaxed">
+      
+      <div class="space-y-3">
+        <h2 class="text-2xl font-black font-display uppercase tracking-tight text-black">1. Introduction</h2>
+        <p class="text-black/80">
+          This Privacy Policy describes how DropWire ("we", "our", or "us") handles data. Because DropWire is an encrypted peer-to-peer file transfer engine, our core philosophy is <strong>Zero Data</strong>. We do not collect, store, sell, or monetize your personal information or the contents of your files.
+        </p>
+      </div>
 
-      <h2 class="text-3xl font-black font-display uppercase pt-4">2. Non-Custodial Encrypted Transfers</h2>
-      <p>
-        All byte transfers stream directly machine-to-machine. Unencrypted data is never written to cloud storage or held by intermediate relay servers.
-      </p>
+      <div class="space-y-3">
+        <h2 class="text-2xl font-black font-display uppercase tracking-tight text-black">2. The DropWire CLI App</h2>
+        <p class="text-black/80">
+          The DropWire desktop and command-line applications operate entirely on your local machine.
+          <ul class="list-disc pl-5 space-y-1 text-black/80 mt-2">
+            <li><strong>Telemetry:</strong> The app contains no analytics SDKs, telemetry, or crash reporting.</li>
+            <li><strong>File Contents:</strong> All files are encrypted client-side using industry-standard cryptography before they leave your device. We cannot read your files.</li>
+            <li><strong>Peer Connections:</strong> IP addresses are temporarily used to establish peer-to-peer WebRTC/TCP connections. This data is transient and never logged by us.</li>
+          </ul>
+        </p>
+      </div>
 
-      <h2 class="text-3xl font-black font-display uppercase pt-4">3. Website Analytics</h2>
-      <p>
-        This marketing website is statically hosted on Cloudflare Pages without third-party tracking cookies or invasive user fingerprinting scripts.
-      </p>
+      <div class="space-y-3">
+        <h2 class="text-2xl font-black font-display uppercase tracking-tight text-black">3. The Relay Server</h2>
+        <p class="text-black/80">
+          If a direct peer-to-peer connection fails (due to strict firewalls or NATs), traffic may route through our public Relay Server (<code class="bg-black/5 px-1.5 py-0.5 rounded font-mono text-sm">relay.dropwire.tyes.dev</code>).
+          <ul class="list-disc pl-5 space-y-1 text-black/80 mt-2">
+            <li><strong>Zero-Knowledge Routing:</strong> The relay only forwards encrypted bytes. It has no access to encryption keys and cannot decrypt your data.</li>
+            <li><strong>No Storage:</strong> The relay operates entirely in memory. It does not write your files to disk or cloud storage.</li>
+            <li><strong>Logging:</strong> The server may generate standard network logs (e.g., connection timestamps and bandwidth usage) for abuse prevention and rate-limiting. These logs do not contain file metadata.</li>
+          </ul>
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <h2 class="text-2xl font-black font-display uppercase tracking-tight text-black">4. DropWire Website</h2>
+        <p class="text-black/80">
+          Our website (<code class="bg-black/5 px-1.5 py-0.5 rounded font-mono text-sm">dropwire.tyes.dev</code>) is hosted on Cloudflare Pages. Cloudflare may collect basic web traffic data (like IP addresses and user agents) for security and DDoS protection. We do not use third-party marketing cookies or tracking pixels.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <h2 class="text-2xl font-black font-display uppercase tracking-tight text-black">5. Changes to this Policy</h2>
+        <p class="text-black/80">
+          We may update this Privacy Policy as we add new features (such as user accounts or premium relays). Any changes will be posted on this page with an updated effective date.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <h2 class="text-2xl font-black font-display uppercase tracking-tight text-black">6. Contact Us</h2>
+        <p class="text-black/80">
+          If you have questions regarding this Privacy Policy or our security practices, please open an issue on our GitHub repository.
+        </p>
+      </div>
+
     </div>
   </section>
 </BaseLayout>
-

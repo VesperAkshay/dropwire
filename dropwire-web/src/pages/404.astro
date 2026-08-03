@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MagneticButton from '../components/motion/MagneticButton';
+---
+
+<BaseLayout title="404: Connection Lost — DropWire">
+  <section class="min-h-[70vh] flex flex-col items-center justify-center p-6 sm:p-12 text-center space-y-8">
+    
+    <div class="space-y-4 max-w-2xl mx-auto">
+      <h1 class="text-[8rem] sm:text-[12rem] font-display font-black text-[#0B1016] leading-none tracking-tighter">
+        404
+      </h1>
+      <h2 class="text-3xl sm:text-5xl font-display font-black uppercase text-[#FF3D00] tracking-tight">
+        Connection Dropped
+      </h2>
+      <p class="text-lg text-[#0B1016]/80 font-sans font-medium max-w-md mx-auto pt-4">
+        The peer you are looking for does not exist on this network. The page may have been moved, deleted, or you typed the URL incorrectly.
+      </p>
+    </div>
+
+    <div class="pt-8 flex justify-center">
+      <MagneticButton client:only="react" href="/" strength={0.5}>
+        <div class="px-8 py-4 bg-black text-white rounded-xl font-display font-black uppercase text-sm hover:bg-[#FFB800] hover:text-black transition-all shadow-xl">
+          Return to Hub
+        </div>
+      </MagneticButton>
+    </div>
+
+  </section>
+</BaseLayout>

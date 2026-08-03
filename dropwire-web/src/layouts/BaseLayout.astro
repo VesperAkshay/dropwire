@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import LenisInit from '../components/motion/LenisInit';
 import LoadingScreen from '../components/motion/LoadingScreen';
@@ -15,15 +16,15 @@ interface Props {
 const {
   title = `DropWire — Secure, No-Account P2P File Transfer`,
   description = "Send files instantly over your local network and the internet with zero setup. End-to-end encrypted, lightning fast peer-to-peer file transfer.",
-  image = '/brand/dropwire-logo.png',
+  image = '/og-image.png',
   canonicalURL = Astro.url.href,
 } = Astro.props;
 
 const NAV_BLOCKS = [
-  { num: '01', label: 'Features', href: '/features', color: 'bg-[#0052FF] text-white hover:bg-[#0047E0]' },
+  { num: '01', label: 'Features', href: '/features', color: 'bg-[#FF3D00] text-white hover:bg-[#E03600]' },
   { num: '02', label: 'How it Works', href: '/how-it-works', color: 'bg-[#FFB800] text-black hover:bg-[#E6A600]' },
-  { num: '03', label: 'Security', href: '/security', color: 'bg-[#FF3D00] text-white hover:bg-[#E03600]' },
-  { num: '04', label: 'Docs & CLI', href: '/docs', color: 'bg-[#00B060] text-white hover:bg-[#009953]' },
+  { num: '03', label: 'Security', href: '/security', color: 'bg-[#00B060] text-white hover:bg-[#009E56]' },
+  { num: '04', label: 'Docs & CLI', href: '/docs', color: 'bg-[#0052FF] text-white hover:bg-[#0047DB]' },
 ];
 ---
 
@@ -34,6 +35,14 @@ const NAV_BLOCKS = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Preload Custom Fonts -->
+    <link rel="preload" href="/fonts/Alfabet-Black.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="/fonts/aeonikpro-regular.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="/fonts/aeonikpro-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+
+    <!-- Astro View Transitions (ClientRouter) -->
+    <ClientRouter />
 
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
@@ -58,6 +67,9 @@ const NAV_BLOCKS = [
     <meta property="twitter:image" content={new URL(image, Astro.url)} />
   </head>
   <body class="bg-[url('/background.png')] bg-cover bg-center bg-fixed text-[#0B1016] min-h-screen antialiased selection:bg-[#FFB800] selection:text-black">
+    {/* Page Transition Top Loader */}
+    <div id="nprogress-custom" class="fixed top-0 left-0 h-2 bg-[#FFB800] border-b-2 border-black z-[9999] transition-all duration-300 w-0 opacity-0 pointer-events-none"></div>
+
     {/* Fullscreen Brand Writing Preloader */}
     <LoadingScreen client:only="react" />
 
@@ -92,7 +104,7 @@ const NAV_BLOCKS = [
             {NAV_BLOCKS.map((block) => (
               <a
                 href={block.href}
-                class={`group flex flex-col justify-between p-3 lg:p-4 rounded-xl transition-all transform hover:-translate-y-0.5 shadow-md h-24 lg:h-32 ${block.color}`}
+                class={`group flex flex-col justify-between p-3 lg:p-4 rounded-xl transition-all transform hover:-translate-y-0.5 shadow-md h-24 lg:h-[calc(var(--spacing)*45)] ${block.color}`}
               >
                 <div class="flex items-center justify-between w-full">
                   <span class="font-mono text-xs font-black opacity-80">{block.num}</span>
@@ -114,6 +126,14 @@ const NAV_BLOCKS = [
             >
               <span>Get DropWire</span>
               <span class="text-sm font-black">↗</span>
+            </a>
+
+            <a
+              href="/desktop"
+              class="flex items-center justify-between px-4 py-3 rounded-xl bg-black text-white font-display font-extrabold text-xs hover:bg-[#FFB800] hover:text-black transition-all shadow-md group"
+            >
+              <span>Desktop App (Waitlist)</span>
+              <span class="text-sm font-black group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">↗</span>
             </a>
 
             <div class="flex items-center justify-around py-3 px-3 bg-black rounded-lg text-white">
@@ -165,6 +185,38 @@ const NAV_BLOCKS = [
     </div>
 
     <script>
+      // Top Loading Bar Logic
+      let progressInterval;
+      document.addEventListener('astro:before-preparation', () => {
+        const bar = document.getElementById('nprogress-custom');
+        if(!bar) return;
+        bar.style.transition = 'width 0.3s ease, opacity 0.3s ease';
+        bar.style.opacity = '1';
+        bar.style.width = '15%';
+        let progress = 15;
+        clearInterval(progressInterval);
+        progressInterval = setInterval(() => {
+          if (progress < 85) {
+            progress += Math.random() * 10;
+            bar.style.width = `${progress}%`;
+          }
+        }, 300);
+      });
+      
+      document.addEventListener('astro:page-load', () => {
+        const bar = document.getElementById('nprogress-custom');
+        if(!bar) return;
+        clearInterval(progressInterval);
+        bar.style.width = '100%';
+        setTimeout(() => {
+          bar.style.opacity = '0';
+          setTimeout(() => { 
+            bar.style.transition = 'none';
+            bar.style.width = '0%'; 
+          }, 300);
+        }, 300);
+      });
+
       // Mobile Menu Toggle
       document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
         const menu = document.getElementById('mobile-menu');

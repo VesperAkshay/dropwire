@@ -1,149 +1,108 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export default function TerminalDemo() {
-  const [tab, setTab] = useState<'sender' | 'receiver'>('sender');
-  const [copied, setCopied] = useState(false);
-  const [progress, setProgress] = useState(65);
+  const [history, setHistory] = useState([
+    { type: 'input', text: 'dropwire help' },
+    { type: 'output', text: 'DropWire v0.1.1\nSecure P2P File Transfer\n\nUsage:\n  dropwire send <path>\n  dropwire receive <room-code>' }
+  ]);
+  const [input, setInput] = useState('');
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prev) => (prev >= 100 ? 20 : prev + 5));
-    }, 1200);
-    return () => clearInterval(timer);
-  }, []);
+  const handleCommand = () => {
+    if (!input.trim()) return;
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText('curl -sS https://dropwire.tyes.dev/install.sh | sh');
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    const cmd = input.trim();
+    const newHistory = [...history, { type: 'input', text: cmd }];
+    setInput('');
+    setHistory(newHistory);
+
+    // Simulate response delay
+    setTimeout(() => {
+      let output = '';
+      if (cmd.startsWith('dropwire send')) {
+        output = '[+] Generating ephemeral keys...\n[+] Connected to relay.\nRoom Code: 7-purple-lion\n[*] Waiting for receiver...';
+      } else if (cmd.startsWith('dropwire receive') || cmd.startsWith('dropwire recv')) {
+        output = '[+] Authenticating with SPAKE2...\n[+] Handshake complete. Connected directly via LAN.\n[⬇] Downloading... (100%)\n[✔] Verified BLAKE3 integrity. File saved.';
+      } else if (cmd === 'clear') {
+        setHistory([]);
+        return;
+      } else if (cmd === 'dropwire') {
+        output = 'DropWire v0.1.1\nUsage:\n  dropwire send <path>\n  dropwire receive <room-code>';
+      } else {
+        output = `command not found: ${cmd.split(' ')[0]}\nTry: dropwire send ./files or clear`;
+      }
+      setHistory(prev => [...prev, { type: 'output', text: output }]);
+    }, 500);
   };
 
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [history]);
+
   return (
-    <div className="w-full bg-[#FFFFFF] border-2 border-[#0052FF] rounded-[2.5rem] p-6 shadow-2xl space-y-6">
-      {/* Terminal Window Header */}
-      <div className="flex items-center justify-between border-b-2 border-[#F4EFEA] pb-4">
-        <div className="flex items-center gap-2">
-          <div className="w-3.5 h-3.5 rounded-full bg-[#FF3D00]" />
-          <div className="w-3.5 h-3.5 rounded-full bg-[#FFB800]" />
-          <div className="w-3.5 h-3.5 rounded-full bg-[#00B060]" />
-          <span className="ml-3 font-mono text-xs font-black text-[#0B1016]">
-            DropWire — interactive terminal engine
-          </span>
-        </div>
-
-        {/* Sender / Receiver Toggle Tabs */}
-        <div className="flex items-center gap-1 bg-[#F4EFEA] p-1.5 rounded-full border border-[#D9D2C9]">
-          <button
-            onClick={() => setTab('sender')}
-            className={`px-4 py-1.5 rounded-full text-xs font-display font-black transition-all ${
-              tab === 'sender'
-                ? 'bg-[#0052FF] text-white shadow-md'
-                : 'text-[#0B1016]/70 hover:text-black'
-            }`}
-          >
-            Sender Mode
-          </button>
-          <button
-            onClick={() => setTab('receiver')}
-            className={`px-4 py-1.5 rounded-full text-xs font-display font-black transition-all ${
-              tab === 'receiver'
-                ? 'bg-[#0052FF] text-white shadow-md'
-                : 'text-[#0B1016]/70 hover:text-black'
-            }`}
-          >
-            Receiver Mode
-          </button>
-        </div>
+    <div className="bg-[#111111] rounded-2xl w-full max-w-2xl border border-white/10 shadow-2xl overflow-hidden text-left font-mono text-sm sm:text-base flex flex-col h-[400px]">
+      <div className="flex items-center gap-2 px-4 py-3 bg-[#222222] border-b border-white/10">
+        <div className="w-3 h-3 rounded-full bg-[#FF3D00]"></div>
+        <div className="w-3 h-3 rounded-full bg-[#FFB800]"></div>
+        <div className="w-3 h-3 rounded-full bg-[#00B060]"></div>
+        <span className="ml-2 text-white/50 text-xs font-mono font-bold tracking-widest">INTERACTIVE TERMINAL</span>
       </div>
 
-      {/* Terminal Console Surface */}
-      <div className="bg-[#F4EFEA] border-2 border-[#D9D2C9] rounded-[2rem] p-6 font-mono text-xs text-[#0B1016] space-y-5">
-        {tab === 'sender' ? (
-          <>
-            <div className="flex items-center gap-2">
-              <span className="text-[#0052FF] font-black text-sm">$</span>
-              <span className="font-bold text-[#0B1016] text-sm">DropWire send ./archive-2026.tar.zst</span>
-            </div>
-
-            <div className="bg-[#FFFFFF] p-4 rounded-2xl border-2 border-[#FFB800] space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#0B1016]/70 uppercase tracking-wider">Generated Room Code</span>
-                <span className="px-3 py-1 bg-[#00B060] text-white text-[10px] font-black uppercase rounded-full">
-                  Active P2P Listener
-                </span>
+      <div ref={scrollRef} className="p-4 overflow-y-auto flex-1 space-y-3 custom-scrollbar" style={{ scrollbarWidth: 'thin' }}>
+        {history.map((line, i) => (
+          <div key={i} className="space-y-1">
+            {line.type === 'input' ? (
+              <div className="flex items-center gap-2 text-[#0052FF]">
+                <span className="font-bold shrink-0">~/project</span>
+                <span className="text-white shrink-0">$</span>
+                <span className="text-[#00B060]">{line.text}</span>
               </div>
-              <p className="font-mono text-xl sm:text-2xl font-black text-[#0052FF]">
-                happy-dog-42
-              </p>
-              <div className="text-[11px] text-[#0B1016]/70 flex flex-wrap gap-4 font-bold">
-                <span>Protocol: Direct Encrypted P2P</span>
-                <span>·</span>
-                <span>Integrity: Cryptographically Verified</span>
+            ) : (
+              <div className="text-white/70 whitespace-pre-wrap pl-4 text-xs sm:text-sm">
+                {line.text.includes('Room Code:') ? (
+                  <>
+                    {line.text.split('Room Code:')[0]}
+                    <span className="text-[#FFB800] font-bold">Room Code:{line.text.split('Room Code:')[1].split('\n')[0]}</span>
+                    {line.text.includes('\n[*]') && '\n[*] Waiting for receiver...'}
+                  </>
+                ) : (
+                  line.text
+                )}
               </div>
-            </div>
-
-            {/* Live Progress Bar */}
-            <div className="space-y-2 pt-2">
-              <div className="flex justify-between text-xs font-bold">
-                <span className="text-[#0B1016]">Streaming P2P Data...</span>
-                <span className="text-[#0052FF] font-black">{progress}%</span>
-              </div>
-              <div className="w-full bg-[#EBE5DC] h-4 rounded-full overflow-hidden p-0.5 border border-[#D9D2C9]">
-                <div
-                  className="bg-[#0052FF] h-full rounded-full transition-all duration-500 shadow-lg"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <div className="flex justify-between text-[11px] font-bold text-[#0B1016]/70 pt-1">
-                <span>Speed: 142.5 MB/s</span>
-                <span>Transferred: 273.0 / 420.0 MB</span>
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="flex items-center gap-2">
-              <span className="text-[#FF3D00] font-black text-sm">$</span>
-              <span className="font-bold text-[#0B1016] text-sm">DropWire receive happy-dog-42</span>
-            </div>
-
-            <div className="bg-[#FFFFFF] p-4 rounded-2xl border-2 border-[#00B060] space-y-2">
-              <span className="text-xs font-bold text-[#00B060] uppercase">Peer Connected</span>
-              <p className="font-mono text-sm font-bold text-[#0B1016]">
-                Connected to Sender (Peer Fingerprint: 8f4a1c98e...)
-              </p>
-              <p className="text-xs text-[#0B1016]/70">
-                Receiving: <strong className="text-[#0052FF]">archive-2026.tar.zst</strong> (420 MB)
-              </p>
-            </div>
-
-            <div className="space-y-2 pt-2">
-              <div className="flex justify-between text-xs font-bold">
-                <span className="text-[#0B1016]">Writing Verified Chunks to Disk...</span>
-                <span className="text-[#00B060] font-black">{progress}%</span>
-              </div>
-              <div className="w-full bg-[#EBE5DC] h-4 rounded-full overflow-hidden p-0.5 border border-[#D9D2C9]">
-                <div
-                  className="bg-[#00B060] h-full rounded-full transition-all duration-500 shadow-lg"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
-          </>
-        )}
+            )}
+          </div>
+        ))}
+        
+        <div className="flex items-center gap-2 text-[#0052FF] mt-2 group">
+          <span className="font-bold shrink-0">~/project</span>
+          <span className="text-white shrink-0">$</span>
+          <div className="relative w-full flex items-center h-6">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleCommand();
+                }
+              }}
+              className="bg-transparent border-none outline-none text-[#00B060] w-full h-full font-mono focus:ring-0 p-0 z-10"
+              spellCheck={false}
+              autoComplete="off"
+            />
+            {/* Blinking cursor when input is empty */}
+            {!input && (
+              <div className="w-2 h-4 bg-[#00B060] animate-pulse absolute left-0 z-0"></div>
+            )}
+          </div>
+        </div>
       </div>
-
-      {/* Copy Snippet Footer */}
-      <div className="flex items-center justify-between bg-[#F4EFEA] p-3.5 rounded-2xl border border-[#D9D2C9]">
-        <span class="font-mono text-xs font-bold text-[#0B1016]/80">Ready to try? Install CLI via terminal:</span>
-        <button
-          onClick={handleCopy}
-          className="px-4 py-2 bg-black text-white hover:bg-[#0052FF] rounded-xl font-mono text-xs font-bold transition-all shadow-md truncate ml-2 max-w-[200px] sm:max-w-none"
-        >
-          {copied ? 'Copied to Clipboard!' : 'curl -sS https://dropwire.tyes.dev/install.sh | sh 📋'}
-        </button>
+      <div className="bg-[#222222] px-4 py-2 text-[10px] text-white/40 uppercase tracking-widest text-center border-t border-white/5 font-bold">
+        Try typing "dropwire send ./files" or "clear"
       </div>
     </div>
   );
 }
-

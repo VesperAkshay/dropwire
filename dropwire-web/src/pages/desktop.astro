@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MagneticButton from '../components/motion/MagneticButton';
+---
+
+<BaseLayout title="Desktop App — DropWire">
+  <section class="p-6 sm:p-12 space-y-12">
+    <div class="max-w-4xl space-y-4">
+      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">PHASE 3 / TAURI GUI</span>
+      <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none break-words">
+        No Terminal Required.
+      </h1>
+      <p class="text-lg text-[#0B1016]/80 font-sans font-medium">
+        DropWire Desktop is bringing gigabit encrypted peer-to-peer streaming to a beautiful, native drag-and-drop interface for macOS, Windows, and Linux.
+      </p>
+    </div>
+
+    <div class="bg-[#FFFFFF] p-8 sm:p-12 rounded-[2.5rem] card-shadow border border-[#D9D2C9] relative overflow-hidden">
+      
+      {/* Fake UI Mockup */}
+      <div class="w-full max-w-3xl mx-auto bg-[#161D24] rounded-2xl border border-white/10 shadow-2xl overflow-hidden mt-8 transform -rotate-1 hover:rotate-0 transition-transform duration-500 cursor-default select-none">
+        {/* Mac Titlebar */}
+        <div class="bg-[#222C37] px-4 py-3 flex items-center justify-between border-b border-white/5">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full bg-[#FF3D00]"></div>
+            <div class="w-3 h-3 rounded-full bg-[#FFB800]"></div>
+            <div class="w-3 h-3 rounded-full bg-[#00B060]"></div>
+          </div>
+          <div class="font-display font-bold text-xs text-white/50 tracking-widest uppercase">DropWire Beta</div>
+          <div class="w-12"></div> {/* Spacer for centering */}
+        </div>
+        
+        {/* App Content */}
+        <div class="p-8 sm:p-12 flex flex-col items-center justify-center text-center space-y-6 h-80 relative bg-gradient-to-br from-[#161D24] to-[#0B1016]">
+          <div class="w-24 h-24 border-4 border-dashed border-[#0052FF]/50 rounded-3xl flex items-center justify-center bg-[#0052FF]/10 animate-pulse">
+            <span class="text-4xl text-white opacity-80">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216ZM120,128v48a8,8,0,0,1-16,0V128a8,8,0,0,1,16,0Z"></path></svg>
+            </span>
+          </div>
+          <div>
+            <h3 class="text-white font-display font-black text-2xl uppercase">Drag & Drop Files</h3>
+            <p class="text-white/50 font-mono text-xs mt-2">End-to-end encrypted • Zero cloud</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-16 text-center space-y-6">
+        <h2 class="text-3xl font-display font-black uppercase text-[#0B1016]">Coming Q4 2026</h2>
+        <div class="flex justify-center">
+          <MagneticButton client:only="react" href="https://github.com/VesperAkshay/dropwire/releases" strength={0.4}>
+            <div class="px-8 py-4 bg-[#FFB800] text-black rounded-full font-display font-black text-lg hover:bg-black hover:text-white transition-all shadow-xl gold-glow">
+              Watch GitHub for Release
+            </div>
+          </MagneticButton>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</BaseLayout>
