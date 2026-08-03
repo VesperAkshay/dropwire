@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/marketing/Hero.astro';
+import ProofStrip from '../components/marketing/ProofStrip.astro';
+import HowItWorks from '../components/marketing/HowItWorks.astro';
+import FeatureMoments from '../components/marketing/FeatureMoments.astro';
+import SecurityCallout from '../components/marketing/SecurityCallout.astro';
+import DownloadTeaser from '../components/marketing/DownloadTeaser.astro';
+import { SITE } from '../lib/site';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  'name': SITE.name,
+  'operatingSystem': 'Windows, macOS, Linux',
+  'applicationCategory': 'UtilitiesApplication',
+  'offers': {
+    '@type': 'Offer',
+    'price': '0',
+    'priceCurrency': 'USD',
+  },
+  'description': SITE.description,
+  'license': 'https://opensource.org/licenses/MIT',
+  'downloadUrl': `${SITE.url}/download`,
+  'softwareVersion': '0.1.0',
+};
+---
+
+<BaseLayout>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <Hero />
+  <ProofStrip />
+  <HowItWorks />
+  <FeatureMoments />
+  <SecurityCallout />
+  <DownloadTeaser />
+</BaseLayout>

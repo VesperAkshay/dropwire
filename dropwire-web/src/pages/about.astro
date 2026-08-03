@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../lib/site';
+---
+
+<BaseLayout title="About — DropWire">
+  <section class="p-6 sm:p-12 space-y-12">
+    <div class="max-w-4xl space-y-4">
+      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">BUILDER & ROADMAP</span>
+      <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none">
+        About DropWire
+      </h1>
+      <p class="text-lg text-[#0B1016]/80 font-sans font-medium">
+        Built by VesperAkshay under the open source MIT license. Direct machine-to-machine file transfer without intermediary cloud storage.
+      </p>
+    </div>
+
+    <div class="bg-[#FFFFFF] p-8 sm:p-12 rounded-[2.5rem] card-shadow border border-[#D9D2C9] space-y-8">
+      <h2 class="text-3xl font-black font-display text-[#0B1016] uppercase">Roadmap & Status</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 bg-[#00B060] text-white rounded-[2rem] space-y-3 shadow-lg">
+          <span class="font-mono text-xs font-black uppercase bg-black/20 px-3 py-1 rounded-full">Phase 1 · Complete</span>
+          <h3 class="font-display font-black text-2xl uppercase">Rust CLI & TUI Engine</h3>
+          <p class="text-xs font-sans opacity-90 leading-relaxed font-medium">
+            Core streaming engine, mutual encryption, Merkle chunk verification, direct transport, and interactive terminal UI.
+          </p>
+        </div>
+
+        <div class="p-6 bg-[#FFB800] text-black rounded-[2rem] space-y-3 shadow-lg">
+          <span class="font-mono text-xs font-black uppercase bg-black/20 px-3 py-1 rounded-full">Phase 2 · Active</span>
+          <h3 class="font-display font-black text-2xl uppercase">Zero-Knowledge Relay</h3>
+          <p class="text-xs font-sans opacity-90 leading-relaxed font-medium">
+            Deployable relay server binary for internet NAT traversal across restricted corporate networks.
+          </p>
+        </div>
+
+        <div class="p-6 bg-[#0052FF] text-white rounded-[2rem] space-y-3 shadow-lg">
+          <span class="font-mono text-xs font-black uppercase bg-black/20 px-3 py-1 rounded-full">Phase 3 · Planned</span>
+          <h3 class="font-display font-black text-2xl uppercase">Tauri Cross-Platform GUI</h3>
+          <p class="text-xs font-sans opacity-90 leading-relaxed font-medium">
+            Native lightweight desktop GUI app built with Rust & Tauri for drag-and-drop file transfers.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

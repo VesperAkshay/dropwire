@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Security — DropWire">
+  <section class="p-6 sm:p-12 space-y-12">
+    <div class="max-w-4xl space-y-4">
+      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">SECURITY CENTER & THREAT MODEL</span>
+      <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none">
+        Cryptographic Architecture
+      </h1>
+      <p class="text-lg text-[#0B1016]/80 font-sans font-medium">
+        DropWire is designed with SPAKE2 password-authenticated key exchange, ChaCha20Poly1305 payload encryption, zero-knowledge relays, and BLAKE3 chunk verification.
+      </p>
+    </div>
+
+    {/* Cryptography Cards Grid */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="rounded-[2.5rem] p-8 sm:p-10 bg-[#FF3D00] text-white space-y-6 shadow-xl">
+        <span class="text-xs font-mono font-black uppercase tracking-wider bg-black/20 px-3.5 py-1.5 rounded-full">
+          END-TO-END SECURITY
+        </span>
+        <h2 class="text-3xl font-black font-display uppercase tracking-tight">SPAKE2 Key Exchange</h2>
+        <p class="text-base font-sans font-medium opacity-90 leading-relaxed">
+          Both sender and receiver securely agree on a shared encryption key using the generated room password. Unauthenticated or eavesdropping endpoints cannot decrypt or inject data frames into the streaming session.
+        </p>
+      </div>
+
+      <div class="rounded-[2.5rem] p-8 sm:p-10 bg-[#00B060] text-white space-y-6 shadow-xl">
+        <span class="text-xs font-mono font-black uppercase tracking-wider bg-black/20 px-3.5 py-1.5 rounded-full">
+          BLAKE3 HASHING
+        </span>
+        <h2 class="text-3xl font-black font-display uppercase tracking-tight">Integrity Verification</h2>
+        <p class="text-base font-sans font-medium opacity-90 leading-relaxed">
+          Files and chunks are hashed using the ultra-fast BLAKE3 algorithm. Every chunk's hash is verified by the receiver prior to disk writing, preventing chunk tampering or corruption.
+        </p>
+      </div>
+    </div>
+
+    {/* Threat Model White Box */}
+    <div class="bg-[#FFFFFF] p-8 sm:p-12 rounded-[2.5rem] card-shadow border border-[#D9D2C9] space-y-6">
+      <h2 class="text-3xl font-black font-display text-[#0B1016] uppercase">Explicit Threat Model & Limits</h2>
+      <div class="space-y-4 font-sans font-medium text-base text-[#0B1016]/80 leading-relaxed">
+        <p>
+          <strong class="text-[#0B1016]">Relay Eavesdropping:</strong> Relay servers only forward SPAKE2 and ChaCha20 encrypted ciphertexts between room tokens (`happy-dog-42`). Relays cannot view filenames or plaintext byte content.
+        </p>
+        <p>
+          <strong class="text-[#0B1016]">Room Code Safety:</strong> Room codes act as SPAKE2 passwords and single-use ephemeral session rendezvous points. Once a receiver completes transfer, the room code is invalidated automatically.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

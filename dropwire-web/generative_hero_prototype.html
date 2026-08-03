@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DropWire - Awwwards Level Network Generative Art</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #F4EFEA;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="networkCanvas"></canvas>
+
+  <script>
+    /**
+     * DropWire: Awwwards-Level Generative Network Engine
+     * Features: 3D Parallax, Trigonometric Breathing, Laser Streaks with Easing, Impact Ripples, Magnetic Lens
+     */
+
+    const canvas = document.getElementById('networkCanvas');
+    const ctx = canvas.getContext('2d', { alpha: false }); // Optimize for solid background
+
+    let width, height;
+    let nodes = [];
+    let pulses = [];
+    let packets = [];
+    
+    // Core brand colors for data packets
+    const COLORS = ['#0052FF', '#FFB800', '#FF3D00', '#00B060', '#9D00FF'];
+    const BG_COLOR = '#F4EFEA';
+    const INK_COLOR = '#0B1016';
+
+    // Mouse tracking for parallax and magnetic lens
+    const mouse = { x: -1000, y: -1000, vx: 0, vy: 0, targetX: -1000, targetY: -1000 };
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.targetX = e.clientX;
+      mouse.targetY = e.clientY;
+    });
+    window.addEventListener('mouseout', () => {
+      mouse.targetX = width / 2;
+      mouse.targetY = height / 2;
+    });
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      // High-DPI screen support for supreme crispness
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+      initNetwork();
+    }
+    window.addEventListener('resize', resize);
+
+    // Easing function for snappy packet movement
+    function easeInOutExpo(x) {
+      return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2;
+    }
+
+    class Node {
+      constructor(id) {
+        this.id = id;
+        this.baseX = Math.random() * width;
+        this.baseY = Math.random() * height;
+        // Z-axis for parallax and size (0.1 to 1.5)
+        this.z = Math.random() * 1.4 + 0.1;
+        
+        this.x = this.baseX;
+        this.y = this.baseY;
+        
+        // Organic breathing phases and speeds
+        this.phaseX = Math.random() * Math.PI * 2;
+        this.phaseY = Math.random() * Math.PI * 2;
+        this.speedX = (Math.random() * 0.0005) + 0.0002;
+        this.speedY = (Math.random() * 0.0005) + 0.0002;
+
+        this.radius = (Math.random() * 1.5 + 0.5) * this.z;
+        this.isHub = Math.random() > 0.95;
+        if (this.isHub) this.radius *= 3;
+
+        this.connections = []; // Populated later
+      }
+
+      update(time) {
+        // 1. Organic breathing drift
+        const driftX = Math.sin(time * this.speedX + this.phaseX) * (40 * this.z);
+        const driftY = Math.cos(time * this.speedY + this.phaseY) * (40 * this.z);
+
+        // 2. 3D Parallax effect based on mouse distance from center
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const parallaxX = ((mouse.x - centerX) * 0.05) * this.z;
+        const parallaxY = ((mouse.y - centerY) * 0.05) * this.z;
+
+        // 3. Magnetic Repulsion Lens
+        let magneticX = 0;
+        let magneticY = 0;
+        const dx = mouse.x - (this.baseX + driftX + parallaxX);
+        const dy = mouse.y - (this.baseY + driftY + parallaxY);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        const lensRadius = 250;
+        if (dist < lensRadius) {
+          const force = Math.pow((lensRadius - dist) / lensRadius, 2);
+          magneticX = -(dx / dist) * force * 50 * this.z;
+          magneticY = -(dy / dist) * force * 50 * this.z;
+        }
+
+        // Final Position
+        this.x = this.baseX + driftX + parallaxX + magneticX;
+        this.y = this.baseY + driftY + parallaxY + magneticY;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        // Dimmer if further away (lower z)
+        const alpha = Math.min(1, this.z * 0.8 + 0.2);
+        ctx.fillStyle = `rgba(11, 16, 22, ${alpha})`;
+        ctx.fill();
+      }
+    }
+
+    class Pulse {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = 0;
+        this.maxRadius = Math.random() * 20 + 15;
+        this.life = 1;
+        this.decay = Math.random() * 0.02 + 0.015;
+      }
+      update() {
+        this.radius += (this.maxRadius - this.radius) * 0.1;
+        this.life -= this.decay;
+      }
+      draw() {
+        if (this.life <= 0) return;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = this.life * 2;
+        ctx.globalAlpha = this.life;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    class PacketStreak {
+      constructor(startNode) {
+        this.startNode = startNode;
+        this.endNode = this.pickNextNode(startNode);
+        this.progress = 0;
+        this.speed = Math.random() * 0.005 + 0.002;
+        this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        this.length = Math.random() * 0.15 + 0.05; // Length of the streak tail
+      }
+
+      pickNextNode(node) {
+        if (node.connections.length === 0) return node;
+        return node.connections[Math.floor(Math.random() * node.connections.length)];
+      }
+
+      update() {
+        this.progress += this.speed;
+        if (this.progress >= 1) {
+          // Trigger impact pulse at destination
+          pulses.push(new Pulse(this.endNode.x, this.endNode.y, this.color));
+          
+          // Re-route
+          this.startNode = this.endNode;
+          this.endNode = this.pickNextNode(this.startNode);
+          this.progress = 0;
+        }
+      }
+
+      draw() {
+        if (this.startNode === this.endNode) return;
+
+        // Apply easing for snappy movement
+        const easeHead = easeInOutExpo(Math.min(1, this.progress + this.length));
+        const easeTail = easeInOutExpo(Math.max(0, this.progress));
+
+        const hx = this.startNode.x + (this.endNode.x - this.startNode.x) * easeHead;
+        const hy = this.startNode.y + (this.endNode.y - this.startNode.y) * easeHead;
+        
+        const tx = this.startNode.x + (this.endNode.x - this.startNode.x) * easeTail;
+        const ty = this.startNode.y + (this.endNode.y - this.startNode.y) * easeTail;
+
+        // Create glowing gradient streak
+        const gradient = ctx.createLinearGradient(tx, ty, hx, hy);
+        gradient.addColorStop(0, 'rgba(255,255,255,0)');
+        gradient.addColorStop(0.8, this.color);
+        gradient.addColorStop(1, '#ffffff'); // bright head
+
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(hx, hy);
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = (this.startNode.z + this.endNode.z) * 0.8;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      }
+    }
+
+    function initNetwork() {
+      nodes = [];
+      packets = [];
+      pulses = [];
+
+      // Density calculation
+      const numNodes = Math.floor((width * height) / 9000);
+
+      for (let i = 0; i < numNodes; i++) {
+        nodes.push(new Node(i));
+      }
+
+      // Pre-calculate nearest neighbors to form the architectural web
+      nodes.forEach(node => {
+        let distances = nodes
+          .filter(n => n.id !== node.id)
+          .map(n => ({
+            node: n,
+            dist: Math.hypot(node.baseX - n.baseX, node.baseY - n.baseY)
+          }))
+          .sort((a, b) => a.dist - b.dist);
+        
+        // Connect to 3-5 closest nodes
+        node.connections = distances.slice(0, Math.floor(Math.random() * 3) + 3).map(d => d.node);
+      });
+
+      // Spawn Packets
+      for (let i = 0; i < numNodes * 0.8; i++) {
+        packets.push(new PacketStreak(nodes[Math.floor(Math.random() * nodes.length)]));
+      }
+      
+      // Initialize mouse to center
+      mouse.x = width / 2;
+      mouse.y = height / 2;
+      mouse.targetX = width / 2;
+      mouse.targetY = height / 2;
+    }
+
+    let time = 0;
+
+    function animate() {
+      // Smooth mouse interpolation (lerp)
+      mouse.x += (mouse.targetX - mouse.x) * 0.1;
+      mouse.y += (mouse.targetY - mouse.y) * 0.1;
+      time += 16;
+
+      // Solid background fill (No clearing, just paint over for max performance)
+      ctx.fillStyle = BG_COLOR;
+      ctx.fillRect(0, 0, width, height);
+
+      // Update nodes
+      nodes.forEach(node => node.update(time));
+
+      // 1. Draw Network Connections (Lines)
+      ctx.lineWidth = 0.6;
+      nodes.forEach(node => {
+        node.connections.forEach(target => {
+          // Only draw line once (avoid double drawing)
+          if (node.id > target.id) return;
+          
+          const dx = node.x - target.x;
+          const dy = node.y - target.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          // Dynamic connection breaking / forming based on distance
+          if (dist < 200) {
+            // Opacity falls off based on distance and average Z depth
+            const avgZ = (node.z + target.z) / 2;
+            const alpha = (1 - (dist / 200)) * (avgZ * 0.4);
+            
+            ctx.beginPath();
+            ctx.moveTo(node.x, node.y);
+            ctx.lineTo(target.x, target.y);
+            ctx.strokeStyle = `rgba(11, 16, 22, ${alpha})`;
+            ctx.stroke();
+          }
+        });
+      });
+
+      // 2. Draw Nodes
+      nodes.forEach(node => node.draw());
+
+      // 3. Draw Packets (Laser streaks)
+      // Use screen blend mode for glowing effect against dark ink lines
+      ctx.globalCompositeOperation = 'source-over'; 
+      packets.forEach(packet => {
+        packet.update();
+        packet.draw();
+      });
+
+      // 4. Draw Impact Ripples
+      for (let i = pulses.length - 1; i >= 0; i--) {
+        pulses[i].update();
+        if (pulses[i].life <= 0) {
+          pulses.splice(i, 1);
+        } else {
+          pulses[i].draw();
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // Start engine
+    resize();
+    animate();
+  </script>
+</body>
+</html>
+

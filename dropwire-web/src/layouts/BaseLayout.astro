@@ -1,0 +1,173 @@
+---
+import '../styles/global.css';
+import LenisInit from '../components/motion/LenisInit';
+import LoadingScreen from '../components/motion/LoadingScreen';
+import InteractiveMosaic from '../components/motion/InteractiveMosaic';
+import { SITE } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: string;
+}
+
+const {
+  title = `${SITE.name} — Encrypted P2P File Transfer`,
+  description = SITE.description,
+  image = '/brand/cube-logo.png',
+  canonicalURL = Astro.url.href,
+} = Astro.props;
+
+const NAV_BLOCKS = [
+  { num: '01', label: 'Features', href: '/features', color: 'bg-[#0052FF] text-white hover:bg-[#0047E0]' },
+  { num: '02', label: 'How it Works', href: '/how-it-works', color: 'bg-[#FFB800] text-black hover:bg-[#E6A600]' },
+  { num: '03', label: 'Security', href: '/security', color: 'bg-[#FF3D00] text-white hover:bg-[#E03600]' },
+  { num: '04', label: 'Docs & CLI', href: '/docs', color: 'bg-[#00B060] text-white hover:bg-[#009953]' },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/brand/cube-logo.png" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url)} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+  </head>
+  <body class="bg-[url('/background.png')] bg-cover bg-center bg-fixed text-[#0B1016] min-h-screen antialiased selection:bg-[#FFB800] selection:text-black">
+    {/* Fullscreen Brand Writing Preloader */}
+    <LoadingScreen client:only="react" />
+
+    <!-- Smooth Scroll Island -->
+    <LenisInit client:only="react" />
+
+    {/* Exact Architectural Shell */}
+    <div class="flex flex-col lg:flex-row min-h-screen">
+      
+      {/* SIDEBAR CONTAINER: width: calc(var(--spacing) * 50) => 200px */}
+      <aside class="w-full lg:w-[calc(var(--spacing)*50)] shrink-0 sticky top-0 self-start h-screen flex flex-col justify-between p-4 bg-transparent border-r border-[#D9D2C9] z-50">
+        
+        {/* Top Pure Typographic Brand Mark */}
+        <div class="space-y-4">
+          <a href="/" class="block group" onclick="sessionStorage.removeItem('DropWire_loaded')">
+            <span class="font-display text-3xl font-black tracking-tighter text-black group-hover:text-[#0052FF] transition-colors block leading-none">
+              DropWire.
+            </span>
+            <span class="text-[8px] font-mono text-black/60 tracking-widest uppercase font-bold mt-1 block">
+              P2P ENCRYPTED ENGINE
+            </span>
+          </a>
+
+          {/* SIDEBAR CARDS: width: 150px; height: calc(var(--spacing) * 50); (200px) */}
+          <nav class="flex flex-col items-center gap-2.5 pt-1">
+            {NAV_BLOCKS.map((block) => (
+              <a
+                href={block.href}
+                style="width: 150px; height: calc(var(--spacing) * 50);"
+                class={`group flex flex-col justify-between p-4 rounded-xl transition-all transform hover:-translate-y-0.5 shadow-md ${block.color}`}
+              >
+                {/* Top Row: Number Left, Arrow Right */}
+                <div class="flex items-center justify-between w-full">
+                  <span class="font-mono text-xs font-black opacity-80">{block.num}</span>
+                  <span class="font-display font-black text-lg group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                    ↗
+                  </span>
+                </div>
+
+                {/* Bottom Row: Title Sitting at Bottom */}
+                <span class="font-display font-black text-lg tracking-tight leading-none uppercase">
+                  {block.label}
+                </span>
+              </a>
+            ))}
+          </nav>
+        </div>
+
+        {/* Bottom Action Pills */}
+        <div class="space-y-2 pt-2">
+          {/* Purple Pill Button */}
+          <a
+            href="/download"
+            class="flex items-center justify-between px-4 py-3 rounded-xl bg-[#AB54F7] text-black font-display font-extrabold text-xs hover:brightness-110 transition-all shadow-md"
+          >
+            <span>Get DropWire</span>
+            <span class="text-sm font-black">↗</span>
+          </a>
+
+          {/* Black Social Icons Dock Pill */}
+          <div class="flex items-center justify-around py-3 px-3 bg-black rounded-lg text-white">
+            <a href={SITE.repo} target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="hover:text-[#FFB800] transition-colors">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+            </a>
+            <a href="/blog" aria-label="Blog" class="font-mono text-[10px] font-black hover:text-[#FFB800] transition-colors">
+              BLOG
+            </a>
+            <a href="/docs" aria-label="Docs" class="font-mono text-[10px] font-black hover:text-[#FFB800] transition-colors">
+              DOCS
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      {/* RIGHT MAIN SHOWCASE STAGE CANVAS */}
+      <main class="flex-1 min-w-0 p-3 sm:p-5 bg-transparent text-[#0B1016] space-y-6">
+        <div class="w-full">
+          <slot />
+        </div>
+
+        {/* EXACT FIX.PNG FOOTER DESIGN (Interactive Mosaic Banner, Sharp Square Border) */}
+        <footer class="space-y-6 pt-4">
+          {/* 1. Interactive Hover Mosaic Pixel Grid Banner (Blank by default, lights up on hover) */}
+          <InteractiveMosaic client:visible />
+
+          {/* 2. Bottom Legal / Copyright Row */}
+          <div class="flex flex-col md:flex-row items-center justify-between gap-4 font-sans text-xs pt-2 pb-6">
+            <div class="space-y-1 text-left">
+              <p class="font-display font-black text-sm text-black">© 2026 DropWire Core Development</p>
+              <p class="text-black/60 font-medium">Built with high-performance Rust P2P engine. Open source under MIT license.</p>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <a href="/about" class="px-5 py-2 rounded-full border border-black/20 hover:border-black font-bold text-black transition-colors">
+                Roadmap
+              </a>
+              <a href="/privacy" class="px-5 py-2 rounded-full border border-black/20 hover:border-black font-bold text-black transition-colors">
+                Privacy Policy
+              </a>
+              <a href="/security" class="px-5 py-2 rounded-full border border-black/20 hover:border-black font-bold text-black transition-colors">
+                Security Spec
+              </a>
+            </div>
+          </div>
+        </footer>
+      </main>
+
+    </div>
+  </body>
+</html>
+

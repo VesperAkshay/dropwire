@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const docs = await getCollection('docs');
+const sortedDocs = docs.sort((a, b) => (a.data.order || 99) - (b.data.order || 99));
+---
+
+<BaseLayout title="Documentation — DropWire">
+  <section class="p-6 sm:p-12 space-y-12">
+    <div class="max-w-4xl space-y-4">
+      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">DOCUMENTATION HUB</span>
+      <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none">
+        DropWire Docs
+      </h1>
+      <p class="text-lg text-[#0B1016]/80 font-sans font-medium">
+        Guides, CLI references, and cryptographic protocol breakdowns.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {sortedDocs.map((doc) => (
+        <a
+          href={`/docs/${doc.id}`}
+          class="group rounded-[2.5rem] p-8 sm:p-10 bg-[#FFFFFF] border-2 border-[#D9D2C9] hover:border-[#0052FF] shadow-xl space-y-6 transition-all transform hover:-translate-y-1 flex flex-col justify-between"
+        >
+          <div class="space-y-3">
+            <span class="text-xs font-mono font-black uppercase text-[#0052FF]">DOC REF #{doc.data.order || 1}</span>
+            <h2 class="text-3xl font-black font-display text-[#0B1016] uppercase group-hover:text-[#0052FF] transition-colors leading-tight">
+              {doc.data.title}
+            </h2>
+            <p class="text-sm font-sans font-medium text-[#0B1016]/80 leading-relaxed">
+              {doc.data.description}
+            </p>
+          </div>
+
+          <div class="flex items-center justify-between text-xs font-mono font-black text-[#0052FF] pt-4 border-t border-[#F4EFEA]">
+            <span>Read Article</span>
+            <span class="text-lg group-hover:translate-x-1 transition-transform">↗</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+

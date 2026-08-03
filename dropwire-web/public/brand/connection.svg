@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 220" width="100%">
+  <defs>
+    <!-- BG charcoal -->
+    <linearGradient id="cbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1917"/>
+      <stop offset="100%" stop-color="#232220"/>
+    </linearGradient>
+    <filter id="cg">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Amber arrow (sender side) -->
+    <marker id="mh" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#d4a832"/>
+    </marker>
+    <!-- Cream arrow (receiver side) -->
+    <marker id="mg" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#ede0c4"/>
+    </marker>
+    <!-- Violet arrow (relay) -->
+    <marker id="mp" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#9b7bb8"/>
+    </marker>
+    <!-- Dot grid pattern -->
+    <pattern id="cdots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="0.6" fill="#3a3733"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="220" fill="url(#cbg)" rx="10"/>
+  <rect width="1200" height="220" fill="url(#cdots)" opacity="0.7" rx="10"/>
+  <rect width="1200" height="2" rx="1" fill="#3a3733"/>
+  <rect y="218" width="1200" height="2" rx="1" fill="#3a3733"/>
+
+  <!-- SENDER machine — amber border -->
+  <rect x="30" y="52" width="200" height="116" rx="10" fill="#2e2b28" stroke="#d4a832" stroke-width="1.5"/>
+  <rect x="30" y="52" width="200" height="30" rx="10" fill="#3a3733"/>
+  <rect x="30" y="70" width="200" height="12" fill="#3a3733"/>
+  <!-- Traffic lights: amber, violet, cream -->
+  <circle cx="52" cy="67" r="5" fill="#d4a832"/>
+  <circle cx="68" cy="67" r="5" fill="#9b7bb8"/>
+  <circle cx="84" cy="67" r="5" fill="#ede0c4"/>
+  <text x="130" y="72" font-family="ui-monospace,monospace" font-size="11" fill="#6b6560" text-anchor="middle">sender</text>
+
+  <text x="50" y="104" font-family="ui-monospace,monospace" font-size="11" fill="#ede0c4">$</text>
+  <text x="62" y="104" font-family="ui-monospace,monospace" font-size="11" fill="#f0e8d8"> DropWire send</text>
+  <text x="50" y="122" font-family="ui-monospace,monospace" font-size="10" fill="#6b6560">  file.zip (24MB)</text>
+  <text x="50" y="140" font-family="ui-monospace,monospace" font-size="11" fill="#d4a832">  Code: happy-dog-42</text>
+  <text x="50" y="158" font-family="ui-monospace,monospace" font-size="10" fill="#4a4742">  Waiting...</text>
+  <!-- glow pulsing border -->
+  <rect x="30" y="52" width="200" height="116" rx="10" fill="none" stroke="#d4a832" stroke-width="3" opacity="0">
+    <animate attributeName="opacity" values="0;0.5;0" dur="3s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- RELAY box center — violet -->
+  <rect x="490" y="72" width="220" height="76" rx="10" fill="#1a1917" stroke="#9b7bb8" stroke-width="1.5"/>
+  <text x="600" y="97" font-family="ui-monospace,monospace" font-size="14" font-weight="700" fill="#9b7bb8" text-anchor="middle">📡 Relay Server</text>
+  <text x="600" y="115" font-family="ui-monospace,monospace" font-size="11" fill="#6b6560" text-anchor="middle">pipes encrypted bytes</text>
+  <text x="600" y="133" font-family="ui-monospace,monospace" font-size="10" fill="#4a4742" text-anchor="middle">cannot decrypt · zero knowledge</text>
+  <!-- pulsing ring -->
+  <rect x="490" y="72" width="220" height="76" rx="10" fill="none" stroke="#9b7bb8" stroke-width="4" opacity="0">
+    <animate attributeName="opacity" values="0.4;0;0.4" dur="2.5s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width" values="3;8;3" dur="2.5s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- RECEIVER machine — cream border -->
+  <rect x="970" y="52" width="200" height="116" rx="10" fill="#2e2b28" stroke="#ede0c4" stroke-width="1.5"/>
+  <rect x="970" y="52" width="200" height="30" rx="10" fill="#3a3733"/>
+  <rect x="970" y="70" width="200" height="12" fill="#3a3733"/>
+  <!-- Traffic lights -->
+  <circle cx="992" cy="67" r="5" fill="#d4a832"/>
+  <circle cx="1008" cy="67" r="5" fill="#9b7bb8"/>
+  <circle cx="1024" cy="67" r="5" fill="#ede0c4"/>
+  <text x="1070" y="72" font-family="ui-monospace,monospace" font-size="11" fill="#6b6560" text-anchor="middle">receiver</text>
+
+  <text x="990" y="104" font-family="ui-monospace,monospace" font-size="11" fill="#ede0c4">$</text>
+  <text x="1002" y="104" font-family="ui-monospace,monospace" font-size="11" fill="#f0e8d8"> DropWire receive</text>
+  <text x="990" y="122" font-family="ui-monospace,monospace" font-size="10" fill="#d4a832">  happy-dog-42</text>
+  <text x="990" y="140" font-family="ui-monospace,monospace" font-size="10" fill="#6b6560">  Connecting...</text>
+  <text x="990" y="158" font-family="ui-monospace,monospace" font-size="10" fill="#ede0c4" opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.6;0.7;1" dur="5s" repeatCount="indefinite"/>
+    ✓ Done 0.3s
+  </text>
+  <rect x="970" y="52" width="200" height="116" rx="10" fill="none" stroke="#ede0c4" stroke-width="3" opacity="0">
+    <animate attributeName="opacity" values="0;0.5;0" dur="3s" begin="0.8s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Sender → Relay line -->
+  <line x1="232" y1="110" x2="488" y2="110" stroke="#3a3733" stroke-width="2" stroke-dasharray="6 4"/>
+  <!-- animated packets Sender → Relay (amber) -->
+  <rect x="232" y="104" width="30" height="12" rx="6" fill="#d4a832" filter="url(#cg)" opacity="0">
+    <animateTransform attributeName="transform" type="translate" values="0,0;256,0" dur="1.6s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.05;0.9;1" dur="1.6s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="232" y="104" width="20" height="12" rx="6" fill="#d4a832" filter="url(#cg)" opacity="0">
+    <animateTransform attributeName="transform" type="translate" values="0,0;256,0" dur="1.6s" begin="0.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.05;0.9;1" dur="1.6s" begin="0.5s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Relay → Receiver line -->
+  <line x1="712" y1="110" x2="968" y2="110" stroke="#3a3733" stroke-width="2" stroke-dasharray="6 4"/>
+  <!-- animated packets Relay → Receiver (cream) -->
+  <rect x="712" y="104" width="30" height="12" rx="6" fill="#ede0c4" filter="url(#cg)" opacity="0">
+    <animateTransform attributeName="transform" type="translate" values="0,0;256,0" dur="1.6s" begin="0.3s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.05;0.9;1" dur="1.6s" begin="0.3s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="712" y="104" width="20" height="12" rx="6" fill="#ede0c4" filter="url(#cg)" opacity="0">
+    <animateTransform attributeName="transform" type="translate" values="0,0;256,0" dur="1.6s" begin="0.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.05;0.9;1" dur="1.6s" begin="0.8s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Labels above lines -->
+  <text x="360" y="96" font-family="ui-monospace,monospace" font-size="10" fill="#6b6560" text-anchor="middle">🔒 encrypted</text>
+  <text x="840" y="96" font-family="ui-monospace,monospace" font-size="10" fill="#6b6560" text-anchor="middle">🔒 encrypted</text>
+
+  <!-- OR: direct P2P label -->
+  <rect x="470" y="168" width="260" height="30" rx="8" fill="#1a1917" stroke="#4a4742" stroke-width="1"/>
+  <text x="600" y="188" font-family="ui-monospace,monospace" font-size="11" fill="#4a4742" text-anchor="middle">or direct P2P via mDNS on LAN (no relay)</text>
+
+  <!-- Bottom label -->
+  <text x="600" y="210" font-family="ui-monospace,monospace" font-size="10" fill="#3a3733" text-anchor="middle">Relay sees only ciphertext · Zero-knowledge routing</text>
+</svg>

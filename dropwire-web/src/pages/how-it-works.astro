@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PipelineInteractive from '../components/motion/PipelineInteractive';
+---
+
+<BaseLayout title="How It Works — DropWire">
+  <section class="p-6 sm:p-12 space-y-12">
+    <div class="max-w-4xl space-y-4">
+      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">NETWORK TOPOLOGY & PIPELINE</span>
+      <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none">
+        How DropWire Connects Peers
+      </h1>
+      <p class="text-lg text-[#0B1016]/80 font-sans font-medium">
+        Direct machine-to-machine streaming over local Wi-Fi or encrypted zero-knowledge internet relays.
+      </p>
+    </div>
+
+    {/* Connection Model Cards */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="rounded-[2.5rem] p-8 sm:p-10 bg-[#0052FF] text-white space-y-6 shadow-xl">
+        <span class="text-xs font-mono font-black uppercase tracking-wider bg-black/20 px-3.5 py-1.5 rounded-full">
+          DIRECT LAN DISCOVERY
+        </span>
+        <h2 class="text-3xl font-black font-display uppercase tracking-tight">UDP Multicast Discovery</h2>
+        <p class="text-base font-sans font-medium opacity-90 leading-relaxed">
+          When sender and receiver are on the same local Wi-Fi or Ethernet network, DropWire uses UDP Multicast to discover peer IP addresses instantly—bypassing external servers entirely for gigabit transfer speeds.
+        </p>
+      </div>
+
+      <div class="rounded-[2.5rem] p-8 sm:p-10 bg-[#FFB800] text-black space-y-6 shadow-xl">
+        <span class="text-xs font-mono font-black uppercase tracking-wider bg-black/20 px-3.5 py-1.5 rounded-full">
+          WAN INTERNET RELAY
+        </span>
+        <h2 class="text-3xl font-black font-display uppercase tracking-tight">Zero-Knowledge Internet Relay</h2>
+        <p class="text-base font-sans font-medium opacity-90 leading-relaxed">
+          Across NAT boundaries or firewalls, peers connect via lightweight zero-knowledge relay nodes. Relays route SPAKE2 encrypted ciphertext packets using room tokens (`happy-dog-42`) without holding decryption keys.
+        </p>
+      </div>
+    </div>
+
+    {/* Pipeline Section */}
+    <div class="bg-[#FFFFFF] p-8 sm:p-12 rounded-[2.5rem] card-shadow border border-[#D9D2C9]">
+      <PipelineInteractive client:visible />
+    </div>
+  </section>
+</BaseLayout>
+

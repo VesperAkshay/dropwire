@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const FEATURES = [
+  {
+    title: 'No Accounts or Setup',
+    category: 'USER EXPERIENCE',
+    desc: 'Start sharing immediately. No emails, no passwords, and no cloud subscriptions required.',
+    status: 'Shipped in v0.1',
+    color: 'bg-[#0052FF] text-white',
+  },
+  {
+    title: 'Works Across the Room or World',
+    category: 'CONNECTIVITY',
+    desc: 'Devices on the same Wi-Fi connect directly for gigabit speeds, while distant peers use our secure fallback relays.',
+    status: 'Shipped in v0.1',
+    color: 'bg-[#FFB800] text-black',
+  },
+  {
+    title: 'Send Folders of Any Size',
+    category: 'PERFORMANCE',
+    desc: 'Whether it\'s a single 100GB video or 100,000 tiny photos, DropWire streams them instantly without zipping them first.',
+    status: 'Shipped in v0.1',
+    color: 'bg-[#FF3D00] text-white',
+  },
+  {
+    title: 'Instant Pause & Resume',
+    category: 'RELIABILITY',
+    desc: 'If your laptop goes to sleep or Wi-Fi drops, the transfer resumes right where it left off without starting over.',
+    status: 'Shipped in v0.1',
+    color: 'bg-[#00B060] text-white',
+  },
+  {
+    title: 'Military-Grade Privacy',
+    category: 'SECURITY',
+    desc: 'Your files are scrambled before they leave your computer (ChaCha20 E2EE). Nobody can see what you\'re sending.',
+    status: 'Shipped in v0.1',
+    color: 'bg-[#9D00FF] text-white',
+  },
+  {
+    title: 'Password-Protected Rooms',
+    category: 'SECURITY',
+    desc: 'Only someone with your exact, generated room password can join the transfer (SPAKE2 Key Exchange).',
+    status: 'Shipped in v0.1',
+    color: 'bg-[#0052FF] text-white',
+  },
+  {
+    title: 'Maximum Network Speed',
+    category: 'TRANSPORT',
+    desc: 'DropWire splits your transfer across multiple parallel lanes to squeeze every drop of speed out of your internet connection.',
+    status: 'Shipped in v0.1',
+    color: 'bg-[#FFB800] text-black',
+  },
+  {
+    title: 'Immune to File Corruption',
+    category: 'RELIABILITY',
+    desc: 'Every piece of data is mathematically verified as it arrives (BLAKE3 Hashing). A corrupted download is physically impossible.',
+    status: 'Shipped in v0.1',
+    color: 'bg-[#FF3D00] text-white',
+  },
+  {
+    title: 'Zero-Knowledge Relay Servers',
+    category: 'PRIVACY',
+    desc: 'If you can\'t connect directly, our fallback servers pass the scrambled data along. They never hold your files.',
+    status: 'Shipped in v0.1',
+    color: 'bg-[#00B060] text-white',
+  },
+  {
+    title: 'Bulletproof Device Safety',
+    category: 'SECURITY',
+    desc: 'Strict memory limits and path checks ensure that nobody can send you malicious files or crash your machine.',
+    status: 'Shipped in v0.1',
+    color: 'bg-[#9D00FF] text-white',
+  },
+];
+---
+
+<BaseLayout title="Features — DropWire">
+  <section class="p-6 sm:p-12 space-y-12">
+    <div class="max-w-4xl space-y-4">
+      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">PRODUCT CAPABILITIES</span>
+      <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none">
+        DropWire Feature Matrix
+      </h1>
+      <p class="text-lg text-[#0B1016]/80 font-sans font-medium">
+        A complete breakdown of DropWire's streaming engine, mutual encryption, and direct transport architecture.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {FEATURES.map((feat) => (
+        <div class={`rounded-[2.5rem] p-8 sm:p-10 space-y-6 flex flex-col justify-between shadow-xl ${feat.color}`}>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-black uppercase tracking-wider opacity-80">{feat.category}</span>
+            <span class="px-3 py-1 bg-black/20 text-xs font-mono font-black uppercase rounded-full">{feat.status}</span>
+          </div>
+
+          <div class="space-y-3 pt-4">
+            <h2 class="text-3xl font-black font-display tracking-tight leading-tight uppercase">
+              {feat.title}
+            </h2>
+            <p class="text-base font-sans font-medium opacity-90 leading-relaxed">
+              {feat.desc}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+

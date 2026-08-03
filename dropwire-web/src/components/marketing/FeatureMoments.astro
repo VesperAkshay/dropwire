@@ -1,0 +1,98 @@
+---
+---
+
+<section class="space-y-6 my-4">
+  {/* Moment 1: End-to-End Mutual Encryption */}
+  <div class="p-8 sm:p-12 bg-[#FFFFFF] rounded-[2.5rem] card-shadow border border-[#D9D2C9] grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+    <div class="lg:col-span-6 space-y-6">
+      <span class="px-3 py-1 bg-[#0052FF] text-white text-xs font-mono font-black uppercase rounded-full">
+        ZERO-KNOWLEDGE RELAY
+      </span>
+      <h2 class="text-3xl sm:text-5xl font-display font-black text-[#0B1016] uppercase leading-tight">
+        Encryption is non-negotiable. Plaintext never touches the network.
+      </h2>
+      <p class="text-base text-[#0B1016]/80 font-sans font-medium leading-relaxed">
+        DropWire enforces end-to-end mutual authentication on every packet. Whether sending over local Wi-Fi or across the globe via zero-knowledge relay servers, unencrypted data never leaves your RAM.
+      </p>
+
+      <ul class="space-y-2 font-sans font-bold text-sm text-[#0B1016]">
+        <li class="flex items-center gap-2">
+          <span class="text-[#00B060] font-black text-base">✓</span> Ephemeral session encryption keys per transfer
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="text-[#00B060] font-black text-base">✓</span> Relay server only sees encrypted ciphertext & room routing tags
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="text-[#00B060] font-black text-base">✓</span> Automatic LAN discovery via mDNS when peers are nearby
+        </li>
+      </ul>
+    </div>
+
+    {/* Bright Light Encryption Key Card */}
+    <div class="lg:col-span-6 bg-[#F4EFEA] text-[#0B1016] p-6 sm:p-8 rounded-[2rem] border-2 border-[#0052FF] font-mono text-xs space-y-4 shadow-xl">
+      <div class="flex items-center justify-between border-b-2 border-[#D9D2C9] pb-3 text-[#0052FF]">
+        <span class="font-black uppercase tracking-wider text-sm">MUTUAL AUTHENTICATION</span>
+        <span class="px-3 py-1 bg-[#00B060] text-white rounded-full text-xs font-black">PASSED</span>
+      </div>
+      <div class="space-y-3 font-bold text-sm">
+        <div>
+          <span class="text-[#0B1016]/60 text-xs">Sender Fingerprint:</span>
+          <p class="font-black text-[#0052FF] truncate">8f4a1c98e3d2a71b...69e120f</p>
+        </div>
+        <div>
+          <span class="text-[#0B1016]/60 text-xs">Receiver Fingerprint:</span>
+          <p class="font-black text-[#9D00FF] truncate">3b71f92e01a4c88d...14f290d</p>
+        </div>
+      </div>
+      <div class="p-4 bg-[#FFFFFF] rounded-2xl border border-[#00B060] text-xs font-bold text-[#00B060]">
+        Ciphertext payload encrypted with ChaCha20Poly1305 before transport layer.
+      </div>
+    </div>
+  </div>
+
+  {/* Moment 2: Chunk Resumability */}
+  <div class="p-8 sm:p-12 bg-[#FFB800] text-black rounded-[2.5rem] shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+    {/* Bright Light Chunk Status Card */}
+    <div class="lg:col-span-6 bg-[#FFFFFF] text-black p-6 sm:p-8 rounded-[2rem] border-2 border-black font-mono text-xs space-y-4 shadow-xl">
+      <div class="flex items-center justify-between border-b-2 border-[#EBE5DC] pb-3 text-black">
+        <span class="font-black uppercase tracking-wider text-sm">CHUNK VERIFICATION STATUS</span>
+        <span class="text-[#00B060] font-black text-xs">1,024 / 1,024 VERIFIED</span>
+      </div>
+      <div class="grid grid-cols-8 gap-1.5 text-center">
+        {Array.from({ length: 32 }).map((_, i) => (
+          <div className={`p-1.5 rounded-lg text-[10px] font-black ${i === 14 ? 'bg-[#FF3D00] text-white animate-pulse' : 'bg-[#00B060]/15 text-[#00B060] border border-[#00B060]/30'}`}>
+            {i + 1}
+          </div>
+        ))}
+      </div>
+      <div class="text-xs font-bold text-black/70 pt-1">
+        Chunk #15 re-verified via cryptographic hash match.
+      </div>
+    </div>
+
+    <div class="lg:col-span-6 space-y-6">
+      <span class="px-3.5 py-1.5 bg-black text-white text-xs font-mono font-black uppercase rounded-full">
+        CHUNK RESUMABILITY
+      </span>
+      <h2 class="text-3xl sm:text-5xl font-display font-black text-black uppercase leading-tight">
+        Interrupt proof. Stream 100GB files with instant resumability.
+      </h2>
+      <p class="text-base text-black/90 font-sans font-semibold leading-relaxed">
+        DropWire breaks files into verified cryptographic chunks. If connection drops, receiver negotiates missing chunk indices upon reconnect—no need to restart huge transfers from 0%.
+      </p>
+
+      <ul class="space-y-2 font-sans font-bold text-sm text-black">
+        <li class="flex items-center gap-2">
+          <span class="font-black text-base">✓</span> Cryptographic root validation per file
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="font-black text-base">✓</span> Corrupted chunks re-requested individually
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="font-black text-base">✓</span> Zero temporary disk waste or unverified writes
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+

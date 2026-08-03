@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../lib/site';
+---
+
+<BaseLayout title="Download — DropWire">
+  <section class="p-6 sm:p-12 space-y-16 max-w-7xl mx-auto">
+    
+    {/* HEADER */}
+    <div class="space-y-4 text-center max-w-3xl mx-auto">
+      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">CHOOSE YOUR INTERFACE</span>
+      <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none">
+        Download DropWire
+      </h1>
+      <p class="text-lg text-[#0B1016]/80 font-sans font-medium">
+        Available as a graphical desktop app, an interactive terminal dashboard, or a headless command-line engine.
+      </p>
+    </div>
+
+    {/* GUI SECTION */}
+    <div class="bg-[#0052FF] text-white rounded-[3rem] p-8 sm:p-12 shadow-2xl space-y-8">
+      <div class="space-y-4 text-center max-w-2xl mx-auto">
+        <span class="px-4 py-1.5 bg-white/20 text-white text-xs font-mono font-black uppercase rounded-full tracking-wider">
+          GRAPHICAL INTERFACE
+        </span>
+        <h2 class="text-4xl sm:text-5xl font-black font-display uppercase tracking-tight">DropWire Desktop</h2>
+        <p class="text-base font-sans font-medium opacity-90">
+          The easiest way to use DropWire. A beautiful, native drag-and-drop experience for everyday users. No terminal required.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+        {/* Windows */}
+        <div class="bg-white text-black p-8 rounded-[2rem] space-y-6 flex flex-col justify-between hover:scale-[1.02] transition-transform shadow-xl">
+          <div class="space-y-2">
+            <h3 class="text-2xl font-black font-display uppercase">Windows</h3>
+            <p class="text-sm font-sans opacity-70 font-semibold">Windows 10 / 11 (64-bit)</p>
+          </div>
+          <div class="space-y-3">
+            <a href={`${SITE.repo}/releases/latest`} class="block w-full py-3 bg-[#0052FF] text-white text-center rounded-xl font-display font-black text-xs sm:text-sm uppercase hover:bg-black transition-colors">
+              Download Installer (.exe)
+            </a>
+            <a href={`${SITE.repo}/releases/latest`} class="block w-full py-3 bg-[#F4EFEA] text-black text-center rounded-xl font-display font-black text-xs sm:text-sm uppercase hover:bg-[#D9D2C9] transition-colors">
+              MSI Installer (.msi)
+            </a>
+          </div>
+        </div>
+
+        {/* Mac */}
+        <div class="bg-white text-black p-8 rounded-[2rem] space-y-6 flex flex-col justify-between hover:scale-[1.02] transition-transform shadow-xl">
+          <div class="space-y-2">
+            <h3 class="text-2xl font-black font-display uppercase">macOS</h3>
+            <p class="text-sm font-sans opacity-70 font-semibold">Apple Silicon & Intel (Universal)</p>
+          </div>
+          <div class="space-y-3">
+            <a href={`${SITE.repo}/releases/latest`} class="block w-full py-3 bg-[#0052FF] text-white text-center rounded-xl font-display font-black text-xs sm:text-sm uppercase hover:bg-black transition-colors">
+              Download Disk Image (.dmg)
+            </a>
+          </div>
+        </div>
+
+        {/* Linux */}
+        <div class="bg-white text-black p-8 rounded-[2rem] space-y-6 flex flex-col justify-between hover:scale-[1.02] transition-transform shadow-xl">
+          <div class="space-y-2">
+            <h3 class="text-2xl font-black font-display uppercase">Linux</h3>
+            <p class="text-sm font-sans opacity-70 font-semibold">Ubuntu, Debian, Fedora, Arch</p>
+          </div>
+          <div class="space-y-3">
+            <a href={`${SITE.repo}/releases/latest`} class="block w-full py-3 bg-[#0052FF] text-white text-center rounded-xl font-display font-black text-xs sm:text-sm uppercase hover:bg-black transition-colors">
+              Debian Package (.deb)
+            </a>
+            <a href={`${SITE.repo}/releases/latest`} class="block w-full py-3 bg-[#F4EFEA] text-black text-center rounded-xl font-display font-black text-xs sm:text-sm uppercase hover:bg-[#D9D2C9] transition-colors">
+              AppImage (Universal)
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* TERMINAL TOOLS GRID */}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      {/* CLI SECTION */}
+      <div class="bg-[#FF3D00] text-white rounded-[3rem] p-8 sm:p-10 shadow-2xl flex flex-col">
+        <div class="space-y-4 mb-8">
+          <span class="px-4 py-1.5 bg-black/20 text-white text-xs font-mono font-black uppercase rounded-full tracking-wider">
+            HEADLESS ENGINE
+          </span>
+          <h2 class="text-4xl font-black font-display uppercase tracking-tight">DropWire CLI</h2>
+          <p class="text-base font-sans font-medium opacity-90">
+            The pure command-line tool. Highly scriptable and perfect for headless servers, SSH environments, and automated backups.
+          </p>
+        </div>
+
+        <div class="space-y-6 mt-auto">
+          {/* Cargo */}
+          <div class="space-y-2">
+            <span class="text-xs font-mono font-black uppercase opacity-80">Via Cargo (All Platforms)</span>
+            <div class="bg-black text-white p-4 rounded-2xl font-mono text-sm font-bold shadow-inner flex justify-between items-center border border-white/10">
+              <span>cargo install dropwire</span>
+            </div>
+          </div>
+          {/* Mac/Linux Script */}
+          <div class="space-y-2">
+            <span class="text-xs font-mono font-black uppercase opacity-80">macOS / Linux Script</span>
+            <div class="bg-black text-white p-4 rounded-2xl font-mono text-sm font-bold shadow-inner flex justify-between items-center border border-white/10">
+              <span class="truncate pr-4">curl -sS https://dropwire.io/install.sh | sh</span>
+            </div>
+          </div>
+          {/* Windows Script */}
+          <div class="space-y-2">
+            <span class="text-xs font-mono font-black uppercase opacity-80">Windows PowerShell</span>
+            <div class="bg-black text-white p-4 rounded-2xl font-mono text-sm font-bold shadow-inner flex justify-between items-center border border-white/10">
+              <span class="truncate pr-4">irm https://dropwire.io/install.ps1 | iex</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* TUI SECTION */}
+      <div class="bg-[#FFB800] text-black rounded-[3rem] p-8 sm:p-10 shadow-2xl flex flex-col">
+        <div class="space-y-4 mb-8">
+          <span class="px-4 py-1.5 bg-black/10 text-black text-xs font-mono font-black uppercase rounded-full tracking-wider">
+            INTERACTIVE TERMINAL
+          </span>
+          <h2 class="text-4xl font-black font-display uppercase tracking-tight">DropWire TUI</h2>
+          <p class="text-base font-sans font-medium opacity-90">
+            A rich terminal dashboard built for developers. Features real-time visual throughput graphs, chunk validation metrics, and room creation UI.
+          </p>
+        </div>
+
+        <div class="space-y-6 mt-auto">
+          {/* Cargo */}
+          <div class="space-y-2">
+            <span class="text-xs font-mono font-black uppercase opacity-70">Via Cargo (All Platforms)</span>
+            <div class="bg-black text-white p-4 rounded-2xl font-mono text-sm font-bold shadow-inner flex justify-between items-center border border-white/10">
+              <span class="text-[#FFB800]">cargo install dropwire-tui</span>
+            </div>
+          </div>
+          {/* Mac/Linux Script */}
+          <div class="space-y-2">
+            <span class="text-xs font-mono font-black uppercase opacity-70">macOS / Linux Script</span>
+            <div class="bg-black text-white p-4 rounded-2xl font-mono text-sm font-bold shadow-inner flex justify-between items-center border border-white/10">
+              <span class="truncate pr-4 text-[#FFB800]">curl -sS https://dropwire.io/install-tui.sh | sh</span>
+            </div>
+          </div>
+          {/* Windows Script */}
+          <div class="space-y-2">
+            <span class="text-xs font-mono font-black uppercase opacity-70">Windows PowerShell</span>
+            <div class="bg-black text-white p-4 rounded-2xl font-mono text-sm font-bold shadow-inner flex justify-between items-center border border-white/10">
+              <span class="truncate pr-4 text-[#FFB800]">irm https://dropwire.io/tui.ps1 | iex</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</BaseLayout>

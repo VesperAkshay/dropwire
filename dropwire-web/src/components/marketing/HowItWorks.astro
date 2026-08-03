@@ -1,0 +1,74 @@
+---
+import PipelineInteractive from '../motion/PipelineInteractive';
+import ScrollReveal from '../motion/ScrollReveal';
+import TiltSpotlightCard from '../motion/TiltSpotlightCard';
+
+const STEPS = [
+  {
+    num: '01',
+    title: 'Sender generates room code',
+    desc: 'Run `DropWire send file.zip`. An encrypted session is generated and registered under a human-readable room code like `happy-dog-42`.',
+    color: 'bg-[#0052FF] text-white',
+  },
+  {
+    num: '02',
+    title: 'Receiver joins session',
+    desc: 'Receiver executes `DropWire receive happy-dog-42`. Peers discover each other locally via mDNS or through a zero-knowledge relay.',
+    color: 'bg-[#FFB800] text-black',
+  },
+  {
+    num: '03',
+    title: 'Direct P2P Encrypted Stream',
+    desc: 'Files stream chunk by chunk directly machine-to-machine. Bytes are encrypted before leaving sender disk and verified upon arrival.',
+    color: 'bg-[#FF3D00] text-white',
+  },
+];
+---
+
+<section class="p-6 sm:p-12 bg-[#FFFFFF] rounded-[2.5rem] card-shadow border border-[#D9D2C9] space-y-16 my-4">
+  <div class="max-w-6xl mx-auto space-y-16">
+    {/* Section Header */}
+    <ScrollReveal client:only="react" direction="up">
+      <div class="space-y-3">
+        <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">3 SIMPLE STEPS</span>
+        <h2 class="text-4xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-tight">
+          How DropWire Transfers Files
+        </h2>
+        <p class="text-lg text-[#0B1016]/70 max-w-xl font-sans font-medium">
+          No cloud uploads, no link expiration, no file size limits.
+        </p>
+      </div>
+    </ScrollReveal>
+
+    {/* 3 Step Cards with Parallax Tilt & Scroll Reveal */}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {STEPS.map((step, idx) => (
+        <ScrollReveal client:only="react" direction="up" delay={idx * 150}>
+          <TiltSpotlightCard client:only="react" className={`rounded-[2.5rem] p-8 sm:p-10 space-y-8 flex flex-col justify-between shadow-xl min-h-[340px] ${step.color}`}>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-2xl font-black opacity-90">{step.num}</span>
+              <span class="font-display font-black text-3xl">↗</span>
+            </div>
+
+            <div class="space-y-4 pt-8">
+              <h3 class="text-3xl font-black font-display tracking-tight leading-tight uppercase">
+                {step.title}
+              </h3>
+              <p class="text-base font-sans font-medium opacity-90 leading-relaxed">
+                {step.desc}
+              </p>
+            </div>
+          </TiltSpotlightCard>
+        </ScrollReveal>
+      ))}
+    </div>
+
+    {/* Interactive Pipeline Component Container */}
+    <ScrollReveal client:only="react" direction="up" delay={300}>
+      <div class="bg-[#F4EFEA] p-6 sm:p-10 rounded-[2.5rem] border border-[#D9D2C9]">
+        <PipelineInteractive client:visible />
+      </div>
+    </ScrollReveal>
+  </div>
+</section>
+

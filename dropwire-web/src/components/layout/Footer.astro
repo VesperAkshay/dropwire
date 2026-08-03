@@ -1,0 +1,73 @@
+---
+import { SITE, FOOTER_NAV } from '../../lib/site';
+---
+
+<footer class="w-full bg-[#070A0E] border-t border-[#7C6542]/30 pt-12 pb-8 text-xs font-sans text-[#AA90B3]">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 space-y-8">
+    {/* Main Grid */}
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+      {/* Brand Col */}
+      <div class="md:col-span-2 space-y-3">
+        <div class="flex items-center gap-2">
+          <img src="/brand/cube-logo.png" alt="DropWire Cube" class="w-6 h-6 object-contain" />
+          <span class="font-display text-lg font-bold text-[#FEF7E4]">DropWire</span>
+        </div>
+        <p class="text-xs text-[#AA90B3] max-w-sm">
+          {SITE.tagline} Built with Rust, TCP Multiplexing, SPAKE2, BLAKE3, and zstd.
+        </p>
+        <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-[#161D24] border border-[#7C6542]/30 rounded text-[11px] font-mono text-[#F3D578]">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Status: CLI shipping · Tauri GUI & Relay planned
+        </div>
+      </div>
+
+      {/* Nav Columns */}
+      <div>
+        <h4 class="font-display font-semibold text-[#FEF7E4] uppercase tracking-wider text-[11px] mb-3">Product</h4>
+        <ul class="space-y-2">
+          {FOOTER_NAV.product.map((item) => (
+            <li>
+              <a href={item.href} class="hover:text-[#F3D578] transition-colors">{item.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-display font-semibold text-[#FEF7E4] uppercase tracking-wider text-[11px] mb-3">Resources</h4>
+        <ul class="space-y-2">
+          {FOOTER_NAV.resources.map((item) => (
+            <li>
+              <a href={item.href} class="hover:text-[#F3D578] transition-colors">{item.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-display font-semibold text-[#FEF7E4] uppercase tracking-wider text-[11px] mb-3">Community</h4>
+        <ul class="space-y-2">
+          {FOOTER_NAV.community.map((item) => (
+            <li>
+              <a 
+                href={item.href} 
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noopener noreferrer" : undefined}
+                class="hover:text-[#F3D578] transition-colors"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    {/* Bottom Legal & License */}
+    <div class="pt-6 border-t border-[#7C6542]/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
+      <p>© {new Date().getFullYear()} DropWire. Open source under the {SITE.license} License.</p>
+      <p class="font-mono text-[#E1B865]/80">Files go machine to machine, not through someone else’s disk.</p>
+    </div>
+  </div>
+</footer>
+

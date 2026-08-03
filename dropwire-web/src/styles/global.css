@@ -1,0 +1,124 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/700.css";
+
+/* Exact Units.gr Typography: Alfabet (Display) & Aeonik Pro (Sans) */
+@font-face {
+  font-family: 'Alfabet';
+  font-style: normal;
+  font-weight: 850;
+  font-display: swap;
+  src: url('/fonts/Alfabet-Black.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Alfabet';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/Alfabet-ExtraBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Aeonik Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/aeonikpro-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Aeonik Pro';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/aeonikpro-bold.woff2') format('woff2');
+}
+
+@theme {
+  --font-display: 'Alfabet', 'Cabinet Grotesk', sans-serif;
+  --font-sans: 'Aeonik Pro', 'Satoshi', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Units.gr Light Mode Palette */
+  --color-canvas-cream: #F4EFEA;
+  --color-canvas-white: #FFFFFF;
+  --color-canvas-sand: #EBE5DC;
+  
+  --color-ink-black: #0B1016;
+  --color-ink-soft: #222C37;
+  
+  /* Saturated Solid Color Blocks */
+  --color-units-blue: #0052FF;
+  --color-units-yellow: #FFB800;
+  --color-units-orange: #FF3D00;
+  --color-units-green: #00B060;
+  --color-units-purple: #9D00FF;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  background-color: #F4EFEA;
+  color: #0B1016;
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+}
+
+/* Lenis Smooth Scroll CSS Rules */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F4EFEA;
+}
+::-webkit-scrollbar-thumb {
+  background: #0B1016;
+  border-radius: 4px;
+}
+
+/* Selection */
+::selection {
+  background-color: #FFB800;
+  color: #0B1016;
+}
+
+.gold-glow {
+  box-shadow: 0 12px 36px -6px rgba(255, 184, 0, 0.4);
+}
+
+.card-shadow {
+  box-shadow: 0 16px 40px -10px rgba(11, 16, 22, 0.08);
+}
+
+.bg-grid-pattern-light {
+  background-size: 36px 36px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}

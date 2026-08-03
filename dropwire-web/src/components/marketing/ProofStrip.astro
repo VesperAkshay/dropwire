@@ -1,0 +1,29 @@
+---
+const TECH_CHIPS = [
+  { label: 'Rust Core', detail: 'Zero-cost abstractions' },
+  { label: 'High-Speed Transport', detail: 'Multiplexed UDP stream' },
+  { label: 'End-to-End Auth', detail: 'Mutual encryption' },
+  { label: 'Chunk Integrity', detail: 'Real-time stream validation' },
+  { label: 'Stream Compress', detail: 'Real-time size reduction' },
+  { label: 'Rich Terminal UI', detail: 'Cross-platform CLI' },
+];
+---
+
+<div class="w-full bg-[#FF3D00] text-white rounded-[2rem] py-5 px-6 my-4 shadow-xl">
+  <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+    <div class="flex items-center gap-2 text-[#FFB800] font-black uppercase tracking-wider text-sm">
+      <span>✦</span>
+      <span>TECHNOLOGY SPECIFICATION:</span>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      {TECH_CHIPS.map((chip) => (
+        <div class="flex items-center gap-2 bg-black/20 px-3.5 py-2 rounded-full font-bold">
+          <span class="text-[#FFB800]">{chip.label}</span>
+          <span class="opacity-60">·</span>
+          <span class="text-white/90 text-[11px]">{chip.detail}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>

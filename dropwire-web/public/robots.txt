@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://DropWire.pages.dev/sitemap.xml
+
