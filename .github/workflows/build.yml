@@ -22,4 +22,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: dropwire-relay-linux
-        path: dropwire/target/release/dropwire
+        path: dropwire/target/release/dropwire-relay
