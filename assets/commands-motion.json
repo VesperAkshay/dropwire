@@ -1,0 +1,13 @@
+{
+  "width": 1200,
+  "fps": 30,
+  "duration": 4.0,
+  "colors": 256,
+  "dither": "none",
+  "clip_to_base_alpha": false,
+  "reveals": [
+    { "id": "cmd-send", "axis": "x", "start": 0.5, "end": 1.0 },
+    { "id": "cmd-arrow", "axis": "x", "start": 1.2, "end": 1.5 },
+    { "id": "cmd-recv", "axis": "x", "start": 1.6, "end": 2.1 }
+  ]
+}

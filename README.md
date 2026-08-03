@@ -1,5 +1,6 @@
 <div align="center">
-  <h1>DropWire ⚡</h1>
+  <img src="./assets/logo.svg" alt="DropWire Logo" width="600" />
+  <br/>
   <p><b>A blazingly fast, serverless, end-to-end encrypted P2P file-transfer CLI.</b></p>
   
   <p>
@@ -8,7 +9,7 @@
     <a href="https://github.com/VesperAkshay/dropwire/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Proprietary-FF3D00.svg" alt="License"></a>
   </p>
   
-  <img src="./assets/demo.svg" alt="DropWire Terminal Demo" width="100%" />
+  <img src="./assets/demo.gif" alt="DropWire Terminal Demo" width="100%" />
 </div>
 
 DropWire lets you securely send files and massive directories of any size directly between machines over the internet using a simple code phrase. No accounts, no port-forwarding, and absolutely no limits. Inspired by `magic-wormhole` and `croc`, but architected for maximum bandwidth multiplexing and vast repository transfers.

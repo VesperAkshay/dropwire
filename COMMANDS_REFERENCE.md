@@ -2,6 +2,7 @@
   <h1>DropWire CLI Reference</h1>
   <p><b>Comprehensive guide to every command and flag available in DropWire.</b></p>
   <a href="./README.md">← Back to README</a>
+  <img src="./assets/commands.gif" alt="Commands Workflow" width="100%" />
 </div>
 
 <br/>

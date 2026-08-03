@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="100%" height="100%">
+  <rect width="1200" height="400" fill="#0B0F19"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, monospace" font-size="20">
+    <g transform="translate(100 150)" id="cmd-send">
+      <rect width="400" height="120" rx="4" fill="#131B2F" stroke="#1E293B" stroke-width="2"/>
+      <text x="30" y="45" fill="#F1F5F9" font-weight="bold">1. Send</text>
+      <text x="30" y="80" fill="#10B981" font-size="18">$ dropwire send ./data</text>
+    </g>
+
+    <g transform="translate(700 150)" id="cmd-recv">
+      <rect width="400" height="120" rx="4" fill="#131B2F" stroke="#1E293B" stroke-width="2"/>
+      <text x="30" y="45" fill="#F1F5F9" font-weight="bold">2. Receive</text>
+      <text x="30" y="80" fill="#8B5CF6" font-size="18">$ dropwire receive &lt;code&gt;</text>
+    </g>
+    
+    <g id="cmd-arrow">
+      <path d="M 500 210 L 700 210" fill="none" stroke="#334155" stroke-width="2"/>
+      <path d="M 680 200 L 700 210 L 680 220" fill="none" stroke="#334155" stroke-width="2"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,12 @@
+{
+  "width": 1200,
+  "fps": 30,
+  "duration": 4.0,
+  "colors": 256,
+  "dither": "none",
+  "clip_to_base_alpha": false,
+  "reveals": [
+    { "id": "main-line", "axis": "x", "start": 0.5, "end": 1.5 },
+    { "id": "contrib-node", "axis": "y", "start": 1.5, "end": 2.5 }
+  ]
+}

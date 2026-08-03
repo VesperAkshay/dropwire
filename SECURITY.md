@@ -2,6 +2,7 @@
   <h1>Security Architecture</h1>
   <p><b>An in-depth look at how DropWire keeps your data mathematically secure.</b></p>
   <a href="./README.md">← Back to README</a>
+  <img src="./assets/security.gif" alt="Security Architecture" width="100%" />
 </div>
 
 <br/>

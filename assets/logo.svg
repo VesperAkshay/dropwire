@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 150" width="100%" height="100%">
+  <g transform="translate(20 20)" id="logo-content">
+    <!-- Premium Emerald to Violet gradient replacement using solid premium colors since gradients can cause dither issues in GIFs (though this one is static SVG so gradient is fine) -->
+    <defs>
+      <linearGradient id="premiumGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#10B981" />
+        <stop offset="100%" stop-color="#8B5CF6" />
+      </linearGradient>
+    </defs>
+    <path d="M 0 20 L 100 20 L 140 70 L 240 70" fill="none" stroke="url(#premiumGrad)" stroke-width="6"/>
+    <circle cx="0" cy="20" r="12" fill="#F1F5F9"/>
+    <circle cx="240" cy="70" r="12" fill="#F1F5F9"/>
+    <text x="280" y="85" fill="#F1F5F9" font-family="ui-monospace, SFMono-Regular, monospace" font-size="84" font-weight="bold">DropWire</text>
+  </g>
+</svg>

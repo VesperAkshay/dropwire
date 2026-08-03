@@ -1,0 +1,14 @@
+{
+  "width": 1200,
+  "fps": 30,
+  "duration": 5.0,
+  "colors": 256,
+  "dither": "none",
+  "clip_to_base_alpha": false,
+  "reveals": [
+    { "id": "step1", "axis": "x", "start": 0.5, "end": 1.0 },
+    { "id": "step2", "axis": "y", "start": 1.5, "end": 2.0 },
+    { "id": "step3", "axis": "y", "start": 2.5, "end": 3.0 },
+    { "id": "step4", "axis": "y", "start": 4.0, "end": 4.5 }
+  ]
+}

@@ -1,48 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" width="100%" height="100%">
-  <defs>
-    <style>
-      .terminal-bg { fill: #1c1c1c; }
-      .terminal-header { fill: #2d2d2d; }
-      .text-default { fill: #d4d4d4; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 15px; }
-      .text-prompt { fill: #00B060; font-weight: bold; }
-      .text-command { fill: #569cd6; font-weight: bold; }
-      .text-highlight { fill: #FFB800; font-weight: bold; }
-      .text-info { fill: #4fc1ff; }
-      .mac-red { fill: #ff5f56; }
-      .mac-yellow { fill: #ffbd2e; }
-      .mac-green { fill: #27c93f; }
-    </style>
-  </defs>
-
-  <!-- Terminal Window Background -->
-  <rect x="10" y="10" width="780" height="340" rx="10" class="terminal-bg" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="100%" height="100%">
+  <rect width="1200" height="600" fill="#0B0F19"/>
+  <rect x="100" y="100" width="1000" height="400" rx="8" fill="#131B2F" stroke="#1E293B" stroke-width="2"/>
+  <path d="M 100 140 h 1000" stroke="#1E293B" stroke-width="2"/>
+  <circle cx="130" cy="120" r="6" fill="#334155"/>
+  <circle cx="150" cy="120" r="6" fill="#334155"/>
+  <circle cx="170" cy="120" r="6" fill="#334155"/>
   
-  <!-- Terminal Header -->
-  <path d="M10 20 a10 10 0 0 1 10 -10 h760 a10 10 0 0 1 10 10 v20 h-780 z" class="terminal-header" />
-  
-  <!-- Mac Window Controls -->
-  <circle cx="30" cy="20" r="6" class="mac-red" />
-  <circle cx="50" cy="20" r="6" class="mac-yellow" />
-  <circle cx="70" cy="20" r="6" class="mac-green" />
-  
-  <!-- Terminal Content -->
-  <g transform="translate(30, 70)">
-    <!-- Send Command -->
-    <text x="0" y="0" class="text-default"><tspan class="text-prompt">➜</tspan> <tspan class="text-info">~</tspan> <tspan class="text-command">dropwire</tspan> send ./large_dataset</text>
-    
-    <text x="0" y="30" class="text-default">📦 Analyzing payload... 45,291 files (1.4 GB)</text>
-    <text x="0" y="55" class="text-default">🔐 Generating secure SPAKE2 code phrase...</text>
-    
-    <text x="0" y="90" class="text-default">Ready to send! Share this code with the receiver:</text>
-    <text x="0" y="115" class="text-default">    Code: <tspan class="text-highlight">7-purple-monkey</tspan></text>
-    
-    <text x="0" y="150" class="text-default" opacity="0.6">Waiting for receiver to connect...</text>
-    
-    <text x="0" y="180" class="text-default">✅ Peer connected securely. Handshake complete.</text>
-    <text x="0" y="205" class="text-default">🚀 Multiplexing via 4 parallel streams (E2E Encrypted)</text>
-    
-    <!-- Progress Bar -->
-    <text x="0" y="245" class="text-default">Transferring ./large_dataset...</text>
-    <text x="0" y="270" class="text-default"><tspan fill="#00B060">███████████████████████████</tspan><tspan fill="#4d4d4d">░░░</tspan> 92% (112 MB/s)</text>
+  <g transform="translate(140 200)" font-family="ui-monospace, SFMono-Regular, monospace" font-size="24">
+    <!-- Step 1 -->
+    <g id="step1">
+      <text x="0" y="0" fill="#94A3B8">$ <tspan fill="#F1F5F9">dropwire send ./large_dataset</tspan></text>
+    </g>
+    <!-- Step 2 -->
+    <g id="step2">
+      <text x="0" y="50" fill="#94A3B8">Analyzing payload... <tspan fill="#F1F5F9">45,291 files (1.4 GB)</tspan></text>
+      <text x="0" y="90" fill="#94A3B8">Generating secure SPAKE2 code phrase...</text>
+    </g>
+    <!-- Step 3 -->
+    <g id="step3">
+      <rect x="0" y="120" width="800" height="80" rx="4" fill="#0B0F19" stroke="#8B5CF6" stroke-width="2"/>
+      <text x="20" y="160" fill="#F1F5F9">Code: <tspan fill="#10B981" font-weight="bold">7-purple-monkey</tspan></text>
+      <text x="20" y="185" fill="#94A3B8" font-size="18">Waiting for receiver to connect...</text>
+    </g>
+    <!-- Step 4 -->
+    <g id="step4">
+      <text x="0" y="250" fill="#10B981">✅ Peer connected securely. Handshake complete.</text>
+      <text x="0" y="290" fill="#94A3B8">Transferring ./large_dataset... <tspan fill="#8B5CF6">[1.4 GB/s]</tspan></text>
+    </g>
   </g>
 </svg>

@@ -1,6 +1,7 @@
 <div align="center">
   <h1>Contributing to DropWire</h1>
   <a href="./README.md">← Back to README</a>
+  <img src="./assets/contributing.gif" alt="Contributing" width="100%" />
 </div>
 
 <br/>

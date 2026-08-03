@@ -1,0 +1,15 @@
+{
+  "width": 700,
+  "fps": 30,
+  "duration": 4.0,
+  "colors": 256,
+  "dither": "none",
+  "clip_to_base_alpha": false,
+  "layers": [
+    {
+      "id": "logo-content",
+      "enter": {"start": 0.5, "end": 1.5, "from": [0, 20]},
+      "exit": {"start": 3.8, "end": 3.99, "to": [0, 0]}
+    }
+  ]
+}
