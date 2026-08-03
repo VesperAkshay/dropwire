@@ -50,7 +50,7 @@ pub struct ParallelStreams {
 
 impl ParallelStreams {
     pub async fn connect(
-        addr: SocketAddr,
+        addr: String,
         _channel: &ChannelId,
         role: Role,
         auth_token: &[u8; 16],
@@ -60,7 +60,7 @@ impl ParallelStreams {
         let (tx, rx) = tokio::sync::mpsc::channel(100);
 
         for i in 0..num_streams {
-            let mut stream = tokio::net::TcpStream::connect(addr)
+            let mut stream = tokio::net::TcpStream::connect(&addr)
                 .await
                 .map_err(DropWireError::Io)?;
 
@@ -212,8 +212,8 @@ mod tests {
         let chan = ChannelId("chan1".into());
         let auth = [42u8; 16];
 
-        let sender = ParallelStreams::connect(addr, &chan, Role::Sender, &auth, 4);
-        let receiver = ParallelStreams::connect(addr, &chan, Role::Receiver, &auth, 4);
+        let sender = ParallelStreams::connect(addr.to_string(), &chan, Role::Sender, &auth, 4);
+        let receiver = ParallelStreams::connect(addr.to_string(), &chan, Role::Receiver, &auth, 4);
 
         let (s, r) = tokio::join!(sender, receiver);
         assert!(s.is_ok());
@@ -231,10 +231,10 @@ mod tests {
         let chan = ChannelId("chan2".into());
         let auth = [42u8; 16];
 
-        let mut s = ParallelStreams::connect(addr, &chan, Role::Sender, &auth, 4)
+        let mut s = ParallelStreams::connect(addr.to_string(), &chan, Role::Sender, &auth, 4)
             .await
             .unwrap();
-        let mut r = ParallelStreams::connect(addr, &chan, Role::Receiver, &auth, 4)
+        let mut r = ParallelStreams::connect(addr.to_string(), &chan, Role::Receiver, &auth, 4)
             .await
             .unwrap();
 
@@ -264,10 +264,10 @@ mod tests {
         let chan = ChannelId("chan3".into());
         let auth = [42u8; 16];
 
-        let s = ParallelStreams::connect(addr, &chan, Role::Sender, &auth, 4)
+        let s = ParallelStreams::connect(addr.to_string(), &chan, Role::Sender, &auth, 4)
             .await
             .unwrap();
-        let mut r = ParallelStreams::connect(addr, &chan, Role::Receiver, &auth, 4)
+        let mut r = ParallelStreams::connect(addr.to_string(), &chan, Role::Receiver, &auth, 4)
             .await
             .unwrap();
 
@@ -282,10 +282,10 @@ mod tests {
         let addr = mock_relay_server().await;
         let chan = ChannelId("chan4".into());
 
-        let _s = ParallelStreams::connect(addr, &chan, Role::Sender, &[1u8; 16], 4)
+        let _s = ParallelStreams::connect(addr.to_string(), &chan, Role::Sender, &[1u8; 16], 4)
             .await
             .unwrap();
-        let mut r = ParallelStreams::connect(addr, &chan, Role::Receiver, &[2u8; 16], 4)
+        let mut r = ParallelStreams::connect(addr.to_string(), &chan, Role::Receiver, &[2u8; 16], 4)
             .await
             .unwrap();
 

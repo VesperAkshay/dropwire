@@ -29,7 +29,7 @@ dropwire send <FILE_OR_DIR> [OPTIONS]
 - `-s, --streams <NUM>`  
   Set the number of parallel TCP multiplexing streams (default: `4`). Increasing this can help saturate high-bandwidth WAN connections.
 - `-r, --relay <URL>`  
-  Override the default signaling relay server address (default: `ws://dropwire-relay.fly.dev:9010`).
+  Override the default signaling relay server address (default: `ws://dropwire.tyes.dev:9010`).
 - `--no-lan`  
   Disable local network UDP multicast peer discovery. Forces the connection to route over the WAN internet relay.
 

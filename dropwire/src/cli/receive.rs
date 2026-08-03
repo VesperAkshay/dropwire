@@ -36,9 +36,7 @@ pub async fn run(
         SignalingClient::connect(&relay_url, &channel_id, Role::Receiver, &code).await?;
 
     let tcp_relay = relay_url.replace("ws://", "").replace("9010", "9009");
-    let relay_addr = tcp_relay
-        .parse()
-        .unwrap_or_else(|_| "127.0.0.1:9009".parse().unwrap());
+    let relay_addr = tcp_relay;
 
     let parallel = ParallelStreams::connect(
         relay_addr,

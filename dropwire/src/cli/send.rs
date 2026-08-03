@@ -34,9 +34,7 @@ pub async fn run(
     // We connect to relay port, wait, signaling connect_inner uses relay_ws_url which is 9010.
     // The TCP relay is at 9009.
     let tcp_relay = relay_url.replace("ws://", "").replace("9010", "9009");
-    let relay_addr = tcp_relay
-        .parse()
-        .unwrap_or_else(|_| "127.0.0.1:9009".parse().unwrap());
+    let relay_addr = tcp_relay;
 
     let parallel = ParallelStreams::connect(
         relay_addr,

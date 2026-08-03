@@ -1,7 +1,18 @@
 .agents/
 re
-target
+target/
 tests
 PROTOCOL.md
 test
 proptest-regressions
+
+# SSH Keys
+*.pem
+*.key
+*.pub
+
+# Binaries and test files
+dropwire-relay
+dropwire-relay.exe
+dropwire.exe
+dummy.txt
