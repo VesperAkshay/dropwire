@@ -10,10 +10,10 @@ DropWire is a command-line tool that lets you transfer files directly between co
 
 ## Installation
 
-Currently, the most reliable way to install DropWire is using Cargo (Rust's package manager). If you don't have Rust installed, get it from [rustup.rs](https://rustup.rs).
+You can install DropWire directly from your terminal using our quick installation script:
 
 ```bash
-cargo install dropwire
+curl -sS https://dropwire.tyes.dev/install.sh | sh
 ```
 
 Verify your installation by checking the version:

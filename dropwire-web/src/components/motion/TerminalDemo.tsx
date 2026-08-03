@@ -13,7 +13,7 @@ export default function TerminalDemo() {
   }, []);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText('cargo install DropWire-cli');
+    navigator.clipboard.writeText('curl -sS https://dropwire.tyes.dev/install.sh | sh');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -135,12 +135,12 @@ export default function TerminalDemo() {
 
       {/* Copy Snippet Footer */}
       <div className="flex items-center justify-between bg-[#F4EFEA] p-3.5 rounded-2xl border border-[#D9D2C9]">
-        <span class="font-mono text-xs font-bold text-[#0B1016]/80">Ready to try? Install CLI from cargo:</span>
+        <span class="font-mono text-xs font-bold text-[#0B1016]/80">Ready to try? Install CLI via terminal:</span>
         <button
           onClick={handleCopy}
-          className="px-4 py-2 bg-black text-white hover:bg-[#0052FF] rounded-xl font-mono text-xs font-bold transition-all shadow-md"
+          className="px-4 py-2 bg-black text-white hover:bg-[#0052FF] rounded-xl font-mono text-xs font-bold transition-all shadow-md truncate ml-2 max-w-[200px] sm:max-w-none"
         >
-          {copied ? 'Copied to Clipboard!' : 'cargo install DropWire-cli 📋'}
+          {copied ? 'Copied to Clipboard!' : 'curl -sS https://dropwire.tyes.dev/install.sh | sh 📋'}
         </button>
       </div>
     </div>

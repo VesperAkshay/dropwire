@@ -48,8 +48,8 @@ export default function HeroCube3D() {
               {/* Cube Image with Parallax Offset */}
               <div className="flex justify-center items-center py-6" data-atropos-offset="10">
                 <img 
-                  src="/brand/cube-logo.png" 
-                  alt="DropWire 3D Hero Cube" 
+                  src="/brand/dropwire-logo.png" 
+                  alt="DropWire Logo" 
                   className="w-48 h-48 sm:w-60 sm:h-60 object-contain drop-shadow-[0_20px_35px_rgba(225,184,101,0.35)] transition-transform duration-500 group-hover:scale-105"
                 />
               </div>

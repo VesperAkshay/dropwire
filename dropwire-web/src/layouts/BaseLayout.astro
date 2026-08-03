@@ -13,9 +13,9 @@ interface Props {
 }
 
 const {
-  title = `${SITE.name} — Encrypted P2P File Transfer`,
-  description = SITE.description,
-  image = '/brand/cube-logo.png',
+  title = `DropWire — Secure, No-Account P2P File Transfer`,
+  description = "Send files instantly over your local network and the internet with zero setup. End-to-end encrypted, lightning fast peer-to-peer file transfer.",
+  image = '/brand/dropwire-logo.png',
   canonicalURL = Astro.url.href,
 } = Astro.props;
 
@@ -32,7 +32,7 @@ const NAV_BLOCKS = [
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/brand/cube-logo.png" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Canonical URL -->
@@ -72,7 +72,7 @@ const NAV_BLOCKS = [
         
         {/* Top Pure Typographic Brand Mark */}
         <div class="space-y-4">
-          <a href="/" class="block group" onclick="sessionStorage.removeItem('DropWire_loaded')">
+          <a href="/" class="block group" onclick="if (window.location.pathname === '/') { sessionStorage.removeItem('DropWire_loaded'); }">
             <span class="font-display text-3xl font-black tracking-tighter text-black group-hover:text-[#0052FF] transition-colors block leading-none">
               DropWire.
             </span>
@@ -149,7 +149,7 @@ const NAV_BLOCKS = [
           <div class="flex flex-col md:flex-row items-center justify-between gap-4 font-sans text-xs pt-2 pb-6">
             <div class="space-y-1 text-left">
               <p class="font-display font-black text-sm text-black">© 2026 DropWire Core Development</p>
-              <p class="text-black/60 font-medium">Built with high-performance Rust P2P engine. Open source under MIT license.</p>
+              <p class="text-black/60 font-medium">Built with high-performance Rust P2P engine.</p>
             </div>
 
             <div class="flex items-center gap-3">

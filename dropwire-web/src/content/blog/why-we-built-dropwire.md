@@ -19,5 +19,5 @@ DropWire was built in Rust to solve this problem permanently:
 2. **SPAKE2 Security:** Complete end-to-end encryption with ephemeral keypairs.
 3. **Resumable Chunks:** Interrupted transfers resume seamlessly using BLAKE3 Merkle integrity proofs.
 
-Try it today with `cargo install DropWire-cli`.
+Try it today by [downloading the CLI](/download).
 

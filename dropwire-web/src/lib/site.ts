@@ -5,7 +5,7 @@ export const SITE = {
   url: 'https://DropWire.pages.dev',
   repo: 'https://github.com/VesperAkshay/Tye-xhare',
   author: 'VesperAkshay',
-  license: 'MIT',
+
 };
 
 export const NAV_LINKS = [
