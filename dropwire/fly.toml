@@ -1,0 +1,25 @@
+app = "dropwire-relay"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+# WebSocket Signaling Server
+[[services]]
+  protocol = "tcp"
+  internal_port = 9010
+  processes = ["app"]
+
+  [[services.ports]]
+    port = 9010
+    handlers = ["http"]
+
+# TCP Stapling Server
+[[services]]
+  protocol = "tcp"
+  internal_port = 9009
+  processes = ["app"]
+
+  [[services.ports]]
+    port = 9009
+    handlers = ["tcp"]

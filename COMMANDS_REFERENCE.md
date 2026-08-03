@@ -30,7 +30,7 @@ dropwire send <FILE_OR_DIR> [OPTIONS]
 |---|---|---|
 | `-c, --code <CODE>` | Provide a custom code phrase instead of auto-generating one. | Auto-generated |
 | `-s, --streams <NUM>` | Set the number of parallel TCP multiplexing streams. Higher numbers can increase throughput on high-bandwidth links. | `4` |
-| `-r, --relay <URL>` | Override the default signaling relay server address. | `ws://relay.dropwire.io:9010` |
+| `-r, --relay <URL>` | Override the default signaling relay server address. | `ws://dropwire-relay.fly.dev:9010` |
 | `--no-lan` | Disable local network (UDP multicast) peer discovery and force WAN routing via relay. | `false` |
 
 **Examples:**
@@ -59,7 +59,7 @@ dropwire receive <CODE> [OPTIONS]
 | Flag | Description | Default |
 |---|---|---|
 | `-o, --out <DIR>` | Specify the output directory where the received payload should be saved. | `~/Downloads/Dropwire` |
-| `-r, --relay <URL>` | Override the default signaling relay server address. | `ws://relay.dropwire.io:9010` |
+| `-r, --relay <URL>` | Override the default signaling relay server address. | `ws://dropwire-relay.fly.dev:9010` |
 | `--no-lan` | Disable local network (UDP multicast) peer discovery and force WAN routing via relay. | `false` |
 
 **Examples:**

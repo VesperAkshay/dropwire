@@ -31,7 +31,7 @@ pub enum Commands {
         #[arg(short, long, default_value_t = 4)]
         streams: usize,
         /// Relay address
-        #[arg(short, long, default_value = "ws://relay.dropwire.io:9010")]
+        #[arg(short, long, default_value = "ws://dropwire-relay.fly.dev:9010")]
         relay: String,
         /// Skip LAN discovery
         #[arg(long)]
@@ -45,7 +45,7 @@ pub enum Commands {
         #[arg(short, long)]
         out: Option<PathBuf>,
         /// Relay address
-        #[arg(short, long, default_value = "ws://relay.dropwire.io:9010")]
+        #[arg(short, long, default_value = "ws://dropwire-relay.fly.dev:9010")]
         relay: String,
         /// Skip LAN discovery
         #[arg(long)]
