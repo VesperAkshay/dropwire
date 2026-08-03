@@ -1,0 +1,25 @@
+name: Build Relay
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Rust
+      uses: dtolnay/rust-toolchain@stable
+      
+    - name: Build
+      run: cargo build --release
+      working-directory: ./dropwire
+      
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dropwire-relay-linux
+        path: dropwire/target/release/dropwire
