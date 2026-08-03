@@ -67,69 +67,64 @@ const NAV_BLOCKS = [
     {/* Exact Architectural Shell */}
     <div class="flex flex-col lg:flex-row min-h-screen">
       
-      {/* SIDEBAR CONTAINER: width: calc(var(--spacing) * 50) => 200px */}
-      <aside class="w-full lg:w-[calc(var(--spacing)*50)] shrink-0 sticky top-0 self-start h-screen flex flex-col justify-between p-4 bg-transparent border-r border-[#D9D2C9] z-50">
+      {/* SIDEBAR / TOP NAV */}
+      <aside class="w-full lg:w-[13rem] shrink-0 lg:sticky top-0 lg:h-screen flex flex-col p-4 bg-[#F4EFEA] lg:bg-transparent border-b lg:border-b-0 lg:border-r border-[#D9D2C9] z-50">
         
-        {/* Top Pure Typographic Brand Mark */}
-        <div class="space-y-4">
+        {/* Top Bar on Mobile */}
+        <div class="flex items-center justify-between lg:block lg:space-y-4">
           <a href="/" class="block group" onclick="if (window.location.pathname === '/') { sessionStorage.removeItem('DropWire_loaded'); }">
             <span class="font-display text-3xl font-black tracking-tighter text-black group-hover:text-[#0052FF] transition-colors block leading-none">
               DropWire.
             </span>
-            <span class="text-[8px] font-mono text-black/60 tracking-widest uppercase font-bold mt-1 block">
+            <span class="text-[8px] font-mono text-black/60 tracking-widest uppercase font-bold mt-1 hidden sm:block lg:block">
               P2P ENCRYPTED ENGINE
             </span>
           </a>
+          
+          <button id="mobile-menu-btn" class="lg:hidden px-3 py-2 bg-black text-white rounded-lg font-display font-black text-xs uppercase">
+            Menu
+          </button>
+        </div>
 
-          {/* SIDEBAR CARDS: width: 150px; height: calc(var(--spacing) * 50); (200px) */}
-          <nav class="flex flex-col items-center gap-2.5 pt-1">
+        {/* Menu Content (Hidden on Mobile by Default) */}
+        <div id="mobile-menu" class="hidden lg:flex flex-col justify-between flex-1 mt-6 lg:mt-0">
+          <nav class="grid grid-cols-2 sm:grid-cols-4 lg:flex lg:flex-col items-stretch gap-2.5 pt-1">
             {NAV_BLOCKS.map((block) => (
               <a
                 href={block.href}
-                style="width: 150px; height: calc(var(--spacing) * 50);"
-                class={`group flex flex-col justify-between p-4 rounded-xl transition-all transform hover:-translate-y-0.5 shadow-md ${block.color}`}
+                class={`group flex flex-col justify-between p-3 lg:p-4 rounded-xl transition-all transform hover:-translate-y-0.5 shadow-md h-24 lg:h-32 ${block.color}`}
               >
-                {/* Top Row: Number Left, Arrow Right */}
                 <div class="flex items-center justify-between w-full">
                   <span class="font-mono text-xs font-black opacity-80">{block.num}</span>
                   <span class="font-display font-black text-lg group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
                     ↗
                   </span>
                 </div>
-
-                {/* Bottom Row: Title Sitting at Bottom */}
-                <span class="font-display font-black text-lg tracking-tight leading-none uppercase">
+                <span class="font-display font-black text-sm lg:text-lg tracking-tight leading-none uppercase break-words">
                   {block.label}
                 </span>
               </a>
             ))}
           </nav>
-        </div>
 
-        {/* Bottom Action Pills */}
-        <div class="space-y-2 pt-2">
-          {/* Purple Pill Button */}
-          <a
-            href="/download"
-            class="flex items-center justify-between px-4 py-3 rounded-xl bg-[#AB54F7] text-black font-display font-extrabold text-xs hover:brightness-110 transition-all shadow-md"
-          >
-            <span>Get DropWire</span>
-            <span class="text-sm font-black">↗</span>
-          </a>
+          <div class="space-y-2 pt-6 lg:pt-2">
+            <a
+              href="/download"
+              class="flex items-center justify-between px-4 py-3 rounded-xl bg-[#AB54F7] text-black font-display font-extrabold text-xs hover:brightness-110 transition-all shadow-md"
+            >
+              <span>Get DropWire</span>
+              <span class="text-sm font-black">↗</span>
+            </a>
 
-          {/* Black Social Icons Dock Pill */}
-          <div class="flex items-center justify-around py-3 px-3 bg-black rounded-lg text-white">
-            <a href={SITE.repo} target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="hover:text-[#FFB800] transition-colors">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
-            </a>
-            <a href="/blog" aria-label="Blog" class="font-mono text-[10px] font-black hover:text-[#FFB800] transition-colors">
-              BLOG
-            </a>
-            <a href="/docs" aria-label="Docs" class="font-mono text-[10px] font-black hover:text-[#FFB800] transition-colors">
-              DOCS
-            </a>
+            <div class="flex items-center justify-around py-3 px-3 bg-black rounded-lg text-white">
+              <a href={SITE.repo} target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="hover:text-[#FFB800] transition-colors">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+              </a>
+              <a href="/blog" aria-label="Blog" class="font-mono text-[10px] font-black hover:text-[#FFB800] transition-colors">BLOG</a>
+              <a href="/docs" aria-label="Docs" class="font-mono text-[10px] font-black hover:text-[#FFB800] transition-colors">DOCS</a>
+            </div>
           </div>
         </div>
       </aside>
@@ -168,6 +163,37 @@ const NAV_BLOCKS = [
       </main>
 
     </div>
+
+    <script>
+      // Mobile Menu Toggle
+      document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+        const menu = document.getElementById('mobile-menu');
+        menu?.classList.toggle('hidden');
+        menu?.classList.toggle('flex');
+      });
+
+      // Copy Button Logic
+      document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.copy-btn');
+        if (!btn) return;
+        
+        const sourceText = btn.getAttribute('data-copy-source');
+        if (sourceText) {
+          try {
+            await navigator.clipboard.writeText(sourceText);
+            const originalText = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.classList.add('!bg-[#00B060]', '!text-white');
+            setTimeout(() => { 
+              btn.textContent = originalText; 
+              btn.classList.remove('!bg-[#00B060]', '!text-white');
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy', err);
+          }
+        }
+      });
+    </script>
   </body>
 </html>
 
