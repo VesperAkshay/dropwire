@@ -26,7 +26,7 @@ DropWire uses virtualized chunking to instantly traverse your directory structur
 
 ### 2. Zero-Configuration Automatic Resume
 Internet connections drop. Laptops go to sleep. With DropWire, failed transfers are a thing of the past. 
-If your transfer dies at 99%, you do not need to restart from 0%. DropWire utilizes a highly memory-efficient cryptographic bitmap (`.dropwire-partial`) to track every chunk you've received. 
+If your transfer dies at 99%, you do not need to restart from 0%. DropWire utilizes a highly memory-efficient cryptographic bitmap (`.dwstate`) to track every chunk you've received. 
 To resume, simply run the **exact same receive command** again. DropWire will instantly negotiate with the sender to stream only the missing chunks. No special flags required.
 
 ### 3. The New Config Engine & Custom Relays

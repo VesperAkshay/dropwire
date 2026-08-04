@@ -30,13 +30,16 @@ dropwire send <FILE_OR_DIR> [OPTIONS]
 |---|---|---|
 | `-c, --code <CODE>` | Provide a custom code phrase instead of auto-generating one. | Auto-generated |
 | `-s, --streams <NUM>` | Set the number of parallel TCP multiplexing streams. Higher numbers can increase throughput on high-bandwidth links. | `4` |
-| `-r, --relay <URL>` | Override the default signaling relay server address. | `ws://dropwire.tyes.dev:9010` |
+| `-r, --relay <URL>` | Override the signaling relay server address. | Config file, or `ws://relay.dropwire.tyes.dev:9010` |
 | `--no-lan` | Disable local network (UDP multicast) peer discovery and force WAN routing via relay. | `false` |
 
 **Examples:**
 ```bash
 # Basic send (auto-generates a code)
 dropwire send ./my_video.mp4
+
+# Send an entire project folder
+dropwire send ./my_project/
 
 # Send using a custom code phrase
 dropwire send ./my_project --code secret-project-123
@@ -50,6 +53,8 @@ dropwire send archive.zip --streams 8 --relay ws://127.0.0.1:9010
 ## 📥 2. `receive`
 Receives a file or directory using the code phrase provided by the sender.
 
+**Automatic Resume:** If a transfer is interrupted (network drop, Ctrl+C, laptop sleep), simply re-run the exact same `receive` command in the same directory. DropWire will detect the `.dwstate` state file and seamlessly resume from where it left off — no special flags needed.
+
 **Usage:**
 ```bash
 dropwire receive <CODE> [OPTIONS]
@@ -59,7 +64,7 @@ dropwire receive <CODE> [OPTIONS]
 | Flag | Description | Default |
 |---|---|---|
 | `-o, --out <DIR>` | Specify the output directory where the received payload should be saved. | `~/Downloads/Dropwire` |
-| `-r, --relay <URL>` | Override the default signaling relay server address. | `ws://dropwire.tyes.dev:9010` |
+| `-r, --relay <URL>` | Override the signaling relay server address. | Config file, or `ws://relay.dropwire.tyes.dev:9010` |
 | `--no-lan` | Disable local network (UDP multicast) peer discovery and force WAN routing via relay. | `false` |
 
 **Examples:**
@@ -72,6 +77,9 @@ dropwire receive secret-project-123 --out ./incoming
 
 # Receive using a local relay server
 dropwire receive secret-project-123 --relay ws://127.0.0.1:9010
+
+# Resume an interrupted transfer (just re-run the same command)
+dropwire receive secret-project-123
 ```
 
 ---
@@ -97,4 +105,42 @@ dropwire relay
 
 # Start relay on custom ports
 dropwire relay --bind 0.0.0.0:8000 --ws-bind 0.0.0.0:8001
+```
+
+---
+
+## ⚙️ 4. `config`
+Manages persistent CLI configuration. Settings are stored in a JSON file at the OS-specific config directory.
+
+- **Linux/macOS:** `~/.config/dropwire/config.json`
+- **Windows:** `%APPDATA%\dropwire\config.json`
+
+**Usage:**
+```bash
+dropwire config <ACTION> [KEY] [VALUE]
+```
+
+**Actions:**
+| Action | Description | Example |
+|---|---|---|
+| `show` | Display all current configuration values and config file location. | `dropwire config show` |
+| `set <KEY> <VALUE>` | Set a configuration value persistently. | `dropwire config set relay ws://my-server:9010` |
+
+**Available Keys:**
+| Key | Description | Default |
+|---|---|---|
+| `relay` | Default relay server URL used by `send` and `receive` when `--relay` is not passed. | `ws://relay.dropwire.tyes.dev:9010` |
+
+**Relay Resolution Priority (highest wins):**
+1. `--relay` flag passed directly to the command
+2. Value saved in `config.json`
+3. Built-in default: `ws://relay.dropwire.tyes.dev:9010`
+
+**Examples:**
+```bash
+# View current config
+dropwire config show
+
+# Set a custom default relay
+dropwire config set relay wss://my-private-relay.example.com:9010
 ```

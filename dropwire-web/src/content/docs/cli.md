@@ -29,7 +29,7 @@ dropwire send <FILE_OR_DIR> [OPTIONS]
 - `-s, --streams <NUM>`  
   Set the number of parallel TCP multiplexing streams (default: `4`). Increasing this can help saturate high-bandwidth WAN connections.
 - `-r, --relay <URL>`  
-  Override the default signaling relay server address (default: `ws://dropwire.tyes.dev:9010`).
+  Override the default signaling relay server address (default: `ws://relay.dropwire.tyes.dev:9010`).
 - `--no-lan`  
   Disable local network UDP multicast peer discovery. Forces the connection to route over the WAN internet relay.
 
@@ -44,7 +44,7 @@ dropwire send ./confidential_data.zip --streams 8 --code secret-project-123
 
 Connects to a sender using a shared room code and downloads the payload.
 
-**Automatic Resume:** DropWire features zero-configuration resumability. If a transfer is interrupted, simply run the exact same `receive` command again in the same directory. The engine will read the `.dropwire-partial` state file and instantly negotiate to resume downloading only the missing chunks.
+**Automatic Resume:** DropWire features zero-configuration resumability. If a transfer is interrupted, simply run the exact same `receive` command again in the same directory. The engine will read the `.dwstate` state file and instantly negotiate to resume downloading only the missing chunks.
 
 **Usage:**
 ```bash
@@ -84,4 +84,36 @@ dropwire relay [OPTIONS]
 **Example:**
 ```bash
 dropwire relay --bind 0.0.0.0:8080 --ws-bind 0.0.0.0:8081
+```
+
+---
+
+## 4. `dropwire config`
+
+Manages persistent CLI configuration. Settings are stored in a JSON file at the OS-specific config directory (`~/.config/dropwire/config.json` on Linux/macOS, `%APPDATA%\dropwire\config.json` on Windows).
+
+**Usage:**
+```bash
+dropwire config <ACTION> [KEY] [VALUE]
+```
+
+**Actions:**
+- `show` — Display all current configuration values and the config file location.
+- `set <KEY> <VALUE>` — Set a configuration value persistently.
+
+**Available Keys:**
+- `relay` — Default relay server URL used by `send` and `receive` when `--relay` is not passed (default: `ws://relay.dropwire.tyes.dev:9010`).
+
+**Relay Resolution Priority** (highest wins):
+1. `--relay` flag passed directly to the command
+2. Value saved in `config.json`
+3. Built-in default: `ws://relay.dropwire.tyes.dev:9010`
+
+**Examples:**
+```bash
+# View current config
+dropwire config show
+
+# Set a custom default relay
+dropwire config set relay wss://my-private-relay.example.com:9010
 ```
