@@ -49,3 +49,4 @@ dropwire receive happy-dog-42
 1. **Discovery:** DropWire automatically searches your local network (LAN/Wi-Fi) using UDP Multicast to see if the sender is nearby. If they aren't, it falls back to a secure internet relay.
 2. **Authentication:** The two machines securely authenticate each other using the room code (SPAKE2). 
 3. **Transfer:** The file is streamed, verified, and saved to your local disk.
+4. **Automatic Resume:** If your connection drops halfway, don't panic! Just run the exact same `receive` command again. DropWire will automatically detect the `.dropwire-partial` state file and instantly resume the transfer right where it left off.

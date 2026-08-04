@@ -44,6 +44,8 @@ dropwire send ./confidential_data.zip --streams 8 --code secret-project-123
 
 Connects to a sender using a shared room code and downloads the payload.
 
+**Automatic Resume:** DropWire features zero-configuration resumability. If a transfer is interrupted, simply run the exact same `receive` command again in the same directory. The engine will read the `.dropwire-partial` state file and instantly negotiate to resume downloading only the missing chunks.
+
 **Usage:**
 ```bash
 dropwire receive <CODE> [OPTIONS]

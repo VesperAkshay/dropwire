@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 
+pub mod config;
 pub mod receive;
 pub mod relay;
 pub mod send;
@@ -11,7 +12,7 @@ pub mod send;
     bin_name = "dropwire",
     version = "1.0", 
     about = "Dropwire: Secure, fast, P2P file transfer",
-    long_about = "Dropwire is a high-speed, end-to-end encrypted P2P file transfer tool.\n\nIt allows you to securely send files across any network (LAN or WAN) using SPAKE2 password-authenticated key exchange and parallel TCP streams for maximum throughput.\n\nQUICK START:\n  Sender:   dropwire send ./my_file.zip\n  Receiver: dropwire receive <CODE>"
+    long_about = "Dropwire is a high-speed, end-to-end encrypted P2P file transfer tool.\n\nIt allows you to securely send files and directories across any network (LAN or WAN) using SPAKE2 password-authenticated key exchange and parallel TCP streams for maximum throughput.\n\nQUICK START:\n  Sender:   dropwire send ./my_folder\n  Receiver: dropwire receive <CODE>"
 )]
 pub struct Cli {
     #[command(subcommand)]
@@ -20,9 +21,10 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug, PartialEq)]
 pub enum Commands {
-    /// Send a file securely to another peer
+    /// Send a file or directory securely to another peer
     Send {
-        /// File to send
+        /// File or directory to send
+        #[arg(value_name = "FILE_OR_DIR")]
         file: PathBuf,
         /// Use specific code instead of random
         #[arg(short, long)]
@@ -31,8 +33,8 @@ pub enum Commands {
         #[arg(short, long, default_value_t = 4)]
         streams: usize,
         /// Relay address
-        #[arg(short, long, default_value = "ws://relay.dropwire.tyes.dev:9010")]
-        relay: String,
+        #[arg(short, long)]
+        relay: Option<String>,
         /// Skip LAN discovery
         #[arg(long)]
         no_lan: bool,
@@ -45,8 +47,8 @@ pub enum Commands {
         #[arg(short, long)]
         out: Option<PathBuf>,
         /// Relay address
-        #[arg(short, long, default_value = "ws://relay.dropwire.tyes.dev:9010")]
-        relay: String,
+        #[arg(short, long)]
+        relay: Option<String>,
         /// Skip LAN discovery
         #[arg(long)]
         no_lan: bool,
@@ -59,6 +61,15 @@ pub enum Commands {
         /// WS bind address
         #[arg(long, default_value = "0.0.0.0:9010")]
         ws_bind: String,
+    },
+    /// Manage configuration
+    Config {
+        /// "set" or "show"
+        action: String,
+        /// Key (for set)
+        key: Option<String>,
+        /// Value (for set)
+        value: Option<String>,
     },
 }
 

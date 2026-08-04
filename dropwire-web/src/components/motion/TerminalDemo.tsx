@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 export default function TerminalDemo() {
   const [history, setHistory] = useState([
     { type: 'input', text: 'dropwire help' },
-    { type: 'output', text: 'DropWire v0.1.1\nSecure P2P File Transfer\n\nUsage:\n  dropwire send <path>\n  dropwire receive <room-code>' }
+    { type: 'output', text: 'DropWire v0.1.2\nSecure P2P File & Folder Transfer\n\nUsage:\n  dropwire send <file_or_dir>\n  dropwire receive <room-code>' }
   ]);
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -101,7 +101,7 @@ export default function TerminalDemo() {
         </div>
       </div>
       <div className="bg-[#222222] px-4 py-2 text-[10px] text-white/40 uppercase tracking-widest text-center border-t border-white/5 font-bold">
-        Try typing "dropwire send ./files" or "clear"
+        Try typing "dropwire send ./my_folder" or "clear"
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/logo.svg" alt="DropWire Logo" width="600" />
+  <img src="./dropwire-web/public/brand/dropwire-logo.png" alt="DropWire Logo" width="600" />
   <br/>
   <p><b>A blazingly fast, serverless, end-to-end encrypted P2P file-transfer CLI.</b></p>
   
