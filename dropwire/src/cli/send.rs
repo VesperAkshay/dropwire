@@ -12,7 +12,7 @@ pub async fn run(
     code: Option<String>,
     streams: usize,
     relay_url: String,
-    _no_lan: bool,
+    no_lan: bool,
 ) -> Result<(), DropWireError> {
     if !file.exists() {
         eprintln!("Error: Path does not exist.");
@@ -34,16 +34,44 @@ pub async fn run(
     // We connect to relay port, wait, signaling connect_inner uses relay_ws_url which is 9010.
     // The TCP relay is at 9009.
     let tcp_relay = relay_url.replace("ws://", "").replace("9010", "9009");
-    let relay_addr = tcp_relay;
+    let parallel = if !no_lan {
+        let listener = crate::net::parallel::ParallelListener::bind().await?;
+        let port = listener.port;
+        let chan = channel_id.clone();
+        println!("\x1b[36m⚡ LAN Discovery: Listening on port {} ...\x1b[0m", port);
+        tokio::spawn(async move {
+            let _ = crate::net::discovery::DiscoveryService::announce(&chan, std::time::Duration::from_secs(30), port).await;
+        });
 
-    let parallel = ParallelStreams::connect(
-        relay_addr,
-        &channel_id,
-        Role::Sender,
-        &sig_result.auth_token,
-        streams as u8,
-    )
-    .await?;
+        match tokio::time::timeout(
+            std::time::Duration::from_secs(15),
+            listener.accept_all(&sig_result.auth_token, streams as u8)
+        ).await {
+            Ok(Ok(p)) => {
+                println!("\x1b[32m✓ Connected via LAN (Direct P2P) — Maximum speed!\x1b[0m");
+                p
+            }
+            _ => {
+                println!("\x1b[33m⚠ LAN peer not found, falling back to Relay...\x1b[0m");
+                ParallelStreams::connect(
+                    tcp_relay.clone(),
+                    &channel_id,
+                    Role::Sender,
+                    &sig_result.auth_token,
+                    streams as u8,
+                ).await?
+            }
+        }
+    } else {
+        println!("\x1b[33m⚠ LAN disabled by config, using Relay...\x1b[0m");
+        ParallelStreams::connect(
+            tcp_relay,
+            &channel_id,
+            Role::Sender,
+            &sig_result.auth_token,
+            streams as u8,
+        ).await?
+    };
 
     let pb = ProgressBar::new(100); // 100% based, but we'll use ETA logic
     pb.set_style(
@@ -59,8 +87,10 @@ pub async fn run(
         derive_control_key(&sig_result.shared_key),
     );
 
+    let config = crate::cli::config::DropwireConfig::load();
+    
     engine
-        .send(&file, parallel, move |current, total, _| {
+        .send(&[file.to_path_buf()], parallel, config.get_chunk_size_kb(), move |current, total, _| {
             if total > 0 {
                 pb.set_length(total);
                 pb.set_position(current);
@@ -68,7 +98,16 @@ pub async fn run(
         })
         .await?;
 
-    let filesize = file.metadata().unwrap().len() as f64 / 1_048_576.0;
+    let filesize = if file.is_dir() {
+        walkdir::WalkDir::new(&file)
+            .into_iter()
+            .filter_map(|e| e.ok())
+            .filter(|e| e.file_type().is_file())
+            .map(|e| e.metadata().map(|m| m.len()).unwrap_or(0))
+            .sum::<u64>() as f64 / 1_048_576.0
+    } else {
+        file.metadata().unwrap().len() as f64 / 1_048_576.0
+    };
     println!(
         "Transfer complete: {} ({:.2} MB)",
         file.file_name().unwrap().to_string_lossy(),

@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./dropwire-web/public/brand/dropwire-logo.png" alt="DropWire Logo" width="600" />
   <br/>
-  <p><b>A blazingly fast, serverless, end-to-end encrypted P2P file-transfer CLI.</b></p>
+  <p><b>A blazingly fast, serverless, end-to-end encrypted P2P file-transfer suite.</b></p>
   
   <p>
     <a href="https://github.com/VesperAkshay/dropwire/releases"><img src="https://img.shields.io/github/v/release/VesperAkshay/dropwire?color=00B060&label=version" alt="Version"></a>
@@ -14,34 +14,41 @@
 
 DropWire lets you securely send files and massive directories of any size directly between machines over the internet using a simple code phrase. No accounts, no port-forwarding, and absolutely no limits. Inspired by `magic-wormhole` and `croc`, but architected for maximum bandwidth multiplexing and vast repository transfers.
 
+Now featuring both a blazing fast **Command Line Interface (CLI)** and a gorgeous, interactive **Terminal User Interface (TUI)** (`dropwirex`).
+
 ---
 
 ## ✨ Features
 
-- **No Accounts or Setup:** Just install and use. Authentication is based on a zero-knowledge proof derived from a shared secret code phrase.
+- **Zero-Copy Engine:** DropWire maps files directly into memory and securely streams them with zero-copy I/O and asynchronous multithreading, maxing out your disk and network throughput.
 - **Continuous Virtual Chunking:** Send 100,000 tiny files just as seamlessly (and fast) as a single 100GB video file.
 - **End-to-End Encrypted (E2EE):** Every byte is symmetrically encrypted via `ChaCha20Poly1305`. The network (and the fallback relay) cannot read your data. [Read our Security Architecture](./SECURITY.md).
 - **Resilient & Resume-ready:** Internet dropped at 99%? Just rerun the command. DropWire reads its deterministic `.dwstate` and resumes instantly where it left off.
-- **NAT Traversal:** Attempts direct P2P first. If both users are behind strict NATs/firewalls, traffic is securely routed through a relay—but the relay remains completely blind to the contents.
+- **NAT Traversal & LAN Discovery:** Attempts direct P2P first, seamlessly discovering peers on the same LAN for gigabit speeds. If both users are behind strict NATs/firewalls, traffic is securely routed through a relay—but the relay remains completely blind to the contents.
+
+## 🎨 DropWire TUI (`dropwirex`)
+DropWire now comes with a rich, interactive Terminal User Interface featuring:
+- **Interactive File Browser:** Navigate your directories and toggle multiple files/folders at once with `[Space]`.
+- **Live Transfer Dashboard:** Watch a live sparkline chart visualizing your transfer speeds, complete with granular progress bars for chunks and total bytes.
+- **Transfer History:** Easily track everything you've sent and received over time.
+- **Custom Theme Engine:** Choose your aesthetic (Cyberpunk, Matrix, Nord, Monochrome) directly from the built-in Config Editor.
 
 ## 📦 Installation
 
-### macOS / Linux (Homebrew)
-*Coming soon...*
-
-### Windows (Scoop)
-*Coming soon...*
-
-### From Source
+### From Source (CLI & TUI)
 Ensure you have [Rust](https://rustup.rs/) installed, then run:
 
 ```bash
-cargo install --git https://github.com/VesperAkshay/dropwire.git
+# Install the core CLI tool
+cargo install --path ./dropwire
+
+# Install the interactive TUI
+cargo install --path ./dropwire-tui
 ```
 
 ## ⚡ Usage
 
-DropWire is designed to be incredibly simple to use. Here is a quick start:
+### Using the CLI (`dropwire`)
 
 **To send a folder:**
 ```bash
@@ -54,6 +61,14 @@ dropwire receive 7-purple-monkey
 ```
 
 📖 **[View the full Commands Reference](./COMMANDS_REFERENCE.md)** for advanced options like custom codes, parallel streams, and self-hosted relays.
+
+### Using the TUI (`dropwirex`)
+
+Just run the app:
+```bash
+dropwirex
+```
+Navigate with arrow keys. Use `[Space]` to select multiple files, `[S]` to send, `[R]` to receive, `[C]` to configure, and `[H]` to view history.
 
 ## 🔒 Security Architecture
 

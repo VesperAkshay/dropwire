@@ -2,7 +2,7 @@ use crate::types::{FileMetadata, CHUNK_SIZE};
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
 use std::path::{Path, PathBuf};
-use walkdir::WalkDir;
+use ignore::WalkBuilder;
 
 pub struct FileEntry {
     pub path: PathBuf,
@@ -17,56 +17,60 @@ pub struct Chunker {
     pub total_chunks: u64,
     pub chunk_hashes: Vec<[u8; 32]>,
     pub overall_hash: [u8; 32],
+    pub chunk_size: u32,
+    file_cache: std::sync::Mutex<Option<(PathBuf, File)>>,
 }
 
 impl Chunker {
-    pub fn new(root_path: &Path) -> Result<Self, std::io::Error> {
+    pub fn new(root_path: &Path, chunk_size: u32) -> Result<Self, std::io::Error> {
+        Self::from_paths(&[root_path.to_path_buf()], chunk_size)
+    }
+
+    pub fn from_paths(paths: &[PathBuf], chunk_size: u32) -> Result<Self, std::io::Error> {
         let mut files = Vec::new();
         let mut total_size = 0;
         let mut total_chunks = 0;
 
-        if root_path.is_file() {
-            let size = root_path.metadata()?.len();
-            let chunks = if size == 0 {
-                1
+        for root_path in paths {
+            let base_parent = root_path.parent().unwrap_or(root_path);
+            
+            if root_path.is_file() {
+                let size = root_path.metadata()?.len();
+                let chunks = if size == 0 {
+                    1
+                } else {
+                    size.div_ceil(chunk_size as u64)
+                };
+                files.push(FileEntry {
+                    path: root_path.to_path_buf(),
+                    relative_path: root_path.file_name().unwrap().to_string_lossy().to_string(),
+                    size,
+                    chunks,
+                });
+                total_size += size;
+                total_chunks += chunks;
             } else {
-                size.div_ceil(CHUNK_SIZE as u64)
-            };
-            files.push(FileEntry {
-                path: root_path.to_path_buf(),
-                relative_path: root_path.file_name().unwrap().to_string_lossy().to_string(),
-                size,
-                chunks,
-            });
-            total_size += size;
-            total_chunks += chunks;
-        } else {
-            for entry in WalkDir::new(root_path).into_iter().filter_map(|e| e.ok()) {
-                if entry.file_type().is_file() {
-                    let size = entry.metadata()?.len();
-                    let chunks = if size == 0 {
-                        1
-                    } else {
-                        size.div_ceil(CHUNK_SIZE as u64)
-                    };
+                for entry in WalkBuilder::new(root_path).hidden(false).require_git(false).build().filter_map(|e| e.ok()) {
+                    if entry.file_type().map_or(false, |ft| ft.is_file()) {
+                        let size = entry.metadata().map(|m| m.len()).unwrap_or(0);
+                        let chunks = if size == 0 {
+                            1
+                        } else {
+                            size.div_ceil(CHUNK_SIZE as u64)
+                        };
 
-                    let rel_path = entry.path().strip_prefix(root_path).unwrap();
-                    let mut rel_str = rel_path.to_string_lossy().to_string();
-                    let root_name = root_path.file_name().unwrap().to_string_lossy().to_string();
-                    if rel_str.is_empty() {
-                        rel_str = root_name;
-                    } else {
-                        rel_str = format!("{}/{}", root_name, rel_str).replace("\\", "/");
+                        let rel_path = entry.path().strip_prefix(base_parent).unwrap_or(entry.path());
+                        let rel_str = rel_path.to_string_lossy().to_string().replace("\\", "/");
+
+                        files.push(FileEntry {
+                            path: entry.into_path(),
+                            relative_path: rel_str,
+                            size,
+                            chunks,
+                        });
+                        total_size += size;
+                        total_chunks += chunks;
                     }
-
-                    files.push(FileEntry {
-                        path: entry.into_path(),
-                        relative_path: rel_str,
-                        size,
-                        chunks,
-                    });
-                    total_size += size;
-                    total_chunks += chunks;
                 }
             }
         }
@@ -78,7 +82,7 @@ impl Chunker {
 
         for file_entry in &files {
             let mut f = File::open(&file_entry.path)?;
-            let mut buf = vec![0u8; CHUNK_SIZE];
+            let mut buf = vec![0u8; chunk_size as usize];
             if file_entry.size == 0 {
                 chunk_hashes.push(blake3::hash(&[]).into());
                 blake3_hasher.update(&[]);
@@ -107,6 +111,8 @@ impl Chunker {
             total_chunks,
             chunk_hashes,
             overall_hash: blake3_hasher.finalize().into(),
+            chunk_size,
+            file_cache: std::sync::Mutex::new(None),
         })
     }
 
@@ -126,21 +132,35 @@ impl Chunker {
         for file_entry in &self.files {
             if index < current_chunk_offset + file_entry.chunks {
                 let file_chunk_index = index - current_chunk_offset;
-                let mut f = File::open(&file_entry.path)?;
-                f.seek(SeekFrom::Start(file_chunk_index * CHUNK_SIZE as u64))?;
+                
+                let mut cache = self.file_cache.lock().unwrap();
+                let mut f = if let Some((path, file)) = cache.take() {
+                    if path == file_entry.path {
+                        file
+                    } else {
+                        File::open(&file_entry.path)?
+                    }
+                } else {
+                    File::open(&file_entry.path)?
+                };
+                
+                f.seek(SeekFrom::Start(file_chunk_index * self.chunk_size as u64))?;
 
                 let expected_len = if file_chunk_index == file_entry.chunks - 1
-                    && !file_entry.size.is_multiple_of(CHUNK_SIZE as u64)
+                    && !file_entry.size.is_multiple_of(self.chunk_size as u64)
                 {
-                    (file_entry.size % (CHUNK_SIZE as u64)) as usize
+                    (file_entry.size % (self.chunk_size as u64)) as usize
                 } else if file_entry.size == 0 {
                     0
                 } else {
-                    CHUNK_SIZE
+                    self.chunk_size as usize
                 };
 
                 let mut buf = vec![0u8; expected_len];
                 f.read_exact(&mut buf)?;
+                
+                *cache = Some((file_entry.path.clone(), f));
+                
                 return Ok(buf);
             }
             current_chunk_offset += file_entry.chunks;
@@ -186,13 +206,17 @@ use std::io::Write;
 pub struct VirtualWriter {
     pub files: Vec<FileMetadata>,
     pub base_dir: PathBuf,
+    pub chunk_size: u32,
+    file_cache: std::sync::Mutex<Option<(PathBuf, File)>>,
 }
 
 impl VirtualWriter {
-    pub fn new(base_dir: &Path, files: Vec<FileMetadata>) -> Self {
+    pub fn new(base_dir: &Path, files: Vec<FileMetadata>, chunk_size: u32) -> Self {
         Self {
             base_dir: base_dir.to_path_buf(),
             files,
+            chunk_size,
+            file_cache: std::sync::Mutex::new(None),
         }
     }
 
@@ -213,15 +237,22 @@ impl VirtualWriter {
                     std::fs::create_dir_all(parent)?;
                 }
 
-                let mut f = OpenOptions::new()
-                    .read(true)
-                    .write(true)
-                    .create(true)
-                    .truncate(false)
-                    .open(&full_path)?;
+                let mut cache = self.file_cache.lock().unwrap();
+                let mut f = if let Some((path, file)) = cache.take() {
+                    if path == full_path {
+                        file
+                    } else {
+                        OpenOptions::new().read(true).write(true).create(true).truncate(false).open(&full_path)?
+                    }
+                } else {
+                    OpenOptions::new().read(true).write(true).create(true).truncate(false).open(&full_path)?
+                };
                     
-                f.seek(SeekFrom::Start(file_chunk_index * CHUNK_SIZE as u64))?;
+                f.seek(SeekFrom::Start(file_chunk_index * self.chunk_size as u64))?;
                 f.write_all(data)?;
+                
+                *cache = Some((full_path, f));
+                
                 return Ok(());
             }
             current_chunk_offset += file_entry.chunks;
@@ -252,16 +283,16 @@ impl VirtualWriter {
                 }
 
                 let mut f = File::open(&full_path)?;
-                f.seek(SeekFrom::Start(file_chunk_index * CHUNK_SIZE as u64))?;
+                f.seek(SeekFrom::Start(file_chunk_index * self.chunk_size as u64))?;
 
                 let expected_len = if file_chunk_index == file_entry.chunks - 1
-                    && !file_entry.size.is_multiple_of(CHUNK_SIZE as u64)
+                    && !file_entry.size.is_multiple_of(self.chunk_size as u64)
                 {
-                    (file_entry.size % (CHUNK_SIZE as u64)) as usize
+                    (file_entry.size % (self.chunk_size as u64)) as usize
                 } else if file_entry.size == 0 {
                     0
                 } else {
-                    CHUNK_SIZE
+                    self.chunk_size as usize
                 };
 
                 let mut buf = vec![0u8; expected_len];
@@ -288,5 +319,44 @@ impl VirtualWriter {
             }
         }
         hasher.finalize().into()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+
+    #[test]
+    fn test_chunker_respects_gitignore() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let root = temp_dir.path();
+
+        // 1. Create a normal file (should be included)
+        fs::write(root.join("keep.txt"), b"keep me").unwrap();
+
+        // 2. Create a .gitignore file
+        fs::write(root.join(".gitignore"), b"target/\nignored.txt\n").unwrap();
+
+        // 3. Create a file that should be explicitly ignored
+        fs::write(root.join("ignored.txt"), b"ignore me").unwrap();
+
+        // 4. Create a directory that should be ignored, with a file inside it
+        fs::create_dir(root.join("target")).unwrap();
+        fs::write(root.join("target").join("built.exe"), b"binary").unwrap();
+
+        // 5. Run the chunker
+        let chunker = Chunker::new(root, 1024 * 1024).unwrap();
+        let metadata = chunker.get_metadata();
+
+        // Extract the relative paths that were picked up
+        let paths: Vec<String> = metadata.into_iter().map(|m| m.relative_path).collect();
+
+        // Assertions
+        assert!(paths.iter().any(|p| p.contains("keep.txt")), "keep.txt should be included");
+        assert!(paths.iter().any(|p| p.contains(".gitignore")), ".gitignore itself should be included");
+        
+        assert!(!paths.iter().any(|p| p.contains("ignored.txt")), "ignored.txt should be ignored");
+        assert!(!paths.iter().any(|p| p.contains("built.exe")), "target/built.exe should be ignored");
     }
 }

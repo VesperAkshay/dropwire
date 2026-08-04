@@ -66,12 +66,16 @@ pub fn safe_path(untrusted: &str) -> Result<std::path::PathBuf, DropWireError> {
     Ok(safe)
 }
 
+pub fn default_chunk_size() -> u32 { 1_048_576 }
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TransferManifest {
     pub files: Vec<FileMetadata>,
     pub total_size: u64,
     pub total_chunks: u64,
     pub overall_hash: [u8; 32],
+    #[serde(default = "default_chunk_size")]
+    pub chunk_size: u32,
 }
 
 static WORDLIST: OnceLock<HashSet<&'static str>> = OnceLock::new();

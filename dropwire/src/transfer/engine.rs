@@ -5,7 +5,7 @@ use crate::transfer::compress::{decompress, maybe_compress};
 use crate::transfer::resume::PartialState;
 use crate::types::TransferManifest;
 use chacha20poly1305::{AeadInPlace, ChaCha20Poly1305, Key, KeyInit, Nonce};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 pub struct TransferEngine {
     pub stream_key: [u8; 32],
@@ -61,20 +61,23 @@ impl TransferEngine {
 
     pub async fn send<F>(
         &self,
-        file_path: &Path,
+        file_paths: &[PathBuf],
         mut streams: ParallelStreams,
+        chunk_size_kb: u32,
         progress: F,
     ) -> Result<(), DropWireError>
     where
         F: Fn(u64, u64, u64) + Send + 'static,
     {
-        let chunker = Chunker::new(file_path)?;
+        let chunk_size = chunk_size_kb * 1024;
+        let chunker = Chunker::from_paths(file_paths, chunk_size)?;
 
         let manifest = TransferManifest {
             files: chunker.get_metadata(),
             total_size: chunker.total_size(),
             total_chunks: chunker.total_chunks(),
             overall_hash: chunker.blake3_hash(),
+            chunk_size,
         };
         let header = serde_json::to_vec(&manifest)
             .map_err(|e| DropWireError::Protocol(e.to_string()))?;
@@ -111,24 +114,44 @@ impl TransferEngine {
             }
         }
 
-        for i in 0..chunker.total_chunks() {
-            if bitmap[i as usize] {
-                progress(i + 1, chunker.total_chunks(), 0);
-                continue;
+        use futures::stream::{StreamExt, FuturesUnordered};
+        let mut in_flight = FuturesUnordered::new();
+        let mut current_idx = 0;
+        let total = chunker.total_chunks();
+
+        while current_idx < total || !in_flight.is_empty() {
+            while in_flight.len() < 16 && current_idx < total {
+                if bitmap[current_idx as usize] {
+                    progress(current_idx + 1, chunker.total_chunks(), 0);
+                    current_idx += 1;
+                    continue;
+                }
+
+                let chunk_data = chunker.read_chunk(current_idx)?;
+                let stream_key = self.stream_key;
+                let idx = current_idx;
+
+                in_flight.push(tokio::spawn(async move {
+                    tokio::task::spawn_blocking(move || {
+                        let (comp_data, is_comp) = maybe_compress(&chunk_data, "transfer");
+                        let enc = crate::crypto::stream::encrypt_chunk(&stream_key, idx, &comp_data).unwrap();
+                        ChunkFrame {
+                            chunk_index: idx,
+                            is_compressed: is_comp,
+                            data: enc,
+                        }
+                    }).await.unwrap()
+                }));
+
+                current_idx += 1;
             }
-            let chunk_data = chunker.read_chunk(i)?;
-            let (comp_data, is_comp) = maybe_compress(&chunk_data, "transfer");
-            let enc_data = crate::crypto::stream::encrypt_chunk(&self.stream_key, i, &comp_data)?;
 
-            streams
-                .send_chunk(ChunkFrame {
-                    chunk_index: i,
-                    is_compressed: is_comp,
-                    data: enc_data,
-                })
-                .await?;
-
-            progress(i + 1, chunker.total_chunks(), 0);
+            if let Some(res) = in_flight.next().await {
+                let frame = res.map_err(|_| DropWireError::Crypto("Task failed".into()))?;
+                let idx = frame.chunk_index;
+                streams.send_chunk(frame).await?;
+                progress(idx + 1, chunker.total_chunks(), 0);
+            }
         }
 
         streams
@@ -189,7 +212,7 @@ impl TransferEngine {
         }
 
         let state_file = output_dir.join(format!(".{}.dwstate", root_name));
-        let virtual_writer = VirtualWriter::new(output_dir, manifest.files.clone());
+        let virtual_writer = VirtualWriter::new(output_dir, manifest.files.clone(), manifest.chunk_size);
 
         let mut state = if let Some(mut existing) = PartialState::load(&state_file)? {
             if existing.expected_hash == expected_hash && existing.total_chunks == total_chunks {
@@ -216,37 +239,113 @@ impl TransferEngine {
         streams.send_raw(0, &enc_resume).await?;
 
         let mut chunks_received = state.received.count_ones() as u64;
-        let mut eof_received = false;
+        let _eof_received = false;
 
-        loop {
-            if chunks_received == total_chunks && eof_received {
-                break;
+        use futures::stream::{StreamExt, FuturesUnordered};
+        let (tx, mut rx) = tokio::sync::mpsc::channel::<ChunkFrame>(32);
+        let mut tx_streams = streams;
+        
+        let reader_task = tokio::spawn(async move {
+            loop {
+                let (_, chunk) = tx_streams.recv_chunk().await?;
+                if chunk.chunk_index == 0xFFFFFFFFFFFFFFFF { break; }
+                if tx.send(chunk).await.is_err() { break; }
+            }
+            Ok::<_, DropWireError>(tx_streams)
+        });
+
+        let mut in_flight = FuturesUnordered::new();
+        let mut eof_reached = false;
+        let mut chunks_processed = 0;
+        let target_chunks = total_chunks - chunks_received;
+
+        while chunks_processed < target_chunks {
+            while in_flight.len() < 16 && !eof_reached {
+                if let Ok(chunk) = rx.try_recv() {
+                    if chunk.chunk_index < total_chunks {
+                        let stream_key = self.stream_key;
+                        in_flight.push(tokio::spawn(async move {
+                            tokio::task::spawn_blocking(move || {
+                                let comp_data = crate::crypto::stream::decrypt_chunk(&stream_key, chunk.chunk_index, &chunk.data).unwrap();
+                                let plaintext = if chunk.is_compressed {
+                                    decompress(&comp_data).unwrap()
+                                } else {
+                                    comp_data
+                                };
+                                (chunk.chunk_index, plaintext)
+                            }).await.unwrap()
+                        }));
+                    }
+                } else {
+                    break;
+                }
             }
 
-            let (_, chunk) = streams.recv_chunk().await?;
-            if chunk.chunk_index == 0xFFFFFFFFFFFFFFFF {
-                eof_received = true;
-                continue; // Ignore EOF chunks, rely on total_chunks
-            }
-            if chunk.chunk_index >= total_chunks {
-                continue;
-            }
-
-            let comp_data = crate::crypto::stream::decrypt_chunk(&self.stream_key, chunk.chunk_index, &chunk.data)?;
-            let plaintext = if chunk.is_compressed {
-                decompress(&comp_data)?
+            if in_flight.is_empty() {
+                if let Some(chunk) = rx.recv().await {
+                    if chunk.chunk_index < total_chunks {
+                        let stream_key = self.stream_key;
+                        in_flight.push(tokio::spawn(async move {
+                            tokio::task::spawn_blocking(move || {
+                                let comp_data = crate::crypto::stream::decrypt_chunk(&stream_key, chunk.chunk_index, &chunk.data).unwrap();
+                                let plaintext = if chunk.is_compressed {
+                                    decompress(&comp_data).unwrap()
+                                } else {
+                                    comp_data
+                                };
+                                (chunk.chunk_index, plaintext)
+                            }).await.unwrap()
+                        }));
+                    }
+                } else {
+                    eof_reached = true;
+                }
+            } else if in_flight.len() < 16 && !eof_reached {
+                tokio::select! {
+                    recv_res = rx.recv() => {
+                        if let Some(chunk) = recv_res {
+                            if chunk.chunk_index < total_chunks {
+                                let stream_key = self.stream_key;
+                                in_flight.push(tokio::spawn(async move {
+                                    tokio::task::spawn_blocking(move || {
+                                        let comp_data = crate::crypto::stream::decrypt_chunk(&stream_key, chunk.chunk_index, &chunk.data).unwrap();
+                                        let plaintext = if chunk.is_compressed {
+                                            decompress(&comp_data).unwrap()
+                                        } else {
+                                            comp_data
+                                        };
+                                        (chunk.chunk_index, plaintext)
+                                    }).await.unwrap()
+                                }));
+                            }
+                        } else {
+                            eof_reached = true;
+                        }
+                    }
+                    Some(res) = in_flight.next() => {
+                        let (idx, plaintext) = res.map_err(|_| DropWireError::Crypto("Task failed".into()))?;
+                        virtual_writer.write_chunk(idx, &plaintext)?;
+                        state.mark_received(idx);
+                        chunks_received += 1;
+                        chunks_processed += 1;
+                        if chunks_processed % 10 == 0 || chunks_processed == target_chunks { state.save()?; }
+                        progress(chunks_received, total_chunks, 0);
+                    }
+                }
             } else {
-                comp_data
-            };
-
-            virtual_writer.write_chunk(chunk.chunk_index, &plaintext)?;
-
-            state.mark_received(chunk.chunk_index);
-            state.save()?;
-
-            chunks_received += 1;
-            progress(chunks_received, total_chunks, 0);
+                if let Some(res) = in_flight.next().await {
+                    let (idx, plaintext) = res.map_err(|_| DropWireError::Crypto("Task failed".into()))?;
+                    virtual_writer.write_chunk(idx, &plaintext)?;
+                    state.mark_received(idx);
+                    chunks_received += 1;
+                    chunks_processed += 1;
+                    if chunks_processed % 10 == 0 || chunks_processed == target_chunks { state.save()?; }
+                    progress(chunks_received, total_chunks, 0);
+                }
+            }
         }
+        
+        let mut streams = reader_task.await.map_err(|_| DropWireError::Network("Reader panicked".into()))??;
 
         // Verify overall hash
         let actual_hash = virtual_writer.blake3_hash();

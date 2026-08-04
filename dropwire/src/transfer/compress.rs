@@ -22,10 +22,10 @@ fn shannon_entropy(data: &[u8]) -> f64 {
     entropy
 }
 
-pub fn maybe_compress(data: &[u8], filename: &str) -> (Vec<u8>, bool) {
+pub fn maybe_compress<'a>(data: &'a [u8], filename: &str) -> (std::borrow::Cow<'a, [u8]>, bool) {
     if let Some(ext) = Path::new(filename).extension().and_then(|e| e.to_str()) {
         if INCOMPRESSIBLE_EXTS.contains(&ext.to_lowercase().as_str()) {
-            return (data.to_vec(), false);
+            return (std::borrow::Cow::Borrowed(data), false);
         }
     }
 
@@ -33,17 +33,17 @@ pub fn maybe_compress(data: &[u8], filename: &str) -> (Vec<u8>, bool) {
     if sample_len > 0 {
         let entropy = shannon_entropy(&data[..sample_len]);
         if entropy > 7.5 {
-            return (data.to_vec(), false);
+            return (std::borrow::Cow::Borrowed(data), false);
         }
     }
 
     if let Ok(compressed) = zstd::stream::encode_all(data, 3) {
         if compressed.len() < data.len() {
-            return (compressed, true);
+            return (std::borrow::Cow::Owned(compressed), true);
         }
     }
 
-    (data.to_vec(), false)
+    (std::borrow::Cow::Borrowed(data), false)
 }
 
 pub fn decompress(data: &[u8]) -> Result<Vec<u8>, DropWireError> {

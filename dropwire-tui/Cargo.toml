@@ -1,0 +1,25 @@
+[package]
+name = "dropwire-tui"
+version = "0.1.0"
+edition = "2024"
+authors = ["Akshay"]
+description = "A gorgeous, interactive Terminal User Interface for DropWire, a blazingly fast E2E encrypted P2P file-transfer tool."
+repository = "https://github.com/VesperAkshay/dropwire"
+license = "Proprietary"
+
+[dependencies]
+dropwire = { path = "../dropwire" }
+ratatui = "0.26.2"
+crossterm = "0.27.0"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1.0"
+clap = { version = "4", features = ["derive"] }
+rand = "0.8.5"
+dirs = "6.0.0"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+chrono = "0.4.45"
+
+[[bin]]
+name = "dropwirex"
+path = "src/main.rs"

@@ -4,13 +4,33 @@ use std::path::PathBuf;
 
 pub const DEFAULT_RELAY: &str = "ws://relay.dropwire.tyes.dev:9010";
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct DropwireConfig {
     pub relay: Option<String>,
+    pub no_lan: Option<bool>,
+    pub download_dir: Option<String>,
+    pub default_mode: Option<String>,
+    pub parallel_streams: Option<u8>,
+    pub chunk_size_kb: Option<u32>,
+    pub theme: Option<String>,
+}
+
+impl Default for DropwireConfig {
+    fn default() -> Self {
+        Self {
+            relay: Some(DEFAULT_RELAY.to_string()),
+            no_lan: Some(false),
+            download_dir: None,
+            default_mode: Some("browser".to_string()),
+            parallel_streams: Some(4),
+            chunk_size_kb: Some(1024),
+            theme: Some("cyberpunk".to_string()),
+        }
+    }
 }
 
 impl DropwireConfig {
-    fn config_path() -> PathBuf {
+    pub fn config_path() -> PathBuf {
         let mut path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
         path.push("dropwire");
         path.push("config.json");
@@ -41,6 +61,30 @@ impl DropwireConfig {
 
     pub fn get_relay(&self) -> String {
         self.relay.clone().unwrap_or_else(|| DEFAULT_RELAY.to_string())
+    }
+
+    pub fn get_no_lan(&self) -> bool {
+        self.no_lan.unwrap_or(false)
+    }
+
+    pub fn get_download_dir(&self) -> Option<PathBuf> {
+        self.download_dir.as_ref().map(PathBuf::from)
+    }
+
+    pub fn get_default_mode(&self) -> String {
+        self.default_mode.clone().unwrap_or_else(|| "browser".to_string())
+    }
+
+    pub fn get_parallel_streams(&self) -> u8 {
+        self.parallel_streams.unwrap_or(4)
+    }
+
+    pub fn get_chunk_size_kb(&self) -> u32 {
+        self.chunk_size_kb.unwrap_or(1024)
+    }
+
+    pub fn get_theme(&self) -> String {
+        self.theme.clone().unwrap_or_else(|| "cyberpunk".to_string())
     }
 }
 

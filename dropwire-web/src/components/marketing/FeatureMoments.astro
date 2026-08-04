@@ -91,7 +91,62 @@
         <li class="flex items-center gap-2">
           <span class="font-black text-base">✓</span> Zero temporary disk waste or unverified writes
         </li>
+        <li class="flex items-center gap-2">
+          <span class="font-black text-base">✓</span> Native .gitignore tracking to skip heavy artifacts
+        </li>
       </ul>
+    </div>
+  </div>
+  {/* Moment 3: The TUI & Zero-Copy */}
+  <div class="p-8 sm:p-12 bg-[#0052FF] text-white rounded-[2.5rem] shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+    <div class="lg:col-span-6 space-y-6">
+      <span class="px-3.5 py-1.5 bg-[#FFB800] text-black text-xs font-mono font-black uppercase rounded-full">
+        DROPWIRE TUI & ZERO-COPY
+      </span>
+      <h2 class="text-3xl sm:text-5xl font-display font-black text-white uppercase leading-tight">
+        A gorgeous interface powered by zero-copy performance.
+      </h2>
+      <p class="text-base text-white/90 font-sans font-semibold leading-relaxed">
+        The new <code class="bg-black/30 px-1 rounded">dropwirex</code> interactive terminal UI gives you full control. Easily batch select files, track live transfer sparklines, and customize aesthetics, all while the zero-copy backend engine streams bytes directly from disk to network without RAM overhead.
+      </p>
+
+      <ul class="space-y-2 font-sans font-bold text-sm text-white">
+        <li class="flex items-center gap-2">
+          <span class="text-[#FFB800] font-black text-base">✓</span> Live animated transfer dashboard & sparklines
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="text-[#FFB800] font-black text-base">✓</span> Multi-file selection and custom theme engine
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="text-[#FFB800] font-black text-base">✓</span> True Zero-Copy memory mapping for maximum throughput
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="text-[#FFB800] font-black text-base">✓</span> Transfer history logged persistently
+        </li>
+      </ul>
+    </div>
+
+    {/* Bright Light Dashboard Card */}
+    <div class="lg:col-span-6 bg-[#002266] text-white p-6 sm:p-8 rounded-[2rem] border-2 border-[#00B060] font-mono text-xs space-y-4 shadow-xl">
+      <div class="flex items-center justify-between border-b-2 border-white/20 pb-3 text-white">
+        <span class="font-black uppercase tracking-wider text-sm">DROPWIRE TUI V0.1.0</span>
+        <span class="text-[#FFB800] font-black text-xs">CYBERPUNK THEME</span>
+      </div>
+      <div class="space-y-3 font-bold text-sm">
+        <div>
+          <span class="text-white/60 text-xs">Active Transfer:</span>
+          <p class="font-black text-[#00B060] truncate">Batch (14 items) - 4.2 GB</p>
+        </div>
+        <div>
+          <span class="text-white/60 text-xs">Live Speed (LAN Mode):</span>
+          <p class="font-black text-[#FFB800] text-lg truncate">112 MB/s</p>
+          <div class="flex items-end gap-0.5 mt-2 h-6">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <div class="w-2 bg-[#00B060]" style={`height: ${Math.random() * 100}%`}></div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>

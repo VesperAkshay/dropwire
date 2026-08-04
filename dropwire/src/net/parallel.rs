@@ -1,7 +1,7 @@
 use crate::error::DropWireError;
 use crate::net::signaling::Role;
 use crate::types::ChannelId;
-use std::net::SocketAddr;
+
 
 pub struct ChunkFrame {
     pub chunk_index: u64,
@@ -148,6 +148,80 @@ impl ParallelStreams {
         Ok(())
     }
 }
+
+pub struct ParallelListener {
+    listener: tokio::net::TcpListener,
+    pub port: u16,
+}
+
+impl ParallelListener {
+    pub async fn bind() -> Result<Self, DropWireError> {
+        let listener = tokio::net::TcpListener::bind("0.0.0.0:0").await.map_err(DropWireError::Io)?;
+        let port = listener.local_addr().map_err(DropWireError::Io)?.port();
+        Ok(Self { listener, port })
+    }
+
+    pub async fn accept_all(
+        self,
+        auth_token: &[u8; 16],
+        num_streams: u8,
+    ) -> Result<ParallelStreams, DropWireError> {
+        let mut streams = Vec::new();
+        let (tx, rx) = tokio::sync::mpsc::channel(100);
+        let expected_channel = hex::encode(auth_token);
+
+        for _ in 0..num_streams {
+            let (mut stream, _) = self.listener.accept().await.map_err(DropWireError::Io)?;
+            
+            use tokio::io::AsyncReadExt;
+            let mut len_buf = [0u8; 1];
+            if stream.read_exact(&mut len_buf).await.is_err() {
+                return Err(DropWireError::Protocol("Handshake length read failed".into()));
+            }
+            
+            let mut chan_buf = vec![0u8; len_buf[0] as usize];
+            if stream.read_exact(&mut chan_buf).await.is_err() {
+                return Err(DropWireError::Protocol("Handshake channel read failed".into()));
+            }
+            let chan_str = String::from_utf8_lossy(&chan_buf);
+            
+            let mut role_buf = [0u8; 1];
+            if stream.read_exact(&mut role_buf).await.is_err() {
+                return Err(DropWireError::Protocol("Handshake role read failed".into()));
+            }
+            let client_role = role_buf[0];
+
+            if chan_str != expected_channel || client_role != 0x02 {
+                return Err(DropWireError::Protocol("LAN Handshake mismatch".into()));
+            }
+
+            let (read_half, write_half) = stream.into_split();
+            streams.push(FramedStream { write: write_half });
+
+            let tx_clone = tx.clone();
+            let i = streams.len() - 1;
+            tokio::spawn(async move {
+                let mut reader = read_half;
+                loop {
+                    match crate::framing::read_frame(&mut reader).await {
+                        Ok(bytes) => {
+                            if tx_clone.send(Ok((i as u8, bytes))).await.is_err() {
+                                break;
+                            }
+                        }
+                        Err(e) => {
+                            let _ = tx_clone.send(Err(e)).await;
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+        
+        Ok(ParallelStreams { streams, rx: Some(rx) })
+    }
+}
+
 
 #[cfg(test)]
 mod tests {

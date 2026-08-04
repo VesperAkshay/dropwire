@@ -10,7 +10,7 @@ pub async fn run(
     code: String,
     out_dir: Option<PathBuf>,
     relay_url: String,
-    _no_lan: bool,
+    no_lan: bool,
 ) -> Result<(), DropWireError> {
     let out_dir = out_dir.unwrap_or_else(|| {
         dirs::download_dir()
@@ -36,16 +36,40 @@ pub async fn run(
         SignalingClient::connect(&relay_url, &channel_id, Role::Receiver, &code).await?;
 
     let tcp_relay = relay_url.replace("ws://", "").replace("9010", "9009");
-    let relay_addr = tcp_relay;
-
-    let parallel = ParallelStreams::connect(
-        relay_addr,
-        &channel_id,
-        Role::Receiver,
-        &sig_result.auth_token,
-        4, // The receiver determines stream count by what it receives, but ParallelStreams expects a number
-    )
-    .await?;
+    let parallel = if !no_lan {
+        println!("\x1b[36m⚡ LAN Discovery: Searching for peer on local network...\x1b[0m");
+        match crate::net::discovery::DiscoveryService::find_peer(&channel_id, std::time::Duration::from_secs(15)).await {
+            Ok(peer_addr) => {
+                println!("\x1b[32m✓ Found peer at {} — Direct P2P connection!\x1b[0m", peer_addr);
+                ParallelStreams::connect(
+                    peer_addr.to_string(),
+                    &channel_id,
+                    Role::Receiver,
+                    &sig_result.auth_token,
+                    4,
+                ).await?
+            }
+            Err(_) => {
+                println!("\x1b[33m⚠ LAN peer not found, falling back to Relay...\x1b[0m");
+                ParallelStreams::connect(
+                    tcp_relay,
+                    &channel_id,
+                    Role::Receiver,
+                    &sig_result.auth_token,
+                    4,
+                ).await?
+            }
+        }
+    } else {
+        println!("\x1b[33m⚠ LAN disabled by config, using Relay...\x1b[0m");
+        ParallelStreams::connect(
+            tcp_relay,
+            &channel_id,
+            Role::Receiver,
+            &sig_result.auth_token,
+            4,
+        ).await?
+    };
 
     let pb = ProgressBar::new(100);
     pb.set_style(

@@ -10,14 +10,15 @@ impl DiscoveryService {
     pub async fn announce(
         channel: &ChannelId,
         duration: Duration,
-    ) -> Result<SocketAddr, DropWireError> {
+        port: u16,
+    ) -> Result<(), DropWireError> {
         let socket = UdpSocket::bind("0.0.0.0:0")
             .await
             .map_err(DropWireError::Io)?;
         socket.set_broadcast(true).map_err(DropWireError::Io)?;
         let multicast_addr: SocketAddr = "239.255.255.250:9999".parse().unwrap();
 
-        let msg = format!("DROPWIRE/1.0 DISCOVER {}\n", channel.0);
+        let msg = format!("DROPWIRE/1.0 DISCOVER {} PORT {}\n", channel.0, port);
         let start = tokio::time::Instant::now();
 
         while start.elapsed() < duration {
@@ -25,7 +26,7 @@ impl DiscoveryService {
             tokio::time::sleep(Duration::from_millis(100)).await;
         }
 
-        socket.local_addr().map_err(DropWireError::Io)
+        Ok(())
     }
 
     pub async fn find_peer(
@@ -42,7 +43,7 @@ impl DiscoveryService {
             .join_multicast_v4(multi_addr, interface)
             .map_err(DropWireError::Io)?;
 
-        let expected = format!("DROPWIRE/1.0 DISCOVER {}\n", channel.0);
+        let expected_prefix = format!("DROPWIRE/1.0 DISCOVER {} PORT ", channel.0);
         let mut buf = [0u8; 1024];
 
         let res = tokio::time::timeout(timeout, async {
@@ -51,8 +52,15 @@ impl DiscoveryService {
                     .recv_from(&mut buf)
                     .await
                     .map_err(DropWireError::Io)?;
-                if &buf[..len] == expected.as_bytes() {
-                    return Ok::<_, DropWireError>(src);
+                    
+                let received_str = String::from_utf8_lossy(&buf[..len]);
+                if received_str.starts_with(&expected_prefix) {
+                    let port_str = received_str.trim().split(' ').last().unwrap_or("0");
+                    if let Ok(port) = port_str.parse::<u16>() {
+                        let mut peer_addr = src;
+                        peer_addr.set_port(port);
+                        return Ok::<_, DropWireError>(peer_addr);
+                    }
                 }
             }
         })
@@ -85,15 +93,14 @@ mod tests {
 
         let announce_fut = tokio::spawn({
             let chan = chan.clone();
-            async move { DiscoveryService::announce(&chan, Duration::from_millis(200)).await }
+            async move { DiscoveryService::announce(&chan, Duration::from_millis(200), 8080).await }
         });
 
         let (find_res, ann_res) = tokio::join!(find_fut, announce_fut);
         let src_addr = find_res.unwrap().unwrap();
-        let ann_addr = ann_res.unwrap().unwrap();
+        ann_res.unwrap().unwrap(); // Announce completed successfully
 
-        assert!(ann_addr.ip().is_unspecified() || src_addr.ip() == ann_addr.ip());
-        assert_eq!(src_addr.port(), ann_addr.port());
+        assert_eq!(src_addr.port(), 8080);
     }
 
     #[tokio::test]
@@ -110,7 +117,7 @@ mod tests {
 
         let announce_fut = tokio::spawn({
             let chan = ann_chan.clone();
-            async move { DiscoveryService::announce(&chan, Duration::from_millis(100)).await }
+            async move { DiscoveryService::announce(&chan, Duration::from_millis(100), 8081).await }
         });
 
         let (find_res, _) = tokio::join!(find_fut, announce_fut);
@@ -141,7 +148,7 @@ mod tests {
         for _ in 0..3 {
             let chan_clone = chan.clone();
             tokio::spawn(async move {
-                let _ = DiscoveryService::announce(&chan_clone, Duration::from_millis(200)).await;
+                let _ = DiscoveryService::announce(&chan_clone, Duration::from_millis(200), 8082).await;
             });
         }
 

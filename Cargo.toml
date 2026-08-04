@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "dropwire",
+    "dropwire-tui"
+]
+resolver = "2"

@@ -18,6 +18,8 @@ dropwire <COMMAND> [OPTIONS]
 
 Initiates a secure file or directory transfer and waits for a receiver to connect.
 
+**Git Integration:** DropWire automatically parses and respects `.gitignore` and `.ignore` files when sending directories, intelligently skipping `node_modules/`, `target/`, and other ignored artifacts.
+
 **Usage:**
 ```bash
 dropwire send <FILE_OR_DIR> [OPTIONS]
