@@ -56,7 +56,7 @@ export default function HeroCube3D() {
               {/* Layer 10: The Logo (Deep Parallax) */}
               <div className="absolute inset-0 flex justify-center items-center z-30" data-atropos-offset="10">
                 <img 
-                  src="/brand/dropwire-logo.png" 
+                  src="/brand/dropwire-logo-v2.png" 
                   alt="DropWire Logo" 
                   className="w-48 h-48 sm:w-64 sm:h-64 object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.15)] transition-transform duration-500 group-hover:scale-105"
                 />
