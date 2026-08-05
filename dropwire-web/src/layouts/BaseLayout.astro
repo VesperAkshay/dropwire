@@ -297,11 +297,20 @@ const NAV_BLOCKS = [
         }, 300);
       });
 
-      // Mobile Menu Toggle
-      document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+      // Mobile Menu Toggle (Persists across View Transitions)
+      document.addEventListener('astro:page-load', () => {
+        const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
-        menu?.classList.toggle('hidden');
-        menu?.classList.toggle('flex');
+        if (btn && menu) {
+          // Remove old listeners to prevent duplicates
+          const newBtn = btn.cloneNode(true);
+          btn.parentNode?.replaceChild(newBtn, btn);
+          
+          newBtn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
+          });
+        }
       });
 
       // Copy Button Logic
