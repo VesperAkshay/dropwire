@@ -154,14 +154,6 @@ impl TransferEngine {
             }
         }
 
-        streams
-            .send_chunk(ChunkFrame {
-                chunk_index: 0xFFFFFFFFFFFFFFFF,
-                is_compressed: true,
-                data: vec![],
-            })
-            .await?;
-
         let (_, enc_acknak) = streams.recv_raw().await?;
         let acknak = self.decrypt_control(3, 0x04, &enc_acknak)?;
         if acknak.is_empty() || acknak[0] == 0x01 {
@@ -246,18 +238,20 @@ impl TransferEngine {
         let mut tx_streams = streams;
         
         let reader_task = tokio::spawn(async move {
-            loop {
+            let mut count = 0;
+            let target_chunks = total_chunks - chunks_received;
+            while count < target_chunks {
                 let (_, chunk) = tx_streams.recv_chunk().await?;
-                if chunk.chunk_index == 0xFFFFFFFFFFFFFFFF { break; }
                 if tx.send(chunk).await.is_err() { break; }
+                count += 1;
             }
             Ok::<_, DropWireError>(tx_streams)
         });
 
         let mut in_flight = FuturesUnordered::new();
-        let mut eof_reached = false;
         let mut chunks_processed = 0;
         let target_chunks = total_chunks - chunks_received;
+        let mut eof_reached = target_chunks == 0;
 
         while chunks_processed < target_chunks {
             while in_flight.len() < 16 && !eof_reached {
