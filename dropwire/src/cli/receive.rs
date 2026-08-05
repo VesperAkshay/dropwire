@@ -107,7 +107,7 @@ pub async fn run(
         .await
     {
         Ok(_) => {
-            println!("Received to output directory");
+            println!("\x1b[32m✓ Transfer Complete! File(s) saved to: {}\x1b[0m", out_dir.display());
             Ok(())
         }
         Err(e) => {
