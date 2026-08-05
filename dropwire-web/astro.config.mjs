@@ -9,7 +9,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://DropWire.pages.dev',
+  site: 'https://dropwire.tyes.dev',
   vite: {
     plugins: [tailwindcss()]
   },

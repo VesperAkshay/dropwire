@@ -13,4 +13,4 @@ Allow: /
 User-agent: anthropic-ai
 Allow: /
 
-Sitemap: https://DropWire.pages.dev/sitemap-index.xml
+Sitemap: https://dropwire.tyes.dev/sitemap-index.xml
