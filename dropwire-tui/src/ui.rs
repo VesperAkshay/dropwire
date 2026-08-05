@@ -164,18 +164,9 @@ pub fn draw(f: &mut Frame, app: &mut App) {
 fn draw_loading_screen(f: &mut Frame, app: &App, theme: &ThemeColors) {
     let area = f.size();
     
-    // Create an artificial boot sequence text based on time
     let elapsed = app.boot_time.elapsed().as_secs_f32();
-    let status_text = if elapsed < 0.4 {
-        "INITIALIZING CRYPTOGRAPHIC ENGINE..."
-    } else if elapsed < 0.8 {
-        "GENERATING EPHEMERAL SESSION KEYS..."
-    } else if elapsed < 1.2 {
-        "BINDING TO NETWORK INTERFACES..."
-    } else {
-        "READY. SECURE P2P ENVIRONMENT ESTABLISHED."
-    };
-
+    let progress = (elapsed / 1.0).clamp(0.0, 1.0);
+    
     let title_art = [
         "██████╗ ██████╗  ██████╗ ██████╗ ██╗    ██╗██╗██████╗ ███████╗    ██╗  ██╗",
         "██╔══██╗██╔══██╗██╔═══██╗██╔══██╗██║    ██║██║██╔══██╗██╔════╝    ╚██╗██╔╝",
@@ -185,28 +176,45 @@ fn draw_loading_screen(f: &mut Frame, app: &App, theme: &ThemeColors) {
         "╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝      ╚══╝╚══╝ ╚═╝╚═╝  ╚═╝╚══════╝    ╚═╝  ╚═╝",
     ];
 
-    let mut lines = vec![];
-    lines.push(Line::from(""));
-    lines.push(Line::from(""));
-    for line in title_art {
-        lines.push(Line::from(vec![
-            Span::styled(line, Style::default().fg(Color::Rgb(255, 255, 255)).add_modifier(Modifier::BOLD)),
-        ]));
-    }
-    lines.push(Line::from(""));
-    lines.push(Line::from(""));
-    lines.push(Line::from(Span::styled(status_text, Style::default().fg(Color::Rgb(0, 82, 255)).add_modifier(Modifier::BOLD))));
-    
-    // Progress bar animation
-    let width = 40;
-    let progress = ((elapsed / 1.5) * width as f32).min(width as f32) as usize;
-    let bar = format!("[{}{}]{}", "█".repeat(progress), "░".repeat(width - progress), if elapsed >= 1.5 { " OK" } else { "" });
-    lines.push(Line::from(""));
-    lines.push(Line::from(Span::styled(bar, Style::default().fg(Color::Rgb(0, 255, 255)).add_modifier(Modifier::BOLD))));
+    let glitch_chars = ['█', '▓', '▒', '░', 'X', '0', '1', '!', '@', '#', '$', '%', '&', '<', '>', '?'];
+    let mut header_lines = vec![];
+    header_lines.push(Line::from(""));
+    header_lines.push(Line::from(""));
 
-    let block = Paragraph::new(lines)
+    for (y, line) in title_art.iter().enumerate() {
+        let mut spans = vec![];
+        for (x, ch) in line.chars().enumerate() {
+            if ch == ' ' {
+                spans.push(Span::raw(" "));
+            } else {
+                let lock_threshold = ((x * 13 + y * 29) % 100) as f32 / 100.0;
+                
+                if progress >= lock_threshold {
+                    // Character is mathematically locked in
+                    spans.push(Span::styled(ch.to_string(), Style::default().fg(theme.primary).add_modifier(Modifier::BOLD)));
+                } else {
+                    // Character is still actively decrypting
+                    let time_hash = (elapsed * 60.0 + x as f32 * 3.0 + y as f32 * 7.0) as usize;
+                    let glitch_char = glitch_chars[time_hash % glitch_chars.len()];
+                    spans.push(Span::styled(glitch_char.to_string(), Style::default().fg(theme.highlight)));
+                }
+            }
+        }
+        header_lines.push(Line::from(spans));
+    }
+    
+    header_lines.push(Line::from(""));
+    if progress > 0.8 {
+        header_lines.push(Line::from(vec![
+            Span::styled("E2E ENCRYPTION  •  P2P TRANSPORT", Style::default().fg(theme.border).add_modifier(Modifier::BOLD)),
+        ]));
+    } else {
+        header_lines.push(Line::from(""));
+    }
+
+    let block = Paragraph::new(header_lines)
         .alignment(ratatui::layout::Alignment::Center)
-        .block(Block::default().borders(Borders::ALL).border_style(Style::default().fg(theme.border)));
+        .block(Block::default().borders(Borders::NONE));
     
     let vertical_chunks = Layout::default()
         .direction(Direction::Vertical)
@@ -219,6 +227,7 @@ fn draw_loading_screen(f: &mut Frame, app: &App, theme: &ThemeColors) {
         
     f.render_widget(block, vertical_chunks[1]);
 }
+
 
 fn draw_file_browser(f: &mut Frame, app: &mut App, area: Rect, theme: &ThemeColors) {
     let chunks = Layout::default()
