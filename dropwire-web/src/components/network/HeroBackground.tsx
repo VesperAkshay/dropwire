@@ -288,8 +288,22 @@ export default function HeroBackground() {
         packet.draw(ctx, time);
       });
 
+      if (!isVisible) return; // Prevent heavy background drawing when scrolled down
+
       animationFrameId = requestAnimationFrame(animate);
     };
+
+    let isVisible = true;
+    const observer = new IntersectionObserver((entries) => {
+      isVisible = entries[0].isIntersecting;
+      if (isVisible) {
+        // Kickstart again if we become visible
+        cancelAnimationFrame(animationFrameId);
+        animate();
+      }
+    }, { rootMargin: '100px' });
+    
+    observer.observe(canvas);
 
     const timeout = setTimeout(() => {
       initNetwork();
@@ -303,6 +317,7 @@ export default function HeroBackground() {
 
     return () => {
       clearTimeout(timeout);
+      observer.disconnect();
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseout', handleMouseOut);
       window.removeEventListener('resize', handleResize);

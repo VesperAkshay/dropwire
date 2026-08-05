@@ -2,7 +2,6 @@
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import LenisInit from '../components/motion/LenisInit';
-import LoadingScreen from '../components/motion/LoadingScreen';
 import InteractiveMosaic from '../components/motion/InteractiveMosaic';
 import { SITE } from '../lib/site';
 
@@ -33,7 +32,7 @@ const NAV_BLOCKS = [
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/png" href="/brand/dropwire-logo-v2.png" />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Preload Custom Fonts -->
@@ -51,6 +50,7 @@ const NAV_BLOCKS = [
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
+    <meta name="keywords" content="p2p, file transfer, end-to-end encryption, zero-knowledge, dropwire, terminal ui, command line, secure share" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -58,6 +58,8 @@ const NAV_BLOCKS = [
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(image, Astro.url)} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="DropWire" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -65,13 +67,83 @@ const NAV_BLOCKS = [
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+    <!-- JSON-LD Structured Data for Software Application -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "DropWire",
+      "operatingSystem": "Windows, macOS, Linux",
+      "applicationCategory": "UtilitiesApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": description,
+      "url": canonicalURL,
+      "image": new URL(image, Astro.url).href,
+      "softwareVersion": "0.1.0"
+    })} />
   </head>
   <body class="bg-[url('/background.png')] bg-cover bg-center bg-fixed text-[#0B1016] min-h-screen antialiased selection:bg-[#FFB800] selection:text-black">
     {/* Page Transition Top Loader */}
     <div id="nprogress-custom" class="fixed top-0 left-0 h-2 bg-[#FFB800] border-b-2 border-black z-[9999] transition-all duration-300 w-0 opacity-0 pointer-events-none"></div>
 
-    {/* Fullscreen Brand Writing Preloader */}
-    <LoadingScreen client:only="react" />
+    {/* Fullscreen Brand Writing Preloader (Pure HTML/JS for Zero FOUC) */}
+    <div id="html-loading-screen" class="fixed inset-0 z-[9999] bg-[#F4EFEA] text-[#0B1016] flex-col items-center justify-center p-8 transition-opacity duration-1000 ease-in-out pointer-events-none opacity-100 hidden">
+      <div id="html-loading-content" class="text-left space-y-4 max-w-5xl transition-all duration-1000 ease-in-out scale-100 opacity-100 filter blur-none">
+        <div class="relative overflow-hidden py-2">
+          <h1 id="html-loading-title" class="font-display text-7xl sm:text-[10rem] font-black tracking-tighter text-black uppercase leading-none select-none transition-all duration-[1200ms] ease-[cubic-bezier(0.65,0,0.35,1)]" style="clip-path: inset(0 100% 0 0);">
+            DropWire.
+          </h1>
+        </div>
+        <div class="relative overflow-hidden pl-2 py-1">
+          <p id="html-loading-subtitle" class="font-mono text-sm sm:text-2xl text-black/60 font-bold tracking-[0.25em] uppercase transition-all duration-[1000ms] ease-[cubic-bezier(0.65,0,0.35,1)]" style="clip-path: inset(0 100% 0 0);">
+            P2P ENCRYPTED ENGINE
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script is:inline>
+      (function() {
+        const hasLoaded = sessionStorage.getItem('DropWire_loaded');
+        const screen = document.getElementById('html-loading-screen');
+        const content = document.getElementById('html-loading-content');
+        const title = document.getElementById('html-loading-title');
+        const subtitle = document.getElementById('html-loading-subtitle');
+
+        if (!hasLoaded && screen) {
+          // Show the screen instantly
+          screen.style.display = 'flex';
+          
+          setTimeout(() => {
+            if (title) title.style.clipPath = 'inset(0 0% 0 0)';
+          }, 100);
+
+          setTimeout(() => {
+            if (subtitle) subtitle.style.clipPath = 'inset(0 0% 0 0)';
+          }, 1300);
+
+          setTimeout(() => {
+            if (content) {
+              content.style.transform = 'scale(0.98)';
+              content.style.opacity = '0';
+              content.style.filter = 'blur(12px)';
+            }
+            if (screen) {
+              screen.style.opacity = '0';
+            }
+          }, 3300);
+
+          setTimeout(() => {
+            sessionStorage.setItem('DropWire_loaded', 'true');
+            if (screen) screen.style.display = 'none';
+          }, 4300);
+        }
+      })();
+    </script>
 
     <!-- Smooth Scroll Island -->
     <LenisInit client:only="react" />

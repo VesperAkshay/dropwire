@@ -1,46 +1,141 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import CliDocs from '../../components/docs-astro/CliDocs.astro';
+import TuiDocs from '../../components/docs-astro/TuiDocs.astro';
+import DocsSidebar from '../../components/docs-astro/DocsSidebar.astro';
 
-const docs = await getCollection('docs');
-const sortedDocs = docs.sort((a, b) => (a.data.order || 99) - (b.data.order || 99));
+const cliSidebarGroups = [
+  { title: 'Getting Started', items: [ { id: 'cli-installation', label: 'Installation' }, { id: 'cli-quickstart', label: 'Quick Start' } ] },
+  { title: 'Commands', items: [ { id: 'cli-send', label: 'dropwire send' }, { id: 'cli-receive', label: 'dropwire receive' }, { id: 'cli-relay', label: 'dropwire relay' }, { id: 'cli-config', label: 'dropwire config' } ] },
+  { title: 'Concepts', items: [ { id: 'cli-lan', label: 'LAN Discovery' }, { id: 'cli-fallback', label: 'Relay Fallback' }, { id: 'cli-resume', label: 'Resumable Transfers' } ] }
+];
+
+const tuiSidebarGroups = [
+  { title: 'Getting Started', items: [ { id: 'tui-installation', label: 'Installation' }, { id: 'tui-launching', label: 'Launching the TUI' } ] },
+  { title: 'Screens', items: [ { id: 'tui-boot', label: 'Boot Animation' }, { id: 'tui-browser', label: 'File Browser' }, { id: 'tui-receive', label: 'Receive Input' }, { id: 'tui-dashboard', label: 'Transfer Dashboard' }, { id: 'tui-config', label: 'Config Editor' }, { id: 'tui-history', label: 'History Viewer' } ] },
+  { title: 'Controls', items: [ { id: 'tui-keybinds', label: 'All Keybindings' } ] },
+  { title: 'Customization', items: [ { id: 'tui-themes', label: 'Themes' } ] }
+];
 ---
 
 <BaseLayout title="Documentation — DropWire">
-  <section class="p-6 sm:p-12 space-y-12">
-    <div class="max-w-4xl space-y-4">
-      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">DOCUMENTATION HUB</span>
-      <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none">
-        DropWire Docs
-      </h1>
-      <p class="text-lg text-[#0B1016]/80 font-sans font-medium">
-        Guides, CLI references, and cryptographic protocol breakdowns.
-      </p>
-    </div>
+  <div class="p-4 sm:p-8 lg:p-12">
+    <div class="max-w-[1440px] mx-auto px-6 sm:px-12 py-12 bg-[#F4EFEA]/95 backdrop-blur-2xl rounded-[3rem] border-2 border-[#D9D2C9] shadow-2xl min-h-[calc(100vh-8rem)]">
+      
+      {/* Header & Toggle */}
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16 border-b-2 border-[#D9D2C9] pb-12">
+        <div class="space-y-4">
+          <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">DOCUMENTATION HUB</span>
+          <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none">
+            DropWire Docs
+          </h1>
+          <p class="text-lg text-[#0B1016]/80 font-sans font-medium max-w-xl">
+            Everything you need to know about the DropWire CLI and TUI, all in one place.
+          </p>
+        </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {sortedDocs.map((doc) => (
-        <a
-          href={`/docs/${doc.id}`}
-          class="group rounded-[2.5rem] p-8 sm:p-10 bg-[#FFFFFF] border-2 border-[#D9D2C9] hover:border-[#0052FF] shadow-xl space-y-6 transition-all transform hover:-translate-y-1 flex flex-col justify-between"
-        >
-          <div class="space-y-3">
-            <span class="text-xs font-mono font-black uppercase text-[#0052FF]">DOC REF #{doc.data.order || 1}</span>
-            <h2 class="text-3xl font-black font-display text-[#0B1016] uppercase group-hover:text-[#0052FF] transition-colors leading-tight">
-              {doc.data.title}
-            </h2>
-            <p class="text-sm font-sans font-medium text-[#0B1016]/80 leading-relaxed">
-              {doc.data.description}
-            </p>
+        <div class="shrink-0">
+          <div class="inline-flex items-center bg-[#EBE5DC] p-1.5 rounded-full relative shadow-inner" id="mode-toggle">
+            <div id="mode-pill" class="absolute top-1.5 bottom-1.5 w-[calc(33.333%-4px)] bg-[#0052FF] rounded-full shadow-md pointer-events-none transition-transform duration-300 ease-out transform translate-x-0"></div>
+            
+            <button data-mode="cli" class="mode-btn relative z-10 w-28 sm:w-36 py-2.5 text-center font-display font-bold uppercase tracking-wide text-white transition-colors duration-300">
+              CLI
+            </button>
+            <button data-mode="tui" class="mode-btn relative z-10 w-28 sm:w-36 py-2.5 text-center font-display font-bold uppercase tracking-wide text-[#0B1016]/60 hover:text-[#0B1016] transition-colors duration-300">
+              TUI
+            </button>
+            <button disabled data-mode="desktop" class="mode-btn relative z-10 w-28 sm:w-36 py-2.5 text-center font-display font-bold uppercase tracking-wide text-[#0B1016]/30 cursor-not-allowed flex items-center justify-center gap-1.5 transition-colors duration-300">
+              Desktop
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </button>
           </div>
+        </div>
+      </div>
 
-          <div class="flex items-center justify-between text-xs font-mono font-black text-[#0052FF] pt-4 border-t border-[#F4EFEA]">
-            <span>Read Article</span>
-            <span class="text-lg group-hover:translate-x-1 transition-transform">↗</span>
+      {/* Main Content Area */}
+      <div class="flex gap-16 relative">
+        <div id="cli-sidebar" class="block">
+          <DocsSidebar groups={cliSidebarGroups} />
+        </div>
+        <div id="tui-sidebar" class="hidden">
+          <DocsSidebar groups={tuiSidebarGroups} />
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <div id="cli-content" class="block transition-opacity duration-500">
+            <CliDocs />
           </div>
-        </a>
-      ))}
+          <div id="tui-content" class="hidden transition-opacity duration-500 opacity-0">
+            <TuiDocs />
+          </div>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
+
+  <style>
+    /* Add a simple fade-in class for vanilla JS transitions */
+    .fade-in {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('astro:page-load', () => {
+      const toggle = document.getElementById('mode-toggle');
+      if (!toggle) return;
+
+      const pill = document.getElementById('mode-pill');
+      const btns = toggle.querySelectorAll('.mode-btn');
+      
+      const cliSidebar = document.getElementById('cli-sidebar');
+      const tuiSidebar = document.getElementById('tui-sidebar');
+      const cliContent = document.getElementById('cli-content');
+      const tuiContent = document.getElementById('tui-content');
+
+      function setMode(mode: string) {
+        if (mode === 'desktop') return; // Desktop is currently locked
+
+        if (mode === 'cli') {
+          pill.style.transform = 'translateX(0)';
+          btns[0].classList.replace('text-[#0B1016]/60', 'text-white');
+          btns[1].classList.replace('text-white', 'text-[#0B1016]/60');
+          
+          cliSidebar.classList.replace('hidden', 'block');
+          tuiSidebar.classList.replace('block', 'hidden');
+          
+          tuiContent.classList.replace('block', 'hidden');
+          cliContent.classList.replace('hidden', 'block');
+          
+          cliContent.classList.remove('fade-in');
+          void cliContent.offsetWidth; // trigger reflow
+          cliContent.classList.add('fade-in');
+        } else if (mode === 'tui') {
+          pill.style.transform = 'translateX(100%)';
+          btns[1].classList.replace('text-[#0B1016]/60', 'text-white');
+          btns[0].classList.replace('text-white', 'text-[#0B1016]/60');
+          
+          tuiSidebar.classList.replace('hidden', 'block');
+          cliSidebar.classList.replace('block', 'hidden');
+          
+          cliContent.classList.replace('block', 'hidden');
+          tuiContent.classList.replace('hidden', 'block');
+          
+          tuiContent.classList.remove('fade-in');
+          void tuiContent.offsetWidth; // trigger reflow
+          tuiContent.classList.add('fade-in');
+        }
+      }
+
+      btns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          setMode((e.target as HTMLButtonElement).getAttribute('data-mode') || 'cli');
+        });
+      });
+    });
+  </script>
 </BaseLayout>
-

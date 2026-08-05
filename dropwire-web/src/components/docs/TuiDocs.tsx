@@ -1,0 +1,207 @@
+import React from 'react';
+import { CodeBlock } from './CodeBlock';
+import { FlagTable } from './FlagTable';
+import { KeybindTable } from './KeybindTable';
+import { CalloutBox } from './CalloutBox';
+import type { SidebarGroup } from './DocsSidebar';
+
+export const tuiSidebarGroups: SidebarGroup[] = [
+  {
+    title: 'Getting Started',
+    items: [
+      { id: 'tui-installation', label: 'Installation' },
+      { id: 'tui-launching', label: 'Launching the TUI' }
+    ]
+  },
+  {
+    title: 'Screens',
+    items: [
+      { id: 'tui-boot', label: 'Boot Animation' },
+      { id: 'tui-browser', label: 'File Browser' },
+      { id: 'tui-receive', label: 'Receive Input' },
+      { id: 'tui-dashboard', label: 'Transfer Dashboard' },
+      { id: 'tui-config', label: 'Config Editor' },
+      { id: 'tui-history', label: 'History Viewer' }
+    ]
+  },
+  {
+    title: 'Controls',
+    items: [
+      { id: 'tui-keybinds', label: 'All Keybindings' }
+    ]
+  },
+  {
+    title: 'Customization',
+    items: [
+      { id: 'tui-themes', label: 'Themes' }
+    ]
+  }
+];
+
+export function TuiDocs() {
+  return (
+    <div className="space-y-16 pb-32">
+      {/* ───────────────────────────────────────────────────────── */}
+      <section id="tui-installation">
+        <h2 className="text-3xl font-display font-black uppercase text-[#0B1016] mb-4">Installation</h2>
+        <p className="text-lg font-medium text-[#0B1016]/80 mb-4">
+          DropWire X is the gorgeous, interactive Terminal User Interface for DropWire.
+        </p>
+        
+        <h3 className="text-xl font-bold mt-8 mb-2">Windows</h3>
+        <CodeBlock code={`# Install via PowerShell
+irm https://install.dropwire.dev/tui/windows | iex`} />
+
+        <h4 className="text-lg font-bold mt-4 mb-2 text-[#0B1016]/80">Uninstall (Windows)</h4>
+        <CodeBlock code={`irm https://install.dropwire.dev/tui/windows-uninstall | iex`} />
+
+        <h3 className="text-xl font-bold mt-8 mb-2">macOS / Linux</h3>
+        <CodeBlock code={`# Install via curl
+curl -sSL https://install.dropwire.dev/tui | sh
+
+# Or build from source:
+git clone https://github.com/VesperAkshay/dropwire.git
+cd dropwire-tui
+cargo build --release`} />
+
+        <h4 className="text-lg font-bold mt-4 mb-2 text-[#0B1016]/80">Uninstall (macOS / Linux)</h4>
+        <CodeBlock code={`curl -sSL https://install.dropwire.dev/tui/uninstall | sh`} />
+      </section>
+
+      {/* ───────────────────────────────────────────────────────── */}
+      <section id="tui-launching">
+        <h2 className="text-3xl font-display font-black uppercase text-[#0B1016] mb-4">Launching</h2>
+        <p className="text-lg font-medium text-[#0B1016]/80 mb-4">
+          To start the TUI, simply run the command with no arguments.
+        </p>
+        <CodeBlock code={`dropwirex`} />
+        <CalloutBox type="info" title="Startup State">
+          The TUI automatically reads <code>~/.config/dropwire/config.json</code> and launches in the mode set by <code>default_mode</code> (default is the File Browser).
+        </CalloutBox>
+      </section>
+
+      {/* ───────────────────────────────────────────────────────── */}
+      <section id="tui-boot">
+        <h2 className="text-3xl font-display font-black uppercase text-[#0B1016] mb-4">Boot Animation</h2>
+        <p className="text-lg font-medium text-[#0B1016]/80 mb-4">
+          On launch, DropWire X plays a cinematic particle assembly intro:
+        </p>
+        <ul className="list-disc pl-6 text-[#0B1016]/80 space-y-2 mb-4">
+          <li>Hundreds of scattered Braille dots animate across the screen.</li>
+          <li>Over 2.5 seconds, they assemble using cubic easing into the <strong>DROPWIRE X</strong> ASCII logo.</li>
+          <li>At 2.5s the logo snaps into crisp, perfectly rendered text.</li>
+          <li>Holds for 1 second then transitions into the File Browser.</li>
+        </ul>
+      </section>
+
+      {/* ───────────────────────────────────────────────────────── */}
+      <section id="tui-browser">
+        <h2 className="text-3xl font-display font-black uppercase text-[#0B1016] mb-4">File Browser</h2>
+        <p className="text-lg font-medium text-[#0B1016]/80 mb-4">
+          The main screen features a fast, dual-pane layout for navigating your local filesystem.
+        </p>
+
+        <h3 className="text-xl font-bold mt-8 mb-2">Sidebar (Places)</h3>
+        <p className="text-[#0B1016]/80 mb-4">
+          Quick shortcuts to Home, Desktop, Documents, Downloads, Pictures, Music, and Videos. On Windows, it automatically lists all detected drives (C:\, D:\, etc.).
+        </p>
+
+        <h3 className="text-xl font-bold mt-8 mb-2">Explorer (Files)</h3>
+        <p className="text-[#0B1016]/80 mb-4">
+          Directories are sorted first (📁), followed by files (📄). You can select multiple files using <kbd className="font-mono bg-gray-200 px-1 rounded">Space</kbd> for batch sending.
+        </p>
+        <CalloutBox type="tip" title="Animated Borders">
+          The active pane's border glows with an animated RGB color breathing effect tied to your selected theme!
+        </CalloutBox>
+      </section>
+
+      {/* ───────────────────────────────────────────────────────── */}
+      <section id="tui-receive">
+        <h2 className="text-3xl font-display font-black uppercase text-[#0B1016] mb-4">Receive Input</h2>
+        <p className="text-lg font-medium text-[#0B1016]/80 mb-4">
+          Activated by pressing <kbd className="font-mono bg-gray-200 px-1 rounded">r</kbd> from the File Browser.
+        </p>
+        <ul className="list-disc pl-6 text-[#0B1016]/80 space-y-2 mb-4">
+          <li>Large centered input field with an animated border.</li>
+          <li>Animated Braille spinner shows the app is ready.</li>
+          <li>Blinking block cursor (<code>█</code>) in the input field.</li>
+        </ul>
+      </section>
+
+      {/* ───────────────────────────────────────────────────────── */}
+      <section id="tui-dashboard">
+        <h2 className="text-3xl font-display font-black uppercase text-[#0B1016] mb-4">Transfer Dashboard</h2>
+        <p className="text-lg font-medium text-[#0B1016]/80 mb-4">
+          Shown dynamically during both send and receive operations.
+        </p>
+        <ul className="list-disc pl-6 text-[#0B1016]/80 space-y-2 mb-4">
+          <li>Displays <strong>SENDING MODE</strong> (Gold) or <strong>RECEIVING MODE</strong> (Cyan) badge.</li>
+          <li>Shows the generated room code phrase (e.g. <code>7-guitar-revenge</code>).</li>
+          <li>Live <code>Ratatui</code> Gauge progress bar with completion percentage and speed (MB/s).</li>
+          <li>Verified bytes counter vs total bytes.</li>
+        </ul>
+      </section>
+
+      {/* ───────────────────────────────────────────────────────── */}
+      <section id="tui-config">
+        <h2 className="text-3xl font-display font-black uppercase text-[#0B1016] mb-4">Config Editor</h2>
+        <p className="text-lg font-medium text-[#0B1016]/80 mb-4">
+          Activated by pressing <kbd className="font-mono bg-gray-200 px-1 rounded">c</kbd> from the File Browser. Edits are auto-saved to disk.
+        </p>
+
+        <FlagTable flags={[
+          { flag: 'Relay URL', type: 'Text', defaultVal: 'ws://relay.dropwire.tyes.dev:9010', desc: 'Relay server address' },
+          { flag: 'Disable LAN', type: 'Toggle', defaultVal: 'Off', desc: 'Force WAN relay routing' },
+          { flag: 'Download Dir', type: 'Text', defaultVal: '~/Downloads/Dropwire', desc: 'Where received files go' },
+          { flag: 'Default Mode', type: 'Cycle', defaultVal: 'browser', desc: 'Start in browser or receive mode' },
+          { flag: 'Parallel Streams', type: 'Number', defaultVal: '4', desc: 'TCP stream count (4–16)' },
+          { flag: 'Theme', type: 'Cycle', defaultVal: 'cyberpunk', desc: 'Color theme' }
+        ]} />
+      </section>
+
+      {/* ───────────────────────────────────────────────────────── */}
+      <section id="tui-history">
+        <h2 className="text-3xl font-display font-black uppercase text-[#0B1016] mb-4">History Viewer</h2>
+        <p className="text-lg font-medium text-[#0B1016]/80 mb-4">
+          Activated by pressing <kbd className="font-mono bg-gray-200 px-1 rounded">h</kbd>. Displays a scrollable log of all past transfers reading from <code>history.json</code>.
+        </p>
+      </section>
+
+      {/* ───────────────────────────────────────────────────────── */}
+      <section id="tui-keybinds">
+        <h2 className="text-3xl font-display font-black uppercase text-[#0B1016] mb-4">All Keybindings</h2>
+        <KeybindTable keybinds={[
+          { screen: 'Global', key: 'q', action: 'Quit application' },
+          { screen: 'Global', key: 'Esc', action: 'Back / Cancel / Abort / Save & Exit' },
+          { screen: 'File Browser', key: '↑ / ↓', action: 'Navigate in active pane' },
+          { screen: 'File Browser', key: '← / →', action: 'Focus left/right pane' },
+          { screen: 'File Browser', key: 'Tab', action: 'Toggle focus between sidebar and list' },
+          { screen: 'File Browser', key: 'Enter', action: 'Open directory / Jump to shortcut' },
+          { screen: 'File Browser', key: 'Space', action: 'Select / deselect file for batch transfer' },
+          { screen: 'File Browser', key: 's / S', action: 'Send selected file(s)' },
+          { screen: 'File Browser', key: 'r / R', action: 'Open Receive Input screen' },
+          { screen: 'File Browser', key: 'h / H', action: 'Open History viewer' },
+          { screen: 'File Browser', key: 'c / C', action: 'Open Config editor' },
+          { screen: 'Receive Input', key: 'Enter', action: 'Submit code and start transfer' },
+          { screen: 'Config Editor', key: 'Enter', action: 'Edit text field / Toggle boolean / Cycle option' }
+        ]} />
+      </section>
+
+      {/* ───────────────────────────────────────────────────────── */}
+      <section id="tui-themes">
+        <h2 className="text-3xl font-display font-black uppercase text-[#0B1016] mb-4">Themes</h2>
+        <p className="text-lg font-medium text-[#0B1016]/80 mb-4">
+          Four built-in visual themes selectable from the Config Editor.
+        </p>
+        
+        <FlagTable flags={[
+          { flag: 'cyberpunk', type: 'Primary: Gold', defaultVal: 'Accent: Lavender', desc: 'Neon noir terminal (Default)' },
+          { flag: 'matrix', type: 'Primary: Green', defaultVal: 'Accent: Dark Green', desc: 'Hacker / The Matrix' },
+          { flag: 'nord', type: 'Primary: Arctic Blue', defaultVal: 'Accent: Slate', desc: 'Clean, cool, minimal' },
+          { flag: 'monochrome', type: 'Primary: White', defaultVal: 'Accent: Gray', desc: 'High-contrast grayscale' }
+        ]} />
+      </section>
+
+    </div>
+  );
+}

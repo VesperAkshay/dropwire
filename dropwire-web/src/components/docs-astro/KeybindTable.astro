@@ -1,0 +1,42 @@
+---
+interface Keybind {
+  screen: string;
+  key: string;
+  action: string;
+}
+
+interface Props {
+  keybinds: Keybind[];
+}
+
+const { keybinds } = Astro.props;
+---
+
+<div class="overflow-x-auto my-6 rounded-3xl border-2 border-[#D9D2C9] bg-white shadow-sm">
+  <table class="w-full text-left text-sm sm:text-base">
+    <thead class="bg-[#F4EFEA] border-b-2 border-[#D9D2C9]">
+      <tr>
+        <th class="p-4 font-display font-black uppercase text-[#0B1016]">Screen</th>
+        <th class="p-4 font-display font-black uppercase text-[#0B1016]">Keybind</th>
+        <th class="p-4 font-display font-black uppercase text-[#0B1016]">Action</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-[#EBE5DC]">
+      {keybinds.map((item) => (
+        <tr class="hover:bg-[#F4EFEA]/50 transition-colors">
+          <td class="p-4 font-sans font-bold text-[#0B1016]/80 whitespace-nowrap">
+            {item.screen}
+          </td>
+          <td class="p-4 whitespace-nowrap">
+            <kbd class="px-2 py-1 bg-[#222C37] text-[#EBE5DC] font-mono text-sm rounded-lg border-b-2 border-black font-bold">
+              {item.key}
+            </kbd>
+          </td>
+          <td class="p-4 font-sans text-[#0B1016]/80 font-medium">
+            {item.action}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

@@ -38,13 +38,6 @@ export default function HeroCube3D() {
                 data-atropos-offset="-5"
               />
 
-              {/* Layer 0: Holographic Scanline (CSS Animated) */}
-              <div 
-                className="absolute left-0 right-0 h-1.5 bg-[#0052FF] shadow-[0_0_20px_4px_#0052FF] opacity-70 z-10 animate-[scanline_3s_linear_infinite] pointer-events-none"
-                data-atropos-offset="0"
-                style={{ top: '-10%' }}
-              />
-
               {/* Layer 8: Decorative Pill */}
               <div 
                 className="absolute top-8 left-8 px-5 py-2 bg-[#FFB800] border-2 border-black rounded-full text-sm font-display font-black text-black tracking-wide shadow-[4px_4px_0_0_#000] z-20"

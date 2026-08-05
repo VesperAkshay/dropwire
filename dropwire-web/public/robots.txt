@@ -1,5 +1,16 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://DropWire.pages.dev/sitemap.xml
+# Explicitly allow AI crawlers for documentation indexing
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: anthropic-ai
+Allow: /
 
+Sitemap: https://DropWire.pages.dev/sitemap-index.xml

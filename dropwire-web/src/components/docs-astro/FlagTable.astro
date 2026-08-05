@@ -1,0 +1,40 @@
+---
+interface Flag {
+  flag: string;
+  type?: string;
+  desc: string;
+}
+
+interface Props {
+  flags: Flag[];
+}
+
+const { flags } = Astro.props;
+---
+
+<div class="overflow-x-auto my-6 rounded-3xl border-2 border-[#D9D2C9] bg-white shadow-sm">
+  <table class="w-full text-left text-sm sm:text-base">
+    <thead class="bg-[#F4EFEA] border-b-2 border-[#D9D2C9]">
+      <tr>
+        <th class="p-4 font-display font-black uppercase text-[#0B1016]">Flag</th>
+        <th class="p-4 font-display font-black uppercase text-[#0B1016]">Type</th>
+        <th class="p-4 font-display font-black uppercase text-[#0B1016]">Description</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-[#EBE5DC]">
+      {flags.map((item) => (
+        <tr class="hover:bg-[#F4EFEA]/50 transition-colors">
+          <td class="p-4 font-mono font-bold text-[#0052FF] whitespace-nowrap">
+            {item.flag}
+          </td>
+          <td class="p-4 font-mono text-xs text-[#0B1016]/60">
+            {item.type || 'flag'}
+          </td>
+          <td class="p-4 font-sans text-[#0B1016]/80 font-medium leading-relaxed">
+            {item.desc}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

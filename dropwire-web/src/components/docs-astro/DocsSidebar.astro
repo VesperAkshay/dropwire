@@ -1,0 +1,36 @@
+---
+export interface SidebarGroup {
+  title: string;
+  items: { id: string; label: string }[];
+}
+
+interface Props {
+  groups: SidebarGroup[];
+}
+
+const { groups } = Astro.props;
+---
+
+<aside class="hidden lg:block w-64 shrink-0">
+  <div class="sticky top-32 space-y-8">
+    {groups.map((group) => (
+      <div>
+        <h4 class="font-display font-black text-sm tracking-widest text-[#0B1016]/50 uppercase mb-4">
+          {group.title}
+        </h4>
+        <ul class="space-y-2 border-l-2 border-[#D9D2C9]/60">
+          {group.items.map((item) => (
+            <li>
+              <a
+                href={`#${item.id}`}
+                class="block -ml-[2px] pl-4 py-1 border-l-2 border-transparent text-[#0B1016]/70 font-sans font-medium hover:text-[#0052FF] hover:border-[#0052FF] transition-all"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</aside>

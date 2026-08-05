@@ -1,0 +1,53 @@
+---
+interface Props {
+  code: string;
+  language?: string;
+}
+
+const { code, language = 'bash' } = Astro.props;
+// Generate a unique ID for the copy button
+const id = Math.random().toString(36).substring(7);
+---
+
+<div class="relative group rounded-3xl bg-[#0B1016] p-6 border-2 border-[#222C37] shadow-xl overflow-hidden font-mono text-sm sm:text-base my-6">
+  <div class="absolute top-4 right-4 z-10">
+    <button
+      id={`copy-btn-${id}`}
+      data-code={code}
+      class="p-2 rounded-xl bg-[#222C37] text-white hover:bg-[#0052FF] transition-colors shadow-sm flex items-center justify-center copy-button"
+      title="Copy code"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
+    </button>
+  </div>
+  <div class="overflow-x-auto text-[#EBE5DC]">
+    <pre class="whitespace-pre"><code>{code}</code></pre>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll('.copy-button').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        const button = e.currentTarget as HTMLButtonElement;
+        const code = button.getAttribute('data-code');
+        if (code) {
+          await navigator.clipboard.writeText(code);
+          const copyIcon = button.querySelector('.copy-icon');
+          const checkIcon = button.querySelector('.check-icon');
+          
+          if (copyIcon && checkIcon) {
+            copyIcon.classList.add('hidden');
+            checkIcon.classList.remove('hidden');
+            
+            setTimeout(() => {
+              copyIcon.classList.remove('hidden');
+              checkIcon.classList.add('hidden');
+            }, 2000);
+          }
+        }
+      });
+    });
+  });
+</script>
