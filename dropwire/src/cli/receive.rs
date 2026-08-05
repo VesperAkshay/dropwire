@@ -41,13 +41,25 @@ pub async fn run(
         match crate::net::discovery::DiscoveryService::find_peer(&channel_id, std::time::Duration::from_secs(15)).await {
             Ok(peer_addr) => {
                 println!("\x1b[32m✓ Found peer at {} — Direct P2P connection!\x1b[0m", peer_addr);
-                ParallelStreams::connect(
+                match ParallelStreams::connect(
                     peer_addr.to_string(),
                     &channel_id,
                     Role::Receiver,
                     &sig_result.auth_token,
                     4,
-                ).await?
+                ).await {
+                    Ok(p) => p,
+                    Err(_) => {
+                        println!("\x1b[33m⚠ LAN TCP connection failed (firewall?), falling back to Relay...\x1b[0m");
+                        ParallelStreams::connect(
+                            tcp_relay.clone(),
+                            &channel_id,
+                            Role::Receiver,
+                            &sig_result.auth_token,
+                            4,
+                        ).await?
+                    }
+                }
             }
             Err(_) => {
                 println!("\x1b[33m⚠ LAN peer not found, falling back to Relay...\x1b[0m");

@@ -524,7 +524,7 @@ dependencies = [
 
 [[package]]
 name = "dropwire"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "base64",
  "bitvec",
@@ -556,7 +556,7 @@ dependencies = [
 
 [[package]]
 name = "dropwire-tui"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "chrono",

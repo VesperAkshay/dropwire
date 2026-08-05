@@ -149,7 +149,13 @@ pub async fn start_receive(code_phrase: String, mut out_dir: PathBuf, tx: mpsc::
             match dropwire::net::discovery::DiscoveryService::find_peer(&channel_id, std::time::Duration::from_secs(15)).await {
                 Ok(peer_addr) => {
                     let _ = tx.send(crate::AppEvent::Engine(EngineEvent::Status(format!("✓ Found peer at {} — Direct P2P!", peer_addr))));
-                    ParallelStreams::connect(peer_addr.to_string(), &channel_id, Role::Receiver, &sig_result.auth_token, config.get_parallel_streams()).await
+                    match ParallelStreams::connect(peer_addr.to_string(), &channel_id, Role::Receiver, &sig_result.auth_token, config.get_parallel_streams()).await {
+                        Ok(p) => Ok(p),
+                        Err(_) => {
+                            let _ = tx.send(crate::AppEvent::Engine(EngineEvent::Status("⚠ LAN TCP failed, falling back to Relay...".to_string())));
+                            ParallelStreams::connect(tcp_relay.clone(), &channel_id, Role::Receiver, &sig_result.auth_token, config.get_parallel_streams()).await
+                        }
+                    }
                 }
                 Err(_) => {
                     let _ = tx.send(crate::AppEvent::Engine(EngineEvent::Status("⚠ LAN peer not found, falling back to Relay...".to_string())));
