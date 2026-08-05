@@ -353,7 +353,7 @@ async fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> io::R
         }
         
         if matches!(app.view, ActiveView::LoadingScreen) {
-            if app.boot_time.elapsed().as_secs_f32() >= 1.0 {
+            if app.boot_time.elapsed().as_secs_f32() >= 3.5 {
                 if let Some(next) = app.next_view.take() {
                     app.view = next;
                 }

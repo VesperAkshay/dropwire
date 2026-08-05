@@ -1,6 +1,6 @@
 [package]
 name = "dropwire-tui"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 authors = ["Akshay"]
 description = "A gorgeous, interactive Terminal User Interface for DropWire, a blazingly fast E2E encrypted P2P file-transfer tool."
