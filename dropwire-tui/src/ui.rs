@@ -49,6 +49,36 @@ impl ThemeColors {
             },
         }
     }
+
+    pub fn animated_primary(&self, app: &App) -> Color {
+        let t = app.boot_time.elapsed().as_secs_f32() * 3.0; // speed
+        
+        match app.theme {
+            crate::app::Theme::Cyberpunk => {
+                // Morph between Gold (255, 184, 0) and Red/Magenta (255, 50, 100)
+                let r = 255;
+                let g = (184.0 - ((t.sin() * 0.5 + 0.5) * 134.0)) as u8;
+                let b = ((t.sin() * 0.5 + 0.5) * 100.0) as u8;
+                Color::Rgb(r, g, b)
+            },
+            crate::app::Theme::Matrix => {
+                // Pulse green brightness
+                let g = (255.0 - ((t.sin().abs()) * 100.0)) as u8;
+                Color::Rgb(0, g, 0)
+            },
+            crate::app::Theme::Nord => {
+                // Shift between blue and cyan
+                let r = (136.0 + ((t.cos() * 0.5) * 40.0)) as u8;
+                let g = (192.0 + ((t.sin() * 0.5) * 40.0)) as u8;
+                Color::Rgb(r, g, 255)
+            },
+            crate::app::Theme::Monochrome => {
+                // Pulse white/gray
+                let v = (255.0 - ((t.sin().abs()) * 80.0)) as u8;
+                Color::Rgb(v, v, v)
+            }
+        }
+    }
 }
 
 
@@ -118,7 +148,7 @@ pub fn draw(f: &mut Frame, app: &mut App) {
 
     // --- Footer ---
     let footer_text = match app.view {
-        ActiveView::FileBrowser => " [↑/↓] Nav  |  [Tab] Drive  |  [Space] Select  |  [Enter] Open  |  [S] Send  |  [R] Recv  |  [H] Hist  |  [C] Cfg ",
+        ActiveView::FileBrowser => " [↑/↓] Nav  |  [Tab/◄/►] Panes  |  [Space] Select  |  [Enter] Open  |  [S] Send  |  [R] Recv  |  [H] Hist  |  [C] Cfg  |  [Q] Quit ",
         ActiveView::ReceiveInput => " [Enter] Start Transfer  |  [Esc] Cancel  |  [Q] Quit ",
         ActiveView::TransferDashboard => " [Esc] Back to Explorer  |  [Q] Quit ",
         ActiveView::ConfigEditor => " [↑/↓] Select  |  [Enter] Edit/Toggle  |  [Esc] Save & Back ",
@@ -214,7 +244,7 @@ fn draw_file_browser(f: &mut Frame, app: &mut App, area: Rect, theme: &ThemeColo
     }
 
     let sidebar_title = if app.browser_pane == crate::app::BrowserPane::Sidebar { " Places (Active) " } else { " Places " };
-    let sidebar_border_style = if app.browser_pane == crate::app::BrowserPane::Sidebar { Style::default().fg(theme.primary) } else { Style::default().fg(theme.border) };
+    let sidebar_border_style = if app.browser_pane == crate::app::BrowserPane::Sidebar { Style::default().fg(theme.animated_primary(app)) } else { Style::default().fg(theme.border) };
     let sidebar_list = List::new(sidebar_list_items)
         .block(Block::default().title(sidebar_title).borders(Borders::ALL).border_style(sidebar_border_style));
     let mut sidebar_state = ListState::default();
@@ -252,7 +282,7 @@ fn draw_file_browser(f: &mut Frame, app: &mut App, area: Rect, theme: &ThemeColo
     }
 
     let title = if app.browser_pane == crate::app::BrowserPane::FileList { format!(" Explorer (Active): {} ", app.current_dir.display()) } else { format!(" Explorer: {} ", app.current_dir.display()) };
-    let border_style = if app.browser_pane == crate::app::BrowserPane::FileList { Style::default().fg(theme.primary) } else { Style::default().fg(theme.border) };
+    let border_style = if app.browser_pane == crate::app::BrowserPane::FileList { Style::default().fg(theme.animated_primary(app)) } else { Style::default().fg(theme.border) };
     let list = List::new(list_items)
         .block(Block::default().title(title).borders(Borders::ALL).border_style(border_style));
     
@@ -311,9 +341,13 @@ fn draw_transfer_dashboard(f: &mut Frame, app: &mut App, area: Rect, theme: &The
             .split(area);
 
         // Render code phrase big
+        let spinners = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+        let spinner_idx = (app.boot_time.elapsed().as_millis() / 80) as usize % spinners.len();
+        let spinner = spinners[spinner_idx];
+
         let mode = if state.is_sending { "SENDING" } else { "RECEIVING" };
         let title = Paragraph::new(vec![
-            Line::from(vec![Span::styled(format!(" {} MODE ", mode), Style::default().fg(theme.secondary))]),
+            Line::from(vec![Span::styled(format!(" {} {} MODE ", spinner, mode), Style::default().fg(theme.secondary))]),
             Line::from(""),
             Line::from(vec![Span::styled(state.code_phrase.clone(), Style::default().fg(theme.primary).add_modifier(Modifier::BOLD))]),
             Line::from(""),
