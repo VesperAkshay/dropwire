@@ -190,7 +190,7 @@ pub async fn start_receive(code_phrase: String, mut out_dir: PathBuf, tx: mpsc::
             tokio::time::sleep(std::time::Duration::from_secs(3)).await;
             continue;
         } else {
-            let _ = tx.send(crate::AppEvent::Engine(EngineEvent::Status("Transfer Complete!".to_string())));
+            let _ = tx.send(crate::AppEvent::Engine(EngineEvent::Status(format!("Transfer Complete! Saved to {}", out_dir.display()))));
             let _ = tx.send(crate::AppEvent::Engine(EngineEvent::Done));
             break;
         }
