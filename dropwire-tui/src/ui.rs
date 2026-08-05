@@ -118,7 +118,7 @@ pub fn draw(f: &mut Frame, app: &mut App) {
 
     // --- Footer ---
     let footer_text = match app.view {
-        ActiveView::FileBrowser => " [↑/↓] Navigate  |  [Space] Select  |  [Enter] Open Dir  |  [S] Send  |  [R] Receive  |  [H] History  |  [C] Config ",
+        ActiveView::FileBrowser => " [↑/↓] Nav  |  [Tab] Drive  |  [Space] Select  |  [Enter] Open  |  [S] Send  |  [R] Recv  |  [H] Hist  |  [C] Cfg ",
         ActiveView::ReceiveInput => " [Enter] Start Transfer  |  [Esc] Cancel  |  [Q] Quit ",
         ActiveView::TransferDashboard => " [Esc] Back to Explorer  |  [Q] Quit ",
         ActiveView::ConfigEditor => " [↑/↓] Select  |  [Enter] Edit/Toggle  |  [Esc] Save & Back ",

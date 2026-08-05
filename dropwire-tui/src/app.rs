@@ -261,6 +261,42 @@ impl App {
         }
     }
 
+    #[cfg(windows)]
+    pub fn get_drives(&self) -> Vec<PathBuf> {
+        let mut drives = Vec::new();
+        for letter in b'A'..=b'Z' {
+            let path_str = format!("{}:\\", letter as char);
+            let path = PathBuf::from(&path_str);
+            if path.exists() {
+                drives.push(path);
+            }
+        }
+        drives
+    }
+
+    #[cfg(unix)]
+    pub fn get_drives(&self) -> Vec<PathBuf> {
+        vec![PathBuf::from("/")]
+    }
+
+    pub fn cycle_drive(&mut self) {
+        let drives = self.get_drives();
+        if drives.is_empty() { return; }
+
+        let current_root = self.current_dir.ancestors().last().unwrap_or(&self.current_dir).to_path_buf();
+        
+        let mut next_index = 0;
+        for (i, drive) in drives.iter().enumerate() {
+            if drive.to_string_lossy().to_uppercase().starts_with(&current_root.to_string_lossy().to_uppercase()) {
+                next_index = (i + 1) % drives.len();
+                break;
+            }
+        }
+        
+        self.current_dir = drives[next_index].clone();
+        self.refresh_dir();
+    }
+
     pub fn quit(&mut self) {
         self.should_quit = true;
     }

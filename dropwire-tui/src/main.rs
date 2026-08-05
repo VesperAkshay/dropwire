@@ -79,6 +79,7 @@ async fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> io::R
                                     }
                                     KeyCode::Up => app.previous_file(),
                                     KeyCode::Down => app.next_file(),
+                                    KeyCode::Tab => app.cycle_drive(),
                                     KeyCode::Enter => app.enter_selected(),
                                     KeyCode::Char('s') | KeyCode::Char('S') => {
                                         let mut paths = app.selected_files.iter().cloned().collect::<Vec<_>>();
