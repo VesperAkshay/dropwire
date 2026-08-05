@@ -191,12 +191,42 @@ fn draw_loading_screen(f: &mut Frame, app: &App, theme: &ThemeColors) {
 }
 
 fn draw_file_browser(f: &mut Frame, app: &mut App, area: Rect, theme: &ThemeColors) {
+    let chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Length(25), Constraint::Min(0)].as_ref())
+        .split(area);
+
+    let sidebar_area = chunks[0];
+    let list_area = chunks[1];
+
+    let mut sidebar_list_items = Vec::new();
+    for (i, item) in app.sidebar_items.iter().enumerate() {
+        let is_selected = i == app.selected_sidebar_index;
+        let style = if is_selected && app.browser_pane == crate::app::BrowserPane::Sidebar {
+            Style::default().fg(Color::Rgb(255, 255, 255)).bg(Color::Rgb(0, 82, 255)).add_modifier(Modifier::BOLD)
+        } else if is_selected {
+            Style::default().fg(Color::Rgb(200, 200, 200)).bg(Color::Rgb(50, 50, 50))
+        } else {
+            Style::default().fg(Color::Rgb(200, 200, 200))
+        };
+        let content = format!(" {} ", item.name);
+        sidebar_list_items.push(ListItem::new(content).style(style));
+    }
+
+    let sidebar_title = if app.browser_pane == crate::app::BrowserPane::Sidebar { " Places (Active) " } else { " Places " };
+    let sidebar_border_style = if app.browser_pane == crate::app::BrowserPane::Sidebar { Style::default().fg(theme.primary) } else { Style::default().fg(theme.border) };
+    let sidebar_list = List::new(sidebar_list_items)
+        .block(Block::default().title(sidebar_title).borders(Borders::ALL).border_style(sidebar_border_style));
+    let mut sidebar_state = ListState::default();
+    sidebar_state.select(Some(app.selected_sidebar_index));
+    f.render_stateful_widget(sidebar_list, sidebar_area, &mut sidebar_state);
+
+
     let mut list_items = Vec::new();
     
     for (i, path) in app.files.iter().enumerate() {
         let is_selected = i == app.selected_file_index;
         
-        // Formatting the item
         let file_name = if path.to_str() == Some("..") {
             "../ (Parent Directory)".to_string()
         } else {
@@ -204,13 +234,15 @@ fn draw_file_browser(f: &mut Frame, app: &mut App, area: Rect, theme: &ThemeColo
         };
 
         let (icon, color) = if path.is_dir() || path.to_str() == Some("..") {
-            ("📁", theme.primary) // DropWire Gold
+            ("📁", theme.primary)
         } else {
-            ("📄", Color::Rgb(200, 200, 200)) // Light Gray
+            ("📄", Color::Rgb(200, 200, 200))
         };
 
-        let style = if is_selected {
-            Style::default().fg(Color::Rgb(255, 255, 255)).bg(Color::Rgb(0, 82, 255)).add_modifier(Modifier::BOLD) // Electric Blue
+        let style = if is_selected && app.browser_pane == crate::app::BrowserPane::FileList {
+            Style::default().fg(Color::Rgb(255, 255, 255)).bg(Color::Rgb(0, 82, 255)).add_modifier(Modifier::BOLD)
+        } else if is_selected {
+            Style::default().fg(Color::Rgb(200, 200, 200)).bg(Color::Rgb(50, 50, 50))
         } else {
             Style::default().fg(color)
         };
@@ -219,16 +251,15 @@ fn draw_file_browser(f: &mut Frame, app: &mut App, area: Rect, theme: &ThemeColo
         list_items.push(ListItem::new(content).style(style));
     }
 
-    let title = format!(" Explorer: {} ", app.current_dir.display());
+    let title = if app.browser_pane == crate::app::BrowserPane::FileList { format!(" Explorer (Active): {} ", app.current_dir.display()) } else { format!(" Explorer: {} ", app.current_dir.display()) };
+    let border_style = if app.browser_pane == crate::app::BrowserPane::FileList { Style::default().fg(theme.primary) } else { Style::default().fg(theme.border) };
     let list = List::new(list_items)
-        .block(Block::default().title(title).borders(Borders::ALL).border_style(Style::default().fg(theme.border)));
+        .block(Block::default().title(title).borders(Borders::ALL).border_style(border_style));
     
-    // We don't use ListState fully automatically here because we track index in App
-    // But we need a ListState for the widget to render selection/scrolling correctly
     let mut state = ListState::default();
     state.select(Some(app.selected_file_index));
     
-    f.render_stateful_widget(list, area, &mut state);
+    f.render_stateful_widget(list, list_area, &mut state);
 }
 
 fn draw_receive_input(f: &mut Frame, app: &mut App, area: Rect, theme: &ThemeColors) {

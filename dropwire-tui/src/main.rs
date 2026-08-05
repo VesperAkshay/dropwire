@@ -77,10 +77,18 @@ async fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> io::R
                                     KeyCode::Char('r') | KeyCode::Char('R') => {
                                         app.view = ActiveView::ReceiveInput;
                                     }
-                                    KeyCode::Up => app.previous_file(),
-                                    KeyCode::Down => app.next_file(),
-                                    KeyCode::Tab => app.cycle_drive(),
-                                    KeyCode::Enter => app.enter_selected(),
+                                    KeyCode::Up => app.browser_up(),
+                                    KeyCode::Down => app.browser_down(),
+                                    KeyCode::Left => app.browser_pane = crate::app::BrowserPane::Sidebar,
+                                    KeyCode::Right => app.browser_pane = crate::app::BrowserPane::FileList,
+                                    KeyCode::Tab => {
+                                        app.browser_pane = if app.browser_pane == crate::app::BrowserPane::Sidebar {
+                                            crate::app::BrowserPane::FileList
+                                        } else {
+                                            crate::app::BrowserPane::Sidebar
+                                        };
+                                    }
+                                    KeyCode::Enter => app.browser_enter(),
                                     KeyCode::Char('s') | KeyCode::Char('S') => {
                                         let mut paths = app.selected_files.iter().cloned().collect::<Vec<_>>();
                                         if paths.is_empty() {

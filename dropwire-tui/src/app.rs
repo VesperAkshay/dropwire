@@ -72,6 +72,18 @@ impl TransferHistoryEntry {
     }
 }
 
+#[derive(PartialEq, Clone, Copy)]
+pub enum BrowserPane {
+    Sidebar,
+    FileList,
+}
+
+#[derive(Clone)]
+pub struct SidebarItem {
+    pub name: String,
+    pub path: PathBuf,
+}
+
 #[derive(Clone)]
 pub struct TransferState {
     pub is_sending: bool,
@@ -130,6 +142,9 @@ pub struct App {
     pub boot_time: std::time::Instant,
     pub next_view: Option<ActiveView>,
     pub current_transfer_task: Option<tokio::task::JoinHandle<()>>,
+    pub browser_pane: BrowserPane,
+    pub sidebar_items: Vec<SidebarItem>,
+    pub selected_sidebar_index: usize,
 }
 
 impl App {
@@ -154,6 +169,30 @@ impl App {
         config_state.chunk_size_kb = config.chunk_size_kb.clone().unwrap_or(1024).to_string();
         config_state.theme = config.get_theme();
 
+        let mut sidebar_items = Vec::new();
+        if let Some(d) = dirs::home_dir() { sidebar_items.push(SidebarItem { name: "Home".to_string(), path: d }); }
+        if let Some(d) = dirs::desktop_dir() { sidebar_items.push(SidebarItem { name: "Desktop".to_string(), path: d }); }
+        if let Some(d) = dirs::document_dir() { sidebar_items.push(SidebarItem { name: "Documents".to_string(), path: d }); }
+        if let Some(d) = dirs::download_dir() { sidebar_items.push(SidebarItem { name: "Downloads".to_string(), path: d }); }
+        if let Some(d) = dirs::picture_dir() { sidebar_items.push(SidebarItem { name: "Pictures".to_string(), path: d }); }
+        if let Some(d) = dirs::audio_dir() { sidebar_items.push(SidebarItem { name: "Music".to_string(), path: d }); }
+        if let Some(d) = dirs::video_dir() { sidebar_items.push(SidebarItem { name: "Videos".to_string(), path: d }); }
+        
+        #[cfg(windows)]
+        {
+            for letter in b'A'..=b'Z' {
+                let path_str = format!("{}:\\", letter as char);
+                let path = PathBuf::from(&path_str);
+                if path.exists() {
+                    sidebar_items.push(SidebarItem { name: format!("Drive {}", letter as char), path });
+                }
+            }
+        }
+        #[cfg(unix)]
+        {
+            sidebar_items.push(SidebarItem { name: "Root".to_string(), path: PathBuf::from("/") });
+        }
+
         let mut app = Self {
             view: ActiveView::LoadingScreen,
             next_view: Some(initial_view),
@@ -170,6 +209,9 @@ impl App {
             history,
             history_scroll: 0,
             current_transfer_task: None,
+            browser_pane: BrowserPane::FileList,
+            sidebar_items,
+            selected_sidebar_index: 0,
         };
         app.refresh_dir();
         app
@@ -220,6 +262,43 @@ impl App {
             } else {
                 self.selected_file_index = self.files.len() - 1;
             }
+        }
+    }
+
+    pub fn browser_up(&mut self) {
+        if self.browser_pane == BrowserPane::Sidebar {
+            if !self.sidebar_items.is_empty() {
+                if self.selected_sidebar_index > 0 {
+                    self.selected_sidebar_index -= 1;
+                } else {
+                    self.selected_sidebar_index = self.sidebar_items.len() - 1;
+                }
+            }
+        } else {
+            self.previous_file();
+        }
+    }
+
+    pub fn browser_down(&mut self) {
+        if self.browser_pane == BrowserPane::Sidebar {
+            if !self.sidebar_items.is_empty() {
+                self.selected_sidebar_index = (self.selected_sidebar_index + 1) % self.sidebar_items.len();
+            }
+        } else {
+            self.next_file();
+        }
+    }
+
+    pub fn browser_enter(&mut self) {
+        if self.browser_pane == BrowserPane::Sidebar {
+            if !self.sidebar_items.is_empty() {
+                let item = &self.sidebar_items[self.selected_sidebar_index];
+                self.current_dir = item.path.clone();
+                self.refresh_dir();
+                self.browser_pane = BrowserPane::FileList;
+            }
+        } else {
+            self.enter_selected();
         }
     }
 
