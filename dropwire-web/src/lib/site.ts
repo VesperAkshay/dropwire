@@ -2,8 +2,8 @@ export const SITE = {
   name: 'DropWire',
   tagline: 'Encrypted P2P File Transfer. No accounts. No cloud. No size limits.',
   description: 'Fast, encrypted, peer-to-peer file transfer engine. Transfer files machine-to-machine with simple room codes.',
-  url: 'https://DropWire.pages.dev',
-  repo: 'https://github.com/VesperAkshay/Tye-xhare',
+  url: 'https://dropwire.tyes.dev',
+  repo: 'https://github.com/VesperAkshay/dropwire',
   author: 'VesperAkshay',
 
 };
@@ -33,7 +33,8 @@ export const FOOTER_NAV = {
   community: [
     { label: 'GitHub Repository', href: SITE.repo, external: true },
     { label: 'Blog', href: '/blog' },
-    { label: 'About & Roadmap', href: '/about' },
+    { label: 'About', href: '/about' },
+    { label: 'Roadmap', href: '/about#roadmap' },
     { label: 'Privacy Policy', href: '/privacy' },
   ],
 };
