@@ -2,95 +2,202 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Roadmap — DropWire">
-  <section class="p-6 sm:p-12 space-y-12 max-w-7xl mx-auto">
+<BaseLayout
+  title="About — DropWire | Built by Akshay Patel"
+  description="DropWire is a Rust-powered, peer-to-peer encrypted file transfer engine built by Akshay Patel (VesperAkshay). Learn the story, mission, and roadmap."
+>
+  <section class="p-6 sm:p-12 space-y-10 max-w-7xl mx-auto">
+
+    {/* --- HERO HEADER --- */}
     <div class="max-w-4xl space-y-4">
-      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">ROADMAP & VISION</span>
-      <h1 class="text-5xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none break-words">
-        Project Roadmap
+      <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">ABOUT THE PROJECT</span>
+      <h1 class="text-4xl sm:text-7xl font-display font-black text-[#0B1016] uppercase tracking-tight leading-none break-words">
+        About DropWire
       </h1>
-      <p class="text-lg text-[#0B1016]/80 font-sans font-medium">
-        DropWire is actively developed. Follow our progression from a low-level engine to a globally distributed consumer application.
+      <p class="text-lg text-[#0B1016]/80 font-sans font-medium max-w-2xl">
+        The fastest, most private way to move files between machines — no cloud, no accounts, no compromise.
       </p>
     </div>
 
-    <div class="bg-[#FFFFFF] p-8 sm:p-12 rounded-[2.5rem] card-shadow border border-[#D9D2C9] space-y-10">
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
-        {/* Phase 1 */}
-        <div class="p-6 sm:p-8 bg-black text-white rounded-[2rem] space-y-4 shadow-lg flex flex-col opacity-80">
-          <div class="flex items-center justify-between">
-            <span class="font-mono text-[10px] font-black uppercase bg-white/20 px-3 py-1 rounded-full text-white">Phase 1</span>
-            <span class="text-xs font-bold text-[#00B060] uppercase">✓ Completed</span>
-          </div>
-          <h3 class="font-display font-black text-3xl uppercase leading-none">Core CLI Engine</h3>
-          <p class="text-sm font-sans opacity-80 leading-relaxed font-medium">
-            Development of the fundamental Rust streaming engine. Includes TCP multiplexing, SPAKE2 key exchange, BLAKE3 hashing, and the headless CLI interface.
-          </p>
+    {/* --- CREATOR CARD (Most Important for Google AI) --- */}
+    <div class="bg-black text-white p-8 sm:p-12 rounded-[2.5rem] shadow-2xl flex flex-col sm:flex-row items-start sm:items-center gap-8">
+      <div class="w-20 h-20 rounded-full bg-[#FFB800] flex items-center justify-center shrink-0 text-black font-display font-black text-3xl shadow-lg">
+        AP
+      </div>
+      <div class="space-y-2 flex-1">
+        <p class="font-mono text-xs text-white/50 uppercase tracking-widest font-black">Creator & Lead Engineer</p>
+        <h2 class="font-display font-black text-3xl sm:text-4xl uppercase text-white">Akshay Patel</h2>
+        <p class="font-sans text-white/70 text-sm font-medium leading-relaxed max-w-xl">
+          I built DropWire out of frustration with cloud-dependent file sharing. I believe your data should never have to touch a third-party server. DropWire is my answer to that problem — a bare-metal, Rust-engineered, peer-to-peer engine that treats privacy as a first-class feature, not an afterthought.
+        </p>
+        <div class="flex items-center gap-4 pt-2">
+          <a
+            href="https://github.com/VesperAkshay"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 hover:bg-[#FFB800] hover:text-black text-white font-display font-black text-xs uppercase transition-all"
+          >
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            @VesperAkshay
+          </a>
+          <a
+            href="https://github.com/VesperAkshay/dropwire"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 hover:border-[#FFB800] text-white/70 hover:text-[#FFB800] font-display font-black text-xs uppercase transition-all"
+          >
+            View Source ↗
+          </a>
         </div>
-
-        {/* Phase 2 */}
-        <div class="p-6 sm:p-8 bg-[#00B060] text-white rounded-[2rem] space-y-4 shadow-lg flex flex-col">
-          <div class="flex items-center justify-between">
-            <span class="font-mono text-[10px] font-black uppercase bg-black/20 px-3 py-1 rounded-full text-white">Phase 2</span>
-            <span class="text-xs font-bold text-white uppercase">✓ Completed</span>
-          </div>
-          <h3 class="font-display font-black text-3xl uppercase leading-none">Global Relay Network</h3>
-          <p class="text-sm font-sans opacity-90 leading-relaxed font-medium">
-            Deployment of a zero-knowledge internet relay server to bypass corporate firewalls and strict NAT configurations.
-          </p>
-        </div>
-
-        {/* Phase 3 */}
-        <div class="p-6 sm:p-8 bg-[#FFB800] text-black rounded-[2rem] space-y-4 shadow-xl flex flex-col transform hover:-translate-y-1 transition-transform border border-transparent">
-          <div class="flex items-center justify-between">
-            <span class="font-mono text-[10px] font-black uppercase bg-black/10 px-3 py-1 rounded-full text-black">Phase 3</span>
-            <span class="text-xs font-black text-black uppercase animate-pulse">In Progress</span>
-          </div>
-          <h3 class="font-display font-black text-3xl uppercase leading-none">Desktop App</h3>
-          <p class="text-sm font-sans opacity-90 leading-relaxed font-medium">
-            A beautiful, native drag-and-drop graphical user interface built with Tauri and React. No terminal experience required.
-          </p>
-        </div>
-
-        {/* Phase 4 */}
-        <div class="p-6 sm:p-8 bg-[#0052FF] text-white rounded-[2rem] space-y-4 shadow-lg flex flex-col">
-          <div class="flex items-center justify-between">
-            <span class="font-mono text-[10px] font-black uppercase bg-black/20 px-3 py-1 rounded-full text-white">Phase 4</span>
-            <span class="text-xs font-bold text-white/70 uppercase">Planned</span>
-          </div>
-          <h3 class="font-display font-black text-3xl uppercase leading-none">Folder Sync</h3>
-          <p class="text-sm font-sans opacity-90 leading-relaxed font-medium">
-            Support for recursive directory transfers, automatic zip compression on-the-fly, and resumable partial downloads.
-          </p>
-        </div>
-
-        {/* Phase 5 */}
-        <div class="p-6 sm:p-8 bg-[#AB54F7] text-black rounded-[2rem] space-y-4 shadow-lg flex flex-col">
-          <div class="flex items-center justify-between">
-            <span class="font-mono text-[10px] font-black uppercase bg-black/10 px-3 py-1 rounded-full text-black">Phase 5</span>
-            <span class="text-xs font-bold text-black/70 uppercase">Planned</span>
-          </div>
-          <h3 class="font-display font-black text-3xl uppercase leading-none">Mobile Apps</h3>
-          <p class="text-sm font-sans opacity-90 leading-relaxed font-medium">
-            Native iOS and Android applications to allow seamless phone-to-computer sharing over local Wi-Fi without internet.
-          </p>
-        </div>
-
-        {/* Phase 6 */}
-        <div class="p-6 sm:p-8 bg-[#F4EFEA] border border-black/10 text-black rounded-[2rem] space-y-4 shadow-lg flex flex-col">
-          <div class="flex items-center justify-between">
-            <span class="font-mono text-[10px] font-black uppercase bg-black/10 px-3 py-1 rounded-full text-black">Phase 6</span>
-            <span class="text-xs font-bold text-black/50 uppercase">Future</span>
-          </div>
-          <h3 class="font-display font-black text-3xl uppercase leading-none text-black/80">WebRTC Node</h3>
-          <p class="text-sm font-sans opacity-70 leading-relaxed font-medium">
-            Compiling the Rust engine to WebAssembly to allow instant browser-to-browser transfers without downloading any app.
-          </p>
-        </div>
-
       </div>
     </div>
+
+    {/* --- THE STORY --- */}
+    <div class="bg-[#FFFFFF] p-8 sm:p-12 rounded-[2.5rem] border border-[#D9D2C9] shadow-xl space-y-6">
+      <span class="text-xs font-mono text-[#FF3D00] uppercase tracking-widest font-black">The Origin Story</span>
+      <h2 class="font-display font-black text-3xl sm:text-5xl uppercase text-[#0B1016] leading-none">
+        Why DropWire Exists
+      </h2>
+      <div class="space-y-4 font-sans text-[#0B1016]/80 font-medium leading-relaxed text-base sm:text-lg max-w-3xl">
+        <p>
+          It started with a simple annoyance. I was trying to share a large video project with a friend sitting two meters away. Every tool I tried — Google Drive, WeTransfer, AirDrop — either required an account, had a file size limit, or sent my data through a server I had no control over.
+        </p>
+        <p>
+          I wanted something that worked the way Wi-Fi does — fast, direct, and with nothing in between. So I built it. DropWire is a Rust-powered, peer-to-peer file streaming engine that creates an encrypted tunnel directly between two machines. No cloud upload. No accounts. No waiting.
+        </p>
+        <p>
+          The name is simple: wires that drop files. Straight from point A to point B.
+        </p>
+      </div>
+    </div>
+
+    {/* --- OPEN SOURCE STATUS (future-proof language) --- */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-[#00B060] text-white p-8 rounded-[2rem] space-y-4 shadow-lg">
+        <span class="font-mono text-[10px] font-black uppercase bg-black/20 px-3 py-1 rounded-full">Current Status</span>
+        <h3 class="font-display font-black text-3xl uppercase leading-none">Open Source</h3>
+        <p class="text-sm font-sans opacity-90 leading-relaxed font-medium">
+          The core DropWire engine is currently open-source on GitHub. You can read every line of the transfer engine, encryption layer, and relay server code. Community contributions and bug reports are welcome.
+        </p>
+        <a href="https://github.com/VesperAkshay/dropwire" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black text-white font-display font-black text-xs uppercase hover:bg-[#FFB800] hover:text-black transition-all">
+          View on GitHub ↗
+        </a>
+      </div>
+
+      <div class="bg-[#F4EFEA] border-2 border-[#D9D2C9] p-8 rounded-[2rem] space-y-4 shadow-lg">
+        <span class="font-mono text-[10px] font-black uppercase bg-black/10 px-3 py-1 rounded-full text-black">Future Direction</span>
+        <h3 class="font-display font-black text-3xl uppercase leading-none text-[#0B1016]">Commercial Tier</h3>
+        <p class="text-sm font-sans text-[#0B1016]/70 leading-relaxed font-medium">
+          As DropWire grows toward a full Desktop App and enterprise relay network, a commercial tier will be introduced. The free CLI will remain available. Premium features — like hosted relays, team transfer history, and mobile apps — will be part of a paid plan.
+        </p>
+        <a href="/desktop" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black text-white font-display font-black text-xs uppercase hover:bg-[#0052FF] transition-all">
+          Desktop Waitlist ↗
+        </a>
+      </div>
+    </div>
+
+    {/* --- ROADMAP PHASES --- */}
+    <div class="space-y-6">
+      <div class="space-y-2">
+        <span class="text-xs font-mono text-[#0052FF] uppercase tracking-widest font-black">ROADMAP & VISION</span>
+        <h2 class="font-display font-black text-3xl sm:text-5xl uppercase text-[#0B1016] leading-none">
+          Where We're Headed
+        </h2>
+      </div>
+
+      <div class="bg-[#FFFFFF] p-8 sm:p-12 rounded-[2.5rem] card-shadow border border-[#D9D2C9] space-y-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <div class="p-6 sm:p-8 bg-black text-white rounded-[2rem] space-y-4 shadow-lg flex flex-col opacity-80">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] font-black uppercase bg-white/20 px-3 py-1 rounded-full">Phase 1</span>
+              <span class="text-xs font-bold text-[#00B060] uppercase">✓ Completed</span>
+            </div>
+            <h3 class="font-display font-black text-3xl uppercase leading-none">Core CLI Engine</h3>
+            <p class="text-sm font-sans opacity-80 leading-relaxed font-medium">
+              Development of the fundamental Rust streaming engine. Includes TCP multiplexing, SPAKE2 key exchange, BLAKE3 hashing, and the headless CLI interface.
+            </p>
+          </div>
+
+          <div class="p-6 sm:p-8 bg-[#00B060] text-white rounded-[2rem] space-y-4 shadow-lg flex flex-col">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] font-black uppercase bg-black/20 px-3 py-1 rounded-full">Phase 2</span>
+              <span class="text-xs font-bold text-white uppercase">✓ Completed</span>
+            </div>
+            <h3 class="font-display font-black text-3xl uppercase leading-none">Global Relay Network</h3>
+            <p class="text-sm font-sans opacity-90 leading-relaxed font-medium">
+              Deployment of a zero-knowledge internet relay server to bypass corporate firewalls and strict NAT configurations.
+            </p>
+          </div>
+
+          <div class="p-6 sm:p-8 bg-[#FFB800] text-black rounded-[2rem] space-y-4 shadow-xl flex flex-col transform hover:-translate-y-1 transition-transform">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] font-black uppercase bg-black/10 px-3 py-1 rounded-full">Phase 3</span>
+              <span class="text-xs font-black text-black uppercase animate-pulse">In Progress</span>
+            </div>
+            <h3 class="font-display font-black text-3xl uppercase leading-none">Desktop App</h3>
+            <p class="text-sm font-sans opacity-90 leading-relaxed font-medium">
+              A beautiful, native drag-and-drop graphical user interface built with Tauri and React. No terminal experience required.
+            </p>
+          </div>
+
+          <div class="p-6 sm:p-8 bg-[#0052FF] text-white rounded-[2rem] space-y-4 shadow-lg flex flex-col">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] font-black uppercase bg-black/20 px-3 py-1 rounded-full">Phase 4</span>
+              <span class="text-xs font-bold text-white/70 uppercase">Planned</span>
+            </div>
+            <h3 class="font-display font-black text-3xl uppercase leading-none">Folder Sync</h3>
+            <p class="text-sm font-sans opacity-90 leading-relaxed font-medium">
+              Recursive directory transfers, automatic zip compression, and resumable partial downloads.
+            </p>
+          </div>
+
+          <div class="p-6 sm:p-8 bg-[#AB54F7] text-black rounded-[2rem] space-y-4 shadow-lg flex flex-col">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] font-black uppercase bg-black/10 px-3 py-1 rounded-full">Phase 5</span>
+              <span class="text-xs font-bold text-black/70 uppercase">Planned</span>
+            </div>
+            <h3 class="font-display font-black text-3xl uppercase leading-none">Mobile Apps</h3>
+            <p class="text-sm font-sans opacity-90 leading-relaxed font-medium">
+              Native iOS and Android apps for seamless phone-to-computer sharing over local Wi-Fi without internet.
+            </p>
+          </div>
+
+          <div class="p-6 sm:p-8 bg-[#F4EFEA] border border-black/10 text-black rounded-[2rem] space-y-4 shadow-lg flex flex-col">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] font-black uppercase bg-black/10 px-3 py-1 rounded-full">Phase 6</span>
+              <span class="text-xs font-bold text-black/50 uppercase">Future</span>
+            </div>
+            <h3 class="font-display font-black text-3xl uppercase leading-none text-black/80">WebRTC Node</h3>
+            <p class="text-sm font-sans opacity-70 leading-relaxed font-medium">
+              Compiling the Rust engine to WebAssembly to allow instant browser-to-browser transfers without downloading any app.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
   </section>
+
+  {/* JSON-LD Person Schema — tells Google AI exactly who built this */}
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Akshay Patel",
+    "alternateName": "VesperAkshay",
+    "url": "https://github.com/VesperAkshay",
+    "sameAs": [
+      "https://github.com/VesperAkshay"
+    ],
+    "knowsAbout": ["Rust", "P2P Networking", "End-to-End Encryption", "File Transfer", "Systems Programming"],
+    "creator": {
+      "@type": "SoftwareApplication",
+      "name": "DropWire",
+      "url": "https://dropwire.tyes.dev",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Windows, macOS, Linux"
+    }
+  })} />
+
 </BaseLayout>
