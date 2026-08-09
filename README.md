@@ -10,6 +10,9 @@
   </p>
   
   <img src="./assets/demo.gif" alt="DropWire Terminal Demo" width="100%" />
+  
+  <br/>
+  <p>🌐 <b>Website & Docs: <a href="https://dropwire.tyes.dev">https://dropwire.tyes.dev</a></b></p>
 </div>
 
 DropWire lets you securely send files and massive directories of any size directly between machines over the internet using a simple code phrase. No accounts, no port-forwarding, and absolutely no limits. Inspired by `magic-wormhole` and `croc`, but architected for maximum bandwidth multiplexing and vast repository transfers.
