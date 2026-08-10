@@ -16,24 +16,24 @@ import HeroBackground from '../network/HeroBackground';
     <div class="text-center max-w-5xl mx-auto space-y-6 pt-4">
       <div class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4EFEA] border border-[#0D1117]/10 rounded-full text-xs font-mono text-black font-bold">
         <span class="w-2.5 h-2.5 rounded-full bg-[#00B060] animate-pulse"></span>
-        DropWire v0.1 Engine — Encrypted P2P Streaming
+        DropWire — No accounts. No size limits.
       </div>
 
       <ScrollReveal client:only="react" direction="up" delay={100}>
         <h1 class="text-4xl sm:text-7xl lg:text-9xl font-display font-black tracking-tighter text-[#0B1016] leading-[0.92] uppercase break-words hyphens-auto">
-          Peer to peer.<br />
+          Send a huge video.<br />
           <span class="text-[#0052FF]">
-            Encrypted.
-          </span>{" "}
+            Two meters away.
+          </span><br />
           <span class="text-[#FF3D00]">
-            No cloud.
+            No cloud servers.
           </span>
         </h1>
       </ScrollReveal>
 
       <ScrollReveal client:only="react" direction="up" delay={200}>
         <p class="text-lg sm:text-2xl text-[#0B1016]/80 font-sans max-w-3xl mx-auto leading-relaxed font-bold">
-          Direct file and folder streaming machine-to-machine with end-to-end encryption, zero-copy performance, and a stunning terminal UI.
+          Direct, encrypted, machine-to-machine file streaming. Stop bouncing your data off data centers just to send a file to the laptop next to you.
         </p>
       </ScrollReveal>
 
@@ -55,15 +55,10 @@ import HeroBackground from '../network/HeroBackground';
       </div>
     </div>
 
-    {/* Hero Stage Container (Curved 3D Atropos Cube + Live Terminal) */}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-8">
-      <div class="lg:col-span-6 flex justify-center">
-        <div class="w-full bg-[#F4EFEA] p-6 rounded-[2.5rem] border-2 border-[#FFB800] flex justify-center shadow-lg items-center">
-          <HeroCube3D client:only="react" />
-        </div>
-      </div>
-      <div class="lg:col-span-6">
-        <TerminalDemo client:only="react" />
+    {/* Hero Stage Container (Real Demo GIF) */}
+    <div class="pt-12 flex justify-center">
+      <div class="w-full max-w-5xl bg-[#0B1016] p-2 sm:p-4 rounded-[2.5rem] shadow-2xl border-4 border-black transform hover:scale-[1.02] transition-transform duration-500">
+        <img src="/demo.gif" alt="DropWire Terminal UI Demo" class="w-full h-auto rounded-3xl" />
       </div>
     </div>
   </div>

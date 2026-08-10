@@ -1,7 +1,7 @@
 [package]
 name = "dropwire"
 version = "0.1.6"
-edition = "2021"
+edition = "2024"
 authors = ["Akshay"]
 description = "A blazingly fast, serverless, end-to-end encrypted P2P file-transfer CLI."
 repository = "https://github.com/VesperAkshay/dropwire"
