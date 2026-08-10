@@ -5,7 +5,7 @@ edition = "2024"
 authors = ["Akshay"]
 description = "A blazingly fast, serverless, end-to-end encrypted P2P file-transfer CLI."
 repository = "https://github.com/VesperAkshay/dropwire"
-license = "Proprietary"
+license = "MIT"
 default-run = "dropwire"
 
 [dependencies]

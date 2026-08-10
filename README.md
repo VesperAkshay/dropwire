@@ -6,7 +6,7 @@
   <p>
     <a href="https://github.com/VesperAkshay/dropwire/releases"><img src="https://img.shields.io/github/v/release/VesperAkshay/dropwire?color=00B060&label=version" alt="Version"></a>
     <a href="https://github.com/VesperAkshay/dropwire/actions"><img src="https://img.shields.io/github/actions/workflow/status/VesperAkshay/dropwire/ci.yml?branch=main&label=build&color=0052FF" alt="Build"></a>
-    <a href="https://github.com/VesperAkshay/dropwire/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Proprietary-FF3D00.svg" alt="License"></a>
+    <a href="https://github.com/VesperAkshay/dropwire/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-00B060.svg" alt="License"></a>
   </p>
   
   <img src="./assets/demo.gif" alt="DropWire Terminal Demo" width="100%" />
@@ -87,4 +87,4 @@ We highly encourage community feedback, bug reports, and feature requests. Pleas
 
 ## 📜 License
 
-This software is Proprietary and Closed Source. See the **[LICENSE](./LICENSE)** file for more information.
+This project is licensed under the MIT License. See the **[LICENSE](./LICENSE)** file for details.

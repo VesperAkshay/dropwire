@@ -5,7 +5,7 @@ edition = "2024"
 authors = ["Akshay"]
 description = "A gorgeous, interactive Terminal User Interface for DropWire, a blazingly fast E2E encrypted P2P file-transfer tool."
 repository = "https://github.com/VesperAkshay/dropwire"
-license = "Proprietary"
+license = "MIT"
 
 [dependencies]
 dropwire = { path = "../dropwire" }
